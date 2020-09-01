@@ -1,0 +1,12 @@
+.card{
+    width: 15rem;
+    align-items: center;
+    margin: auto;
+}
+
+.card-title{
+    height: 5rem;
+    width: 8rem;
+}
+
+

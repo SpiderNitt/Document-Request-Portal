@@ -1,8 +1,10 @@
 .lmain {
+  top: -10px;
+  z-index: -10;
   padding: 15px;
   height: 80vh;
   border-radius: 5px;
-  position: relative;
+  position: absolute;
   margin-bottom: auto;
   text-align: center;
   background-color: white;

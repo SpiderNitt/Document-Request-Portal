@@ -1,4 +1,6 @@
 #cert-upl {
+  position: relative;
+  z-index: -10;
   background-color: white;
   border-radius: 5px;
   padding: 20px;

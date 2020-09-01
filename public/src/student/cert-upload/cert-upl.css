@@ -1,0 +1,28 @@
+#cert-upl {
+  background-color: white;
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+    0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  -moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+    0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.form-left {
+  border-right: 2px inset;
+}
+.btn-del {
+  float: right;
+  padding: 0;
+}
+.btn-del > span {
+  color: red;
+  font-size: 1.2em;
+}
+.emailList {
+  width: 75%;
+}
+.emailList > li {
+  background-color: #f5f5f5;
+}

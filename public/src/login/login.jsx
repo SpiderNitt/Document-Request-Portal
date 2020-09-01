@@ -14,29 +14,29 @@ function Login(props) {
       </div>
       <br />
       <div className="row lmain-rno justify-content-center">
-        <div className="col-md-2">
+        <div className="col-md-6">
           <label htmlFor="rno">
             <b>Roll Number</b>
           </label>
         </div>
-        <div className="col-md-2">
+        <div className="col-md-6">
           <input type="text" name="rno" required />
         </div>
       </div>
       <br />
       <div className="row lmain-pass justify-content-center">
-        <div className="col-md-2">
+        <div className="col-md-6">
           <label htmlFor="pass">
             <b>Password</b>
           </label>
         </div>
-        <div className="col-md-2">
+        <div className="col-md-6">
           <input type="password" name="pass" required />
         </div>
       </div>
       <br />
       <div className="row lmain-btn justify-content-center">
-        <div className="col-md-1">
+        <div className="col-md-12">
           <button type="submit" className="btn btn-primary">
             Login
           </button>

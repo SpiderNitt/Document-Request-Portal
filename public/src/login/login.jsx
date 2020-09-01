@@ -3,8 +3,7 @@ import "./login.css";
 
 function Login(props) {
   return (
-    // <div>
-    <div className="container lmain">
+    <div className="container-fluid lmain ">
       <div className="row lmain-logo justify-content-center ">
         <img src="nitt-lr.png" alt="logo" />
       </div>
@@ -43,7 +42,6 @@ function Login(props) {
         </div>
       </div>
     </div>
-    // </div>
   );
 }
 

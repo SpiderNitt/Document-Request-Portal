@@ -1,7 +1,6 @@
 .lmain {
-  width: 100%;
   padding: 15px;
-  margin-top: auto;
+  height: 80vh;
   border-radius: 5px;
   position: relative;
   margin-bottom: auto;
@@ -18,6 +17,7 @@ body {
 }
 
 .lmain-logo > img {
+  margin: auto;
   width: 25vh;
   height: auto;
 }

@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import "./cert-upl.css";
 
-function Upload(porps) {
+function Upload() {
   const [emailCount, setCount] = useState(0);
   const [emails, setEmails] = useState([]);
   return (
     <div className="container" id="cert-upl">
+      <h2 className="text-center cert-upl-head">
+        Request Certificate Verification
+      </h2>
       <div className="row">
         <div className="col-md-6 form-left">
           <form>
@@ -23,24 +26,30 @@ function Upload(porps) {
                 Enter email addresses in the order of preference from highest.
               </small>
             </div>
-            <button
-              type="submit"
-              className="btn btn-primary"
-              onClick={(e) => {
-                e.preventDefault();
-                let emailValues = document.getElementById("emailaddr");
-                if (emailValues.value !== "") {
-                  setCount(emailCount + 1);
-                  setEmails(emails.concat(emailValues.value));
-                  console.log(emailCount);
-                  console.log(emails);
-                  emailValues.value = "";
-                }
-              }}
-            >
-              Add
-            </button>
-            <br />
+            <div className="text-center">
+              <button
+                type="submit"
+                className="btn btn-primary"
+                onClick={(e) => {
+                  e.preventDefault();
+                  let emailValues = document.getElementById("emailaddr");
+                  if (emailValues.value !== "") {
+                    const re = /\S+@nitt\.edu/;
+                    if (re.test(emailValues.value) === true) {
+                      setCount(emailCount + 1);
+                      setEmails(emails.concat(emailValues.value));
+                      console.log(emailCount);
+                      console.log(emails);
+                    } else {
+                      alert("Enter valid nitt email.");
+                    }
+                    emailValues.value = "";
+                  }
+                }}
+              >
+                Add
+              </button>
+            </div>
             <br />
             <div className="form-group">
               <label htmlFor="certType">Enter certificate type</label>
@@ -53,14 +62,27 @@ function Upload(porps) {
               <label htmlFor="cert">Add certificate</label>
               <input type="file" className="form-control-file" id="cert" />
             </div>
+            <br />
+
             <div className="form-group text-center">
-              <button type="submit" className="btn btn-success">
+              <button
+                type="submit"
+                className="btn btn-success"
+                onClick={(e) => {
+                  e.preventDefault();
+                  let r = window.confirm(`Confirm selection: ${emails}`);
+                  if (r === true) {
+                    alert("Nalladhu");
+                  } else {
+                    alert("poi muttiko");
+                  }
+                }}
+              >
                 Submit
               </button>
             </div>
           </form>
         </div>
-        {/* <hr className="divider" /> */}
         <div className="col-md-6   d-flex justify-content-center">
           <ul className="list-group emailList">
             {emails.map((email, index) => {

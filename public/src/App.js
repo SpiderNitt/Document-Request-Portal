@@ -7,7 +7,7 @@ import Upload from "./student/cert-upload/cert-upl";
 function App() {
   return (
     <div>
-      <Login />
+      {/* <Login /> */}
       <Upload />
       <Footer />
     </div>

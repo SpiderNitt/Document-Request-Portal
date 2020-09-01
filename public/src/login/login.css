@@ -1,9 +1,12 @@
 .lmain {
-   width: 100%;
+
   padding: 5vh;
-  margin: auto;
   border-radius: 1vh;
-  position: relative;
+  top: -10px;
+  z-index: -10;
+  height: 80vh;
+  position: absolute;
+  margin-bottom: auto;
   text-align: center;
   background-color: white;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);

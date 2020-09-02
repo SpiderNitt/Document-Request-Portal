@@ -6,6 +6,7 @@ import Admin from "./admin/admin";
 import NavBar from "./student/navbar/navbar";
 import CertificateTemplate from "./student/cert-templates/cert-temp";
 import Upload from "./student/cert-upload/cert-upl";
+import Status from "./student/status/status";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
       {/* <Admin /> */}
       <br />
       <br />
+      <Status/>
       <Footer />
     </div>
   );

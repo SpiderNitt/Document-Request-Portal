@@ -1,19 +1,31 @@
-.flexbox-container {
-    display: flex;
-    flex-direction: row;
-}
-
-.lmain {
+@media only screen and (min-width: 800px) {
+  .docView {
     width: 100%;
-   padding: 5vh;
-   margin: auto;
-   border-radius: 1vh;
-   position: relative;
-   text-align: center;
-   background-color: white;
-   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-   -webkit-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
-     0 6px 20px 0 rgba(0, 0, 0, 0.19);
-   -moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
-     0 6px 20px 0 rgba(0, 0, 0, 0.19);
- }
+    height: 50vh;
+    /* border: 1px solid #666ccc; */
+    background-color: rgb(13, 19, 41);
+    text-align: center;
+    color: white;
+    display: block;
+  }
+  .mobl-docView {
+    display: none;
+  }
+  /* .certificateTemplate > .container {
+    max-width: 50vw;
+  } */
+}
+@media only screen and (max-width: 800px) {
+  .mobl-docView {
+    display: block;
+  }
+
+  .mobl-docView > a {
+    color: white;
+    text-decoration: none;
+  }
+
+  .docView {
+    display: none;
+  }
+}

@@ -10,14 +10,7 @@ import Upload from "./student/cert-upload/cert-upl";
 function App() {
   return (
     <div>
-      <NavBar />
-      <CertificateTemplate />
-      <br />
-      <Upload />
-      {/* <Login /> */}
-      {/* <Admin /> */}
-      <br />
-      <br />
+      <Login />
       <Footer />
     </div>
   );

@@ -14,7 +14,7 @@ const { CertificatePaths, Certificate } = require('./database/database');
 
 const app = express()
 const webmail_auth_url = 'https://spider.nitt.edu/~praveen/auth_json.php';
-const port = 3000
+const port = process.env.PORT || 3001
 const secret = process.env.JWT_SECRET;
 
 //#region HELPER UTILS

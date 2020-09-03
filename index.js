@@ -10,7 +10,7 @@ const { MulterError } = require('multer');
 const database = require('./database/database')
 const uuid = require('uuid');
 const { CertificatePaths, Certificate } = require('./database/database');
-
+const cors = require('cors');
 
 const app = express()
 const webmail_auth_url = 'https://spider.nitt.edu/~praveen/auth_json.php';
@@ -133,6 +133,7 @@ function validate_mail(path) {
 
 //#region MIDDLEWARE REGISTRATION
 
+app.use(cors());
 app.use(bodyParser.text());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());

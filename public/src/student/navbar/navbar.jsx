@@ -6,6 +6,7 @@ import { Link, animateScroll as scroll } from "react-scroll";
 function NavBar() {
   const logoutHandler = (e) => {
     localStorage.removeItem("bonafideNITT2020user");
+    window.location.replace("/");
   };
   return (
     <div className="navMain">
@@ -19,7 +20,7 @@ function NavBar() {
         >
           &times;
         </a>
-        <Link to="cert-temp" spy={true} smooth={true} duration={500}>
+        <Link to="certificateTemplate" spy={true} smooth={true} duration={500}>
           <a href="#templates">Templates</a>
         </Link>
         <Link to="req-status" spy={true} smooth={true} duration={500}>
@@ -30,7 +31,7 @@ function NavBar() {
         <Link to="cert-upl" spy={true} smooth={true} duration={500}>
           <a href="#timeline">Timeline</a>
         </Link>
-        <Link>
+        <Link to="#!">
           <a href="#logout" onClick={logoutHandler}>
             Logout
           </a>

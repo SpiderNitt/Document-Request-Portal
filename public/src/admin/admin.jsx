@@ -1,30 +1,40 @@
 import React from "react";
 import DataTable, { createTheme } from 'react-data-table-component';
 
+const Approve = () => (
+    <button className="btn btn-success p-1 m-1" width="50" type="button">Approve</button>
+  );
+const Reject = () => (
+    <button className="btn btn-danger p-1 m-1" width="50" type="button">Reject</button>
+  );
+const Upload = () => (
+    <input type="file" id="myfile" name="myfile"/>
+  );
+
 const data = [
   {
     id: 1,
-    title: 'Cutting Costs',
-    by: 'me',
-    lastOpened: 'Aug 7 9:52 AM',
+    roll:108118023,
+    CType: 'Bonafide',
+    status: 'Pending',
   },
   {
     id: 2,
-    title: 'Wedding Planner',
-    by: 'me',
-    lastOpened: 'Sept 14 2:52 PM',
+    roll:108118025,
+    CType: 'Bonafide',
+    status: 'Pending',
   },
   {
     id: 3,
-    title: 'Expense Tracker',
-    by: 'me',
-    lastOpened: 'Sept 12 2:41 PM',
+    roll:108118017,
+    CType: 'Bonafide',
+    status: 'Pending',
   },
   {
     id: 4,
-    title: 'Home Brew Water Calculator',
-    by: 'me',
-    lastOpened: 'Jube 3 5:45 PM',
+    roll:108118101,
+    CType: 'Transcript',
+    status: 'Pending',
   },
 ];
 
@@ -56,34 +66,64 @@ const customStyles = {
 };
 
 const columns = [
-  
-  {
-    name: 'Title',
-    selector: 'title',
+    {
+        name: 'S.No',
+        selector: 'id',
+        sortable: true,
+        style: {
+          color: 'rgba(0,0,0,.54)',
+        },
+    },
+    {
+        name: 'Roll No.',
+        selector: 'roll',
+        sortable: true,
+        style: {
+          color: 'rgba(0,0,0,.54)',
+        },
+    },
+    {
+    name: 'Certificate Type',
+    selector: 'CType',
     sortable: true,
-    grow: 2,
     style: {
       color: '#202124',
       fontSize: '14px',
       fontWeight: 500,
     },
-  },
+    },
   {
-    name: 'Owner',
-    selector: 'by',
+    name: 'Status',
+    selector: 'status',
     sortable: true,
     style: {
       color: 'rgba(0,0,0,.54)',
     },
   },
-  {
-    name: 'Last opened',
-    selector: 'lastOpened',
-    sortable: true,
+  { 
+    name: 'Upload Certificate',
+    button: false,
+    cell: () => <Upload>Certificate Upload</Upload>,
     style: {
       color: 'rgba(0,0,0,.54)',
     },
-  }
+  },
+  {
+    button: true,
+    cell: () => <Approve>Approve</Approve>,
+ 
+    style: {
+      color: 'rgba(0,0,0,.54)',
+    }
+  },
+  {
+    button: true,
+    cell: () => <Reject>Reject</Reject>,
+    style: {
+      color: 'rgba(0,0,0,.54)',
+    },
+  },
+  
   
 ];
 

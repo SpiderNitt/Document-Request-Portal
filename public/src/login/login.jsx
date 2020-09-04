@@ -44,23 +44,23 @@ function Login(props) {
       </div>
       <br />
       <div className="row lmain-rno justify-content-center">
-        <div className="col-md-6">
+        <div className="col-12">
           <label htmlFor="rno">
             <b>Roll Number</b>
           </label>
         </div>
-        <div className="col-md-6">
+        <div className="col-12">
           <input type="text" name="rno" id="rno" required />
         </div>
       </div>
       <br />
       <div className="row lmain-pass justify-content-center">
-        <div className="col-md-6">
+        <div className="col-12">
           <label htmlFor="pass">
             <b>Password</b>
           </label>
         </div>
-        <div className="col-md-6">
+        <div className="col-12">
           <input type="password" name="pass" id="pass" required />
         </div>
       </div>

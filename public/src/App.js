@@ -27,7 +27,9 @@ function App() {
     <div>
       <Switch>
         <Route exact strict path="/">
+        <div className="row justify-content-center">
           <Login />
+        </div>
         </Route>
         <PrivateRoute component={Student} path="/student" exact />
         <PrivateRoute component={Admin} path="/admin" exact />

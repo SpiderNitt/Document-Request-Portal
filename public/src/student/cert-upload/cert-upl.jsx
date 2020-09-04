@@ -1,9 +1,44 @@
 import React, { useState } from "react";
 import "./cert-upl.css";
+import spider from "../../utils/API";
 
 function Upload() {
   const [emailCount, setCount] = useState(0);
   const [emails, setEmails] = useState([]);
+
+  const certificateRequest = (e) => {
+    e.preventDefault();
+    let fileUpload = document.getElementById("cert").files[0];
+    let certType = document.getElementById("certType").value;
+    if (emailCount && fileUpload && certType) {
+      let r = window.confirm(`Confirm selection: ${emails}`);
+      if (r === true) {
+        let cd = new FormData();
+        cd.set("type", parseInt(1));
+        cd.append("certificate", fileUpload);
+        cd.set("path", emails);
+        console.log(cd.values.cer);
+        spider
+          .post(
+            "api/certificate_request",
+            { data: cd },
+            {
+              headers: {
+                "Content-Type": `multipart/form-data; boundary=${cd._boundary}`,
+              },
+            }
+          )
+          .then((res) => {
+            console.log("sds");
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else {
+        alert("poi muttiko");
+      }
+    }
+  };
   return (
     <div className="container" id="cert-upl">
       <h2 className="text-center cert-upl-head">
@@ -33,16 +68,16 @@ function Upload() {
                 onClick={(e) => {
                   e.preventDefault();
                   let emailValues = document.getElementById("emailaddr");
-                  if (emailValues.value !== "") {
-                    const re = /\S+@nitt\.edu/;
-                    if (re.test(emailValues.value) === true) {
-                      setCount(emailCount + 1);
-                      setEmails(emails.concat(emailValues.value));
-                      console.log(emailCount);
-                      console.log(emails);
-                    } else {
-                      alert("Enter valid nitt email.");
-                    }
+                  // if (emailValues.value !== "") {
+                  const re = /\S+@nitt\.edu/;
+                  if (re.test(emailValues.value) === true) {
+                    setCount(emailCount + 1);
+                    setEmails(emails.concat(emailValues.value));
+                    console.log(emailCount);
+                    console.log(emails);
+                    // } else {
+                    // alert("Enter valid nitt email.");
+                    // }
                     emailValues.value = "";
                   }
                 }}
@@ -68,15 +103,7 @@ function Upload() {
               <button
                 type="submit"
                 className="btn btn-success"
-                onClick={(e) => {
-                  e.preventDefault();
-                  let r = window.confirm(`Confirm selection: ${emails}`);
-                  if (r === true) {
-                    alert("Nalladhu");
-                  } else {
-                    alert("poi muttiko");
-                  }
-                }}
+                onClick={certificateRequest}
               >
                 Submit
               </button>

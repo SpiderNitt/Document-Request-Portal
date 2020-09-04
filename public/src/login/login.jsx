@@ -1,7 +1,35 @@
 import React from "react";
 import "./login.css";
+import spider from "../utils/API";
 
 function Login(props) {
+  const loginSubmit = (e) => {
+    e.preventDefault();
+    let username = document.getElementById("rno").value;
+    let password = document.getElementById("pass").value;
+
+    if (username.length && password.length) {
+      spider
+        .post("/login", {
+          username: username,
+          password: password,
+        })
+        .then((res, err) => {
+          console.log("Cool");
+          localStorage.setItem(
+            "bonafideNITT2020user",
+            JSON.stringify(res.data.token)
+          );
+          // console.log(localStorage.getItem("bonafideNITT2020user"));
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      console.log("Invalid username or password");
+    }
+  };
+
   return (
     <div className="container-fluid lmain ">
       <div className="row lmain-logo justify-content-center ">
@@ -19,7 +47,7 @@ function Login(props) {
           </label>
         </div>
         <div className="col-md-6">
-          <input type="text" name="rno" required />
+          <input type="text" name="rno" id="rno" required />
         </div>
       </div>
       <br />
@@ -30,13 +58,17 @@ function Login(props) {
           </label>
         </div>
         <div className="col-md-6">
-          <input type="password" name="pass" required />
+          <input type="password" name="pass" id="pass" required />
         </div>
       </div>
       <br />
       <div className="row lmain-btn justify-content-center">
         <div className="col-md-12">
-          <button type="submit" className="btn btn-primary">
+          <button
+            type="submit"
+            onClick={loginSubmit}
+            className="btn btn-primary"
+          >
             Login
           </button>
         </div>

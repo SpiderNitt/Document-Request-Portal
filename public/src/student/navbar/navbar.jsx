@@ -2,6 +2,10 @@ import React from "react";
 import "./navbar.css";
 
 function NavBar() {
+  const Logout = (e) => {
+    // TODO: redirect to login
+    localStorage.removeItem("bonafideNITT2020user");
+  };
   return (
     <div className="navMain">
       <div id="sideNav" className="sidenav">
@@ -18,6 +22,9 @@ function NavBar() {
         <a href="#!">Templates</a>
         <a href="#!">Request Certificate</a>
         <a href="#!">Timeline</a>
+        <a href="#!" onClick={Logout}>
+          Logout
+        </a>
       </div>
       <span
         className="icon-nav"

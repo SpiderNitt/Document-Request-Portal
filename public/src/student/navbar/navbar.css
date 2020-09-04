@@ -2,10 +2,9 @@
   height: 100%;
   width: 0;
   position: fixed;
-  z-index: 10;
+  z-index: 100;
   top: 0;
   left: 0;
-  /* background-color: #111; */
   background-color: #0d1329;
   overflow-x: hidden;
   transition: 0.5s;

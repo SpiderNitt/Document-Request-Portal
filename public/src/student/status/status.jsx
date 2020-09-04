@@ -3,7 +3,7 @@ import "./status.css";
 
 function Status() {
   return (
-    <div className="container">
+    <div className="container req-status">
       <div className="row">
         <div className="col-md-12">
           <div className="page-header">

@@ -25,7 +25,7 @@ function Certificate(props) {
 function CertificateTemplate() {
   const [document, setDoc] = useState("bonafide");
   return (
-    <div className="certificateTemplate">
+    <div className="certificateTemplate mt-2">
       <div className="container">
         <div className="form-group">
           <select

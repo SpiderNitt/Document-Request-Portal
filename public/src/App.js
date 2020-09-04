@@ -34,7 +34,9 @@ function App() {
         <PrivateRoute component={Student} path="/student" exact />
         <PrivateRoute component={Admin} path="/admin" exact />
       </Switch>
+      <div className="row">
       <Footer />
+      </div>
     </div>
   );
 }

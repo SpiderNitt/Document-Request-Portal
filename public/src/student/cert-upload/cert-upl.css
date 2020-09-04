@@ -1,6 +1,8 @@
 #cert-upl {
-  position: relative;
-  z-index: -10;
+  z-index: 0;
+  width: 95%;
+  max-width: 1000px;
+  margin-bottom: 80px;
   background-color: white;
   border-radius: 5px;
   padding: 20px;
@@ -14,9 +16,6 @@
   padding: 20px;
 }
 
-.form-left {
-  border-right: 2px inset;
-}
 .btn-del {
   float: right;
   padding: 0;

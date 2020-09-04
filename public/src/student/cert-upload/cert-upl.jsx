@@ -45,7 +45,7 @@ function Upload() {
         Request Certificate Verification
       </h2>
       <div className="row">
-        <div className="col-md-6 form-left">
+        <div className="col-12">
           <form>
             <div className="form-group">
               <label htmlFor="emailaddr">Email address</label>
@@ -110,7 +110,7 @@ function Upload() {
             </div>
           </form>
         </div>
-        <div className="col-md-6   d-flex justify-content-center">
+        {/* <div className="col-md-6   d-flex justify-content-center">
           <ul className="list-group emailList">
             {emails.map((email, index) => {
               return (
@@ -131,7 +131,7 @@ function Upload() {
               );
             })}
           </ul>
-        </div>
+        </div> */}
       </div>
     </div>
   );

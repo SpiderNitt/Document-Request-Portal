@@ -24,12 +24,12 @@ function NavBar() {
           <a href="#templates">Templates</a>
         </Link>
         <Link to="req-status" spy={true} smooth={true} duration={500}>
-          <a href="#request_certificate" onClick={Upload.executeScroll}>
-            Request Certificate
+          <a href="#timeline" onClick={Upload.executeScroll}>
+          Timeline
           </a>
         </Link>
         <Link to="cert-upl" spy={true} smooth={true} duration={500}>
-          <a href="#timeline">Timeline</a>
+          <a href="#request_certificate">Request Certificate</a>
         </Link>
         <Link to="#!">
           <a href="#logout" onClick={logoutHandler}>

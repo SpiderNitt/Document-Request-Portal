@@ -1,18 +1,37 @@
 import React from "react";
 import "./App.css";
-import Login from "./login/login.jsx";
-import Footer from "./footer/footer.jsx";
+import Login from "./login/login";
+import Footer from "./footer/footer";
 import Student from "./student/student";
-import NavBar from "./student/navbar/navbar";
-import Upload from "./student/cert-upload/cert-upl";
+import Admin from "./admin/admin.jsx";
+import { Switch, Route } from "react-router-dom";
+import { Redirect } from "react-router-dom/cjs/react-router-dom.min";
+
+const PrivateRoute = ({ component: Component, ...rest }) => {
+  return (
+    <Route
+      {...rest}
+      render={(props) =>
+        localStorage.getItem("bonafideNITT2020user") ? (
+          <Component {...props} />
+        ) : (
+          <Redirect to="/" />
+        )
+      }
+    />
+  );
+};
 
 function App() {
   return (
     <div>
-      <NavBar />
-      {/* <Login /> */}
-      {/* <Student /> */}
-      <Upload />
+      <Switch>
+        <Route exact strict path="/">
+          <Login />
+        </Route>
+        <PrivateRoute component={Student} path="/student" exact />
+        <PrivateRoute component={Admin} path="/admin" exact />
+      </Switch>
       <Footer />
     </div>
   );

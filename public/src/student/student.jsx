@@ -1,7 +1,6 @@
 import React from "react";
 import Upload from "./cert-upload/cert-upl";
 import NavBar from "./navbar/navbar";
-import Footer from "./footer/footer.jsx";
 import CertificateTemplate from "./cert-templates/cert-temp";
 
 function Student() {
@@ -10,7 +9,6 @@ function Student() {
       <NavBar />
       <Upload />
       <CertificateTemplate />
-      <Footer />
     </div>
   );
 }

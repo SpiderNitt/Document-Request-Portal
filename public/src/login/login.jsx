@@ -1,9 +1,11 @@
 import React from "react";
 import "./login.css";
 import spider from "../utils/API";
+import { useHistory } from "react-router-dom";
 
 function Login(props) {
-  const loginSubmit = (e) => {
+  const history = useHistory();
+  const loginHandler = (e) => {
     e.preventDefault();
     let username = document.getElementById("rno").value;
     let password = document.getElementById("pass").value;
@@ -20,7 +22,8 @@ function Login(props) {
             "bonafideNITT2020user",
             JSON.stringify(res.data.token)
           );
-          // console.log(localStorage.getItem("bonafideNITT2020user"));
+          console.log(localStorage.getItem("bonafideNITT2020user"));
+          history.push("/student");
         })
         .catch((err) => {
           console.log(err);
@@ -66,7 +69,7 @@ function Login(props) {
         <div className="col-md-12">
           <button
             type="submit"
-            onClick={loginSubmit}
+            onClick={loginHandler}
             className="btn btn-primary"
           >
             Login

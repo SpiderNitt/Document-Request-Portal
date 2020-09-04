@@ -2,8 +2,7 @@ import React from "react";
 import "./navbar.css";
 
 function NavBar() {
-  const Logout = (e) => {
-    // TODO: redirect to login
+  const logoutHandler = (e) => {
     localStorage.removeItem("bonafideNITT2020user");
   };
   return (
@@ -22,7 +21,7 @@ function NavBar() {
         <a href="#!">Templates</a>
         <a href="#!">Request Certificate</a>
         <a href="#!">Timeline</a>
-        <a href="#!" onClick={Logout}>
+        <a href="#!" onClick={logoutHandler}>
           Logout
         </a>
       </div>

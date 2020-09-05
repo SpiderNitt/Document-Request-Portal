@@ -1,10 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./cert-upl.css";
 import spider from "../../utils/API";
 
 function Upload() {
   const [emailCount, setCount] = useState(0);
   const [emails, setEmails] = useState([]);
+
+  // useEffect(()=>{
+
+
+  // }, [emailCount, emails])
 
   const certificateRequest = (e) => {
     e.preventDefault();
@@ -17,19 +22,22 @@ function Upload() {
         cd.set("type", parseInt(1));
         cd.append("certificate", fileUpload);
         cd.set("path", emails);
+        console.log("this is something else::: ",fileUpload, emails)
         console.log(cd.values.cer);
+        console.log(cd);
         spider
           .post(
             "api/certificate_request",
             { data: cd },
-            {
-              headers: {
-                "Content-Type": `multipart/form-data; boundary=${cd._boundary}`,
-              },
-            }
+            // {
+            //   headers: {
+            //     "Content-Type": `multipart/form-data; boundary=${cd._boundary}`,
+            //   },
+            // }
           )
           .then((res) => {
-            console.log("sds");
+            console.log("posted");
+            console.log(res);
           })
           .catch((err) => {
             console.log(err);
@@ -73,8 +81,6 @@ function Upload() {
                   if (re.test(emailValues.value) === true) {
                     setCount(emailCount + 1);
                     setEmails(emails.concat(emailValues.value));
-                    console.log(emailCount);
-                    console.log(emails);
                     // } else {
                     // alert("Enter valid nitt email.");
                     // }

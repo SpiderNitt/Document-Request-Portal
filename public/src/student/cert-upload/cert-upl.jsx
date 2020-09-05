@@ -29,11 +29,11 @@ function Upload() {
           .post(
             "api/certificate_request",
             { data: cd },
-            // {
-            //   headers: {
-            //     "Content-Type": `multipart/form-data; boundary=${cd._boundary}`,
-            //   },
-            // }
+            {
+              headers: {
+                "Content-Type": `multipart/form-data; boundary=${cd._boundary}`,
+              },
+            }
           )
           .then((res) => {
             console.log("posted");

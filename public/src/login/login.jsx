@@ -6,6 +6,7 @@ import { useHistory } from "react-router-dom";
 function Login(props) {
   const history = useHistory();
   const loginHandler = (e) => {
+    console.log("clicked")
     e.preventDefault();
     let username = document.getElementById("rno").value;
     let password = document.getElementById("pass").value;

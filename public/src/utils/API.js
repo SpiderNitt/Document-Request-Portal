@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const spider = axios.create({
-  baseURL: "https://spider.nitt.edu/bonafide/",
+  // baseURL: "https://spider.nitt.edu/bonafide/",
+  baseURL: 'http://localhost:3001/',
   responseType: "json",
   headers: {
     "Content-Type": "application/json",

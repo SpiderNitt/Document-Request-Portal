@@ -16,7 +16,8 @@ const app = express()
 const webmail_auth_url = 'https://spider.nitt.edu/~praveen/auth_json.php';
 const port = process.env.PORT || 3001
 const secret = process.env.JWT_SECRET;
-const morgan = require('morgan');
+
+
 //#region HELPER UTILS
 const jwt_verify = function (req, res, next) {
    try {
@@ -140,6 +141,7 @@ app.use(express.json());
 app.use(morgan('combined'));
 app.use('/api', jwt_verify);
 app.use('/api/admin', is_admin);
+app.options('*', cors());
 
 //#endregion
 
@@ -480,5 +482,5 @@ app.get("/api/admin", async function (req, res) {
 });
 
 app.listen(port, function () {
-    console.log("llistening")
+    console.log("llistening on port " + port)
 })

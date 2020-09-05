@@ -279,24 +279,46 @@ app.get('/api/certificate_download', async function (req, res) {
 app.get('/api/certificate_history', async function (req, res) {
     try {
         let { id } = req.query;
+        let { username } = req.jwt_payload;
+        let id_exists = await Certificate.findOne({
+            attributes: ['id'],
+            where:{
+                id,
+                applier_roll: username
+            }
+           
+        });
+        if(id_exists == null){
+            res.status(403).json({'message': "You do not have the appropriate permissions to access the resource."})
+            return;
+        }
         if (id) {
-            let rows = await database.History.findAll({
-                attributes: ['status', 'time'],
+            let row = await database.History.findOne({
+                attributes: ['time'],
                 where: {
-                    certificate_id: id
+                    certificate_id: id,
+                    status: 'INITIATED REQUEST'
                 }
             });
             let response_json = []
-            if (rows != null) {
+            if (row != null) {
+                response_json.push({'path_email': username + '@nitt.edu', 'status': 'INITIATED REQUEST', 'time': row.getDataValue('time')});
 
-
-                rows.forEach(function (ele) {
-                    response_json.push({
-                        'status': ele.getDataValue('status'),
-                        'time': ele.getDataValue('time')
-                    })
-                })
+              
             }
+            let rows = await database.CertificatePaths.findAll({
+                attributes: ['path_email', 'updatedAt', 'status'],
+                where:{
+                    certificate_id: id
+                }
+            });
+            rows.forEach(function (ele) {
+                response_json.push({
+                    'status': ele.getDataValue('status'),
+                    'path_email': ele.getDataValue('path_email'),
+                    'time': ele.getDataValue('updatedAt')
+                })
+            })
             res.status(200).json(response_json)
         }
         else {

@@ -3,15 +3,14 @@ import axios from "axios";
 const spider = axios.create({
   // baseURL: "https://spider.nitt.edu/bonafide/",
   baseURL: 'http://localhost:3001/',
-  responseType: "json",
-  headers: {
-    "Content-Type": "application/json",
-  },
+  // headers: {
+  //   "Content-Type": "application/json",
+  // },
 });
 
-spider.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
-spider.defaults.headers.post["Access-Control-Allow-Methods"] =
-  "GET, PUT, POST, DELETE, OPTIONS";
+// spider.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
+// spider.defaults.headers.post["Access-Control-Allow-Methods"] =
+//   "GET, PUT, POST, DELETE, OPTIONS";
 
 spider.interceptors.request.use(
   (config) => {

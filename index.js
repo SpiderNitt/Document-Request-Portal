@@ -9,6 +9,7 @@ const bodyParser = require('body-parser');
 const { MulterError } = require('multer');
 const database = require('./database/database')
 const uuid = require('uuid');
+const morgan = require('morgan')
 const { CertificatePaths, Certificate } = require('./database/database');
 const cors = require('cors');
 
@@ -20,11 +21,12 @@ const secret = process.env.JWT_SECRET;
 
 //#region HELPER UTILS
 const jwt_verify = function (req, res, next) {
-   try {
+    try {
         const auth_header = req.header('Authorization');
         const token = auth_header.substring(7);
         console.log(token);
         const decoded = jwt.verify(token, secret);
+        req.jwt_payload = decoded.data;
         next();
     } catch (err) {
         res.status(403).json({ 'message': 'Invalid Token or nonexistent header' });
@@ -124,9 +126,11 @@ const storage = multer.diskStorage({
 function validate_mail(path) {
     // console.log(path)
     for (index in path) {
-        let words = path[index].split('@');
-        if (words[words.length - 1] != 'nitt.edu')
-            return false;
+        if (path[index] != '') {
+            let words = path[index].split('@');
+            if (words[words.length - 1] != 'nitt.edu')
+                return false;
+        }
     }
     return true;
 }
@@ -134,14 +138,13 @@ function validate_mail(path) {
 
 //#region MIDDLEWARE REGISTRATION
 
-app.use(cors());
-app.use(bodyParser.text());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors())
+// app.use(bodyParser.text());
+// app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(morgan('combined'));
+app.use(morgan('dev'));
 app.use('/api', jwt_verify);
 app.use('/api/admin', is_admin);
-app.options('*', cors());
 
 //#endregion
 
@@ -184,15 +187,19 @@ app.post('/login', async function (req, res) {
 
 //#region STUDENT
 app.post("/api/certificate_request", async function (req, res) {
-    const upload = multer({ storage: storage, fileFilter: docFilter }).single('certificate')
+    const upload = multer({ storage: storage, fileFilter: docFilter }).single('certificate');
     upload(req, res, async function (err) {
         if (err) {
             console.log(err)
             return res.status(400).json({ 'message': req.fileValidationError });
         }
         else {
+            console.log("REQ FILES:::? ", req.files);
             let filename = req.file.filename;
             let { type, path } = req.body;
+            path = path.split(',');
+            console.log("JSON::: ", path);
+            console.log("path??", path)
             let applier_roll = req.jwt_payload.username;
             let status = "PENDING VERIFICATION"
             try {
@@ -334,7 +341,7 @@ app.post('/api/admin/approve', async function (req, res) {
                     try {
                         let row = await database.Certificate.findOne({
                             attributes: ['file'],
-                            where:{
+                            where: {
                                 id: certificate_id
                             }
                         })

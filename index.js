@@ -124,13 +124,15 @@ const storage = multer.diskStorage({
 });
 
 function validate_mail(path) {
+    if (path.length == 2 && path[1] == '')
+        path = [path[0]]
     // console.log(path)
     for (index in path) {
-        if (path[index] != '') {
-            let words = path[index].split('@');
-            if (words[words.length - 1] != 'nitt.edu')
-                return false;
-        }
+
+        let words = path[index].split('@');
+        if (words[words.length - 1] != 'nitt.edu')
+            return false;
+
     }
     return true;
 }
@@ -282,14 +284,14 @@ app.get('/api/certificate_history', async function (req, res) {
         let { username } = req.jwt_payload;
         let id_exists = await Certificate.findOne({
             attributes: ['id'],
-            where:{
+            where: {
                 id,
                 applier_roll: username
             }
-           
+
         });
-        if(id_exists == null){
-            res.status(403).json({'message': "You do not have the appropriate permissions to access the resource."})
+        if (id_exists == null) {
+            res.status(403).json({ 'message': "You do not have the appropriate permissions to access the resource." })
             return;
         }
         if (id) {
@@ -302,13 +304,13 @@ app.get('/api/certificate_history', async function (req, res) {
             });
             let response_json = []
             if (row != null) {
-                response_json.push({'path_email': username + '@nitt.edu', 'status': 'INITIATED REQUEST', 'time': row.getDataValue('time')});
+                response_json.push({ 'path_email': username + '@nitt.edu', 'status': 'INITIATED REQUEST', 'time': row.getDataValue('time') });
 
-              
+
             }
             let rows = await database.CertificatePaths.findAll({
                 attributes: ['path_email', 'updatedAt', 'status'],
-                where:{
+                where: {
                     certificate_id: id
                 }
             });
@@ -469,7 +471,7 @@ app.get("/api/admin", async function (req, res) {
                     }
                 })
                 response_json.push({
-                    applier_roll: ele.getDataValue('aplier_roll'),
+                    applier_roll: ele.getDataValue('applier_roll'),
                     certificate_type: ele.getDataValue('type'),
                     certificate_id,
                     status
@@ -480,9 +482,10 @@ app.get("/api/admin", async function (req, res) {
                     where: {
                         path_no: path_no - 1,
                         status: 'APPROVED',
-                        id: certificate_id
+                        certificate_id,
                     }
                 });
+                console.log("ROWW? ", row);
                 if (row != null) {
                     const ele = await database.Certificate.findOne({
                         attributes: ['applier_roll', 'type'],
@@ -491,7 +494,7 @@ app.get("/api/admin", async function (req, res) {
                         }
                     })
                     response_json.push({
-                        applier_roll: ele.getDataValue('aplier_roll'),
+                        applier_roll: ele.getDataValue('applier_roll'),
                         certificate_type: ele.getDataValue('type'),
                         certificate_id,
                         status

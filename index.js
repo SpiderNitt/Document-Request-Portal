@@ -10,20 +10,20 @@ const { MulterError } = require('multer');
 const database = require('./database/database')
 const uuid = require('uuid');
 const { CertificatePaths, Certificate } = require('./database/database');
-
+const cors = require('cors');
 
 const app = express()
 const webmail_auth_url = 'https://spider.nitt.edu/~praveen/auth_json.php';
 const port = process.env.PORT || 3001
 const secret = process.env.JWT_SECRET;
-
+const morgan = require('morgan');
 //#region HELPER UTILS
 const jwt_verify = function (req, res, next) {
-    try {
+   try {
         const auth_header = req.header('Authorization');
         const token = auth_header.substring(7);
+        console.log(token);
         const decoded = jwt.verify(token, secret);
-        req.jwt_payload = decoded.data;
         next();
     } catch (err) {
         res.status(403).json({ 'message': 'Invalid Token or nonexistent header' });
@@ -133,9 +133,11 @@ function validate_mail(path) {
 
 //#region MIDDLEWARE REGISTRATION
 
+app.use(cors());
 app.use(bodyParser.text());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(morgan('combined'));
 app.use('/api', jwt_verify);
 app.use('/api/admin', is_admin);
 

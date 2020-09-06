@@ -48,6 +48,39 @@ spider.interceptors.response.use(
           draggable: true,
           progress: undefined,
         });
+      } else if (res.data.message === "Approved successfully") {
+        toast.success("Approved successfully", {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      } else if (
+        res.data.message ===
+        "There was some error uploading the file. Try again later"
+      ) {
+        toast.error("IError upoading file, try again later!", {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      } else if (res.data.message === "Please upload a file") {
+        toast.error("Upload file before submitting! (Error 400)", {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       }
     }
     return res;

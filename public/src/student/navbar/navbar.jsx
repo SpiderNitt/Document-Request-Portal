@@ -2,7 +2,7 @@ import React from "react";
 import "./navbar.css";
 import { Link } from "react-scroll";
 
-function NavBar() {
+function NavBar(props) {
   const logoutHandler = (e) => {
     localStorage.removeItem("bonafideNITT2020user");
     window.location.replace("/");
@@ -19,15 +19,24 @@ function NavBar() {
         >
           &times;
         </a>
-        <Link to="certificateTemplate" spy={true} smooth={true} duration={500}>
-          <span id="navEntry">Templates</span>
-        </Link>
-        <Link to="req-status" spy={true} smooth={true} duration={500}>
-          <span id="navEntry">Timeline</span>
-        </Link>
-        <Link to="cert-upl" spy={true} smooth={true} duration={500}>
-          <span id="navEntry">Request Certificate</span>
-        </Link>
+        {props.screen !== 1 && (
+          <>
+            <Link
+              to="certificateTemplate"
+              spy={true}
+              smooth={true}
+              duration={500}
+            >
+              <span id="navEntry">Templates</span>
+            </Link>
+            <Link to="req-status" spy={true} smooth={true} duration={500}>
+              <span id="navEntry">Timeline</span>
+            </Link>
+            <Link to="cert-upl" spy={true} smooth={true} duration={500}>
+              <span id="navEntry">Request Certificate</span>
+            </Link>
+          </>
+        )}
         <Link to="#!" onClick={logoutHandler}>
           <span id="navEntry">Logout</span>
         </Link>

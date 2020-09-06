@@ -7,35 +7,41 @@ export default class Status extends React.Component {
     certHis: [],
   };
 
-  componentDidMount() {
-    let cid = [];
-    let cert_history = [];
-    spider
-      .get("/api")
-      .then((res) => {
-        let certs = res.data;
-        cid = Object.assign([], certs);
-        // console.log(cid);
+  componentDidMount = async () => {
+    try {
+      let cid = [];
+      let certHis = Object.assign([], this.state.certHis);
+      let res = await spider.get("/api");
+      let certs = res.data;
+      cid = Object.assign([], certs);
+      console.log("this is CID shankar:: ", cid);
 
-        cid.forEach((cc) => {
-          // console.log(cc);
+      for (const cc of cid) {
+        // console.log(index);
+        // let cc = cid[index];
+        // console.log(cc);
 
-          spider
-            .get("/api/certificate_history", { params: { id: cc.id } })
-            .then((res) => {
-              res.data.id = cc.id;
-              cert_history.push(res.data);
-              this.setState(
-                {
-                  certHis: this.state.certHis.concat(cert_history),
-                },
-                console.log(this.state.certHis)
-              );
-            });
-        });
-      })
+        let response = await spider.get("/api/certificate_history", { params: { id: cc.id } });
+        console.log(response);
 
-      .catch((err) => console.log(err));
+        // res.data.id = cc.id;
+        certHis.push(res.data);
+       
+
+      }
+      console.log("OUTSIDE IFF")
+      this.setState(
+        {
+          certHis
+        },
+        console.log("CERTHIS::: ", certHis)
+      );
+    }
+
+
+    catch (err) {
+      console.log(err);
+    }
   }
 
   render() {

@@ -1,65 +1,84 @@
 import React, { useEffect, useState } from "react";
 import spider from "../utils/API";
 import NavBar from "../student/navbar/navbar";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./admin.css";
 
-const Approve = (props) => (
-  <button
-    className="btn btn-success p-1 m-1"
-    width="50"
-    type="button"
-    onClick={(e) => {
-      let file =
-        e.target.parentNode.parentNode.childNodes[5].childNodes[0].files[0];
-      if (file) {
-        let cd = new FormData();
-        cd.set("certificate_id", parseInt(props.certId));
-        cd.append("certificate", file);
-        console.log(cd);
+const Approve = (props) => {
+  if (props.status !== "PENDING") {
+    return (
+      <button className="btn btn-dark p-1 m-1" width="50" type="button">
+        Approve
+      </button>
+    );
+  }
+  return (
+    <button
+      className="btn btn-success p-1 m-1"
+      width="50"
+      type="button"
+      onClick={(e) => {
+        let file =
+          e.target.parentNode.parentNode.childNodes[5].childNodes[0].files[0];
+        if (file) {
+          let cd = new FormData();
+          cd.set("certificate_id", parseInt(props.certId));
+          cd.append("certificate", file);
+          console.log(cd);
 
-        spider
-          .post("api/admin/approve", cd)
-          .then((res) => {
-            console.log(res);
-            console.log("Approved");
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      } else {
-        alert("Enter signed file");
-      }
-    }}
-  >
-    Approve
-  </button>
-);
+          spider
+            .post("api/admin/approve", cd)
+            .then((res) => {
+              console.log(res);
+              console.log("Approved");
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        } else {
+          alert("Enter signed file");
+        }
+      }}
+    >
+      Approve
+    </button>
+  );
+};
 
-const Reject = (props) => (
-  <button
-    className="btn btn-danger p-1 m-1"
-    width="50"
-    type="button"
-    onClick={(e) => {
-      let r = window.confirm(`Confirm decline for roll  no: ${props.roll}`);
-      if (r === true) {
-        spider
-          .post("api/admin/decline", {
-            certificate_id: props.certId,
-          })
-          .then((res) => {
-            console.log("Done");
-            window.location.reload();
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
-    }}
-  >
-    Reject
-  </button>
-);
+const Reject = (props) => {
+  if (props.status !== "PENDING")
+    return (
+      <button className="btn btn-dark p-1 m-1" width="50" type="button">
+        Reject
+      </button>
+    );
+  return (
+    <button
+      className="btn btn-danger p-1 m-1"
+      width="50"
+      type="button"
+      onClick={(e) => {
+        let r = window.confirm(`Confirm decline for roll  no: ${props.roll}`);
+        if (r === true) {
+          spider
+            .post("api/admin/decline", {
+              certificate_id: props.certId,
+            })
+            .then((res) => {
+              console.log("Done");
+              window.location.reload();
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+      }}
+    >
+      Reject
+    </button>
+  );
+};
 const Upload = () => <input type="file" id="myfile" name="myfile" />;
 
 const Download = (props) => (
@@ -97,14 +116,17 @@ function CustomStylesGSheets() {
     spider
       .get("/api/admin")
       .then((res) => {
-        let temp = Object.assign([], res.data);
+        let temp = [];
+        res.data.forEach((cc) => {
+          if (cc.status === "PENDING") temp = Object.assign([], res.data);
+        });
+        // let temp = Object.assign([], res.data);
         console.log(temp.length);
         for (let i = 0; i < temp.length; i++) {
           temp[i].id = i + 1;
           if (temp[i].certificate_type === 1)
             temp[i].certificate_type = "Bonafide";
         }
-
         setReq(Object.assign(certReq, temp));
         setLoad(false);
       })
@@ -115,7 +137,7 @@ function CustomStylesGSheets() {
     <div className="container-fluid admin">
       <NavBar screen={1} />
       <h2 className="text-center cert-upl-head">Admin Certificate Portal</h2>
-      {isLoading == false && (
+      {isLoading === false && (
         <>
           <table className="table cert-table">
             <thead className="thead-dark">
@@ -149,10 +171,14 @@ function CustomStylesGSheets() {
                       <Upload />
                     </td>
                     <td>
-                      <Approve certId={data.certificate_id} />{" "}
+                      <Approve
+                        certId={data.certificate_id}
+                        status={data.status}
+                      />{" "}
                       <Reject
                         certId={data.certificate_id}
                         roll={data.applier_roll}
+                        status={data.status}
                       />
                     </td>
                   </tr>
@@ -162,6 +188,17 @@ function CustomStylesGSheets() {
           </table>
         </>
       )}{" "}
+      <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 }

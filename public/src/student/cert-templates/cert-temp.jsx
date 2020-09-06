@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
+// import { useState } from "react";
 import "./cert-temp.css";
 
 function Certificate(props) {
@@ -22,7 +23,7 @@ function Certificate(props) {
   );
 }
 function CertificateTemplate(props) {
-  const [document, setDoc] = useState("bonafide");
+  // const [document, setDoc] = useState("bonafide");
   return (
     <div className="certificateTemplate mt-2">
       <div className="container">

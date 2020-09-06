@@ -44,6 +44,7 @@ function Upload() {
     e.preventDefault();
     let fileUpload = document.getElementById("cert").files[0];
     let certType = document.getElementById("certType").value;
+    console.log(certType);
     if (emailCount && fileUpload && certType) {
       let r = window.confirm(`Confirm selection: ${emails}`);
       if (r === true) {
@@ -77,9 +78,9 @@ function Upload() {
   const calculate_source = () => {
     let anch = document.getElementById("anchorClick");
     if (anch) {
-      let typeSelect = document.getElementById("typeSelect");
-      if (typeSelect) {
-        let value = typeSelect.value;
+      let certType = document.getElementById("certType");
+      if (certType) {
+        let value = certType.value;
         if (value === "bonafide") anch.href = "/bf.pdf";
         else if (value === "X") anch.href = "/trans.pdf";
         anch.click();
@@ -87,7 +88,7 @@ function Upload() {
     }
 
     // return '/bf.pdf';
-    // console.log(document.getElementById('typeSelect').value)
+    // console.log(document.getElementById('certType').value)
   };
   return (
     // <>
@@ -151,7 +152,6 @@ function Upload() {
                 name="certType"
                 id="certType"
                 className="form-control"
-                id="typeSelect"
                 onChange={(e) => {
                   let certType = e.target.value;
                   console.log("Cert", certType);

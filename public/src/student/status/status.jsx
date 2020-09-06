@@ -7,8 +7,8 @@ import Timeline from "../timeline/timeline";
 import { Collapse } from "react-bootstrap";
 
 const cert_mapping = {
-  0: "Bonafide",
-  1: "Transcript",
+  1: "Bonafide",
+  2: "Transcript",
 };
 export default class Status extends React.Component {
   state = {

@@ -259,13 +259,29 @@ app.get('/api/certificate_download', async function (req, res) {
     let id = parseInt(req.query.id);
     // console.log("this is id: ", id)
     let rollno = req.jwt_payload.username;
-    let row = await Certificate.findOne({
-        attributes: ['file'],
-        where: {
-            applier_roll: rollno,
-            id
-        }
-    });
+    let row;
+    let isnum = /^\d+$/.test(rollno);
+    if (isnum) {
+        row = await Certificate.findOne({
+            attributes: ['file'],
+            where: {
+                applier_roll: rollno,
+                id
+            }
+        });
+
+    }
+    else {
+        row = await Certificate.findOne({
+            attributes: ['file'],
+            where: {
+
+                id
+            }
+        });
+    }
+
+
     console.log(row);
     if (row == null)
         res.status(403).json({ "message": "You do not have appropriate permissions to access this resource." })

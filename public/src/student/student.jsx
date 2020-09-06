@@ -9,6 +9,7 @@ function Student() {
   return (
     <div>
       <NavBar screen={0} />
+      <br />
       <Upload />
 
       <br />

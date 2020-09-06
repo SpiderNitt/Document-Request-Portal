@@ -1,22 +1,21 @@
 import React from "react";
 import spider from "../../utils/API";
 import "./status.css";
-import { FaDownload, FaHistory } from 'react-icons/fa'
+import { FaDownload, FaHistory } from "react-icons/fa";
 import { useEffect } from "react";
-import Timeline from "../timeline/timeline"
+import Timeline from "../timeline/timeline";
 import { Collapse } from "react-bootstrap";
 
 const cert_mapping = {
-  0: 'Bonafide',
-  1: 'Transcript'
-}
+  0: "Bonafide",
+  1: "Transcript",
+};
 export default class Status extends React.Component {
-
   state = {
     certHis: {},
     loading: true,
     certData: [],
-    toggled: []
+    toggled: [],
   };
 
   handleToggle = (id) => {
@@ -27,15 +26,14 @@ export default class Status extends React.Component {
           toggled.splice(i, 1);
         }
       }
-      this.setState({ toggled })
+      this.setState({ toggled });
       // return false;
-    }
-    else {
+    } else {
       toggled.push(id);
-      this.setState({ toggled })
+      this.setState({ toggled });
       // return true;
     }
-  }
+  };
 
   componentDidMount = async () => {
     try {
@@ -45,65 +43,56 @@ export default class Status extends React.Component {
       let certs = res.data;
       cid = Object.assign([], certs);
       console.log("this is CID shankar:: ", cid);
-      this.setState({ certData: cid })
-
+      this.setState({ certData: cid });
 
       for (const cc of cid) {
         // console.log(index);
         // let cc = cid[index];
         // console.log(cc);
 
-        let response = await spider.get("/api/certificate_history", { params: { id: cc.id } });
+        let response = await spider.get("/api/certificate_history", {
+          params: { id: cc.id },
+        });
         console.log("response??:", response);
-        certHis[cc.id] = response.data
-        console.log(certHis)
+        certHis[cc.id] = response.data;
+        console.log(certHis);
 
         // res.data.id = cc.id;
         // certHis.push(res.data);
-
-
       }
-      console.log("OUTSIDE IFF")
-      this.setState(
-        {
-          certHis,
-          loading: false
-        });
-    }
-
-
-    catch (err) {
+      console.log("OUTSIDE IFF");
+      this.setState({
+        certHis,
+        loading: false,
+      });
+    } catch (err) {
       console.log(err);
     }
-  }
+  };
   handleDownload = async (id, type) => {
-    const usertoken = JSON.parse(localStorage.getItem('bonafideNITT2020user')).split('.')[1];
+    const usertoken = JSON.parse(
+      localStorage.getItem("bonafideNITT2020user")
+    ).split(".")[1];
     const decodedData = JSON.parse(window.atob(usertoken));
     const roll = decodedData.data.username;
-    let response = await spider
-      .get("api/certificate_download", {
-        params: { id },
-        responseType: "blob",
-      })
+    let response = await spider.get("api/certificate_download", {
+      params: { id },
+      responseType: "blob",
+    });
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute(
-      "download",
-      roll + '_' + type + ".pdf"
-    );
+    link.setAttribute("download", roll + "_" + type + ".pdf");
     document.body.appendChild(link);
     link.click();
-
-
-  }
+  };
 
   render() {
     return (
-
-
-      <div id='cert-status'>
-        {this.state.loading ? <p>LOADING</p> :
+      <div id="cert-status">
+        {this.state.loading ? (
+          <p>LOADING</p>
+        ) : (
           <>
             <div className="page-header row justify-content-center">
               <h1>Your Certificates</h1>
@@ -128,31 +117,40 @@ export default class Status extends React.Component {
                           <td>{cert_mapping[data.type]}</td>
                           <td>{data.status}</td>
                           <td>
-                            <span className='table-icons'>
+                            <span className="table-icons">
                               <FaDownload
                                 onClick={() => {
-                                  this.handleDownload(data.id, cert_mapping[data.type])
+                                  this.handleDownload(
+                                    data.id,
+                                    cert_mapping[data.type]
+                                  );
                                 }}
-                                className='table-icons-item' />
-                              <FaHistory className='table-icons-item'
+                                className="table-icons-item"
+                              />
+                              <FaHistory
+                                className="table-icons-item history"
                                 onClick={() => {
-                                  console.log("clicked")
+                                  console.log("clicked");
                                   this.handleToggle(data.id);
-                                }} />
+                                }}
+                              />
                             </span>
                             {/* <Download
                       certId={data.certificate_id}
                       roll={data.applier_roll}
                       certType={data.certificate_type}
                     /> */}
-
                           </td>
-
                         </tr>
-                        <Collapse in={this.state.toggled.includes(data.id)}
+                        <Collapse
+                          className="timeline-main"
+                          in={this.state.toggled.includes(data.id)}
                         >
                           <tr>
-                            <td colSpan={4}> <Timeline data={this.state.certHis[data.id]} /></td>
+                            <td colSpan={4}>
+                              {/* {" "}/ */}
+                              <Timeline data={this.state.certHis[data.id]} />
+                            </td>
                           </tr>
                         </Collapse>
                       </>
@@ -161,17 +159,14 @@ export default class Status extends React.Component {
                 </tbody>
               </table>
 
-
               {/* {certificateId.map((cert, index) => {
           return ( */}
               {/* );
         })} */}
             </div>
-          </>}
-
+          </>
+        )}
       </div>
-
-
     );
   }
 }

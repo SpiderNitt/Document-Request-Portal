@@ -1,5 +1,6 @@
 .req-status {
   overflow-x: scroll;
+  text-align: center;
 }
 
 .req-status::-webkit-scrollbar {
@@ -17,12 +18,14 @@
   background-color: black; /* color of the tracking area */
 }
 
-.table-icons-item{
+.table-icons-item {
   margin-right: 10px;
   cursor: pointer;
 }
-  
-  
-.status-table{
+
+.status-table {
   margin-bottom: 200px;
+}
+.history {
+  z-index: 100 !important;
 }

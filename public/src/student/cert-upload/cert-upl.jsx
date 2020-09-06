@@ -3,20 +3,22 @@ import "./cert-upl.css";
 import spider from "../../utils/API";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Button } from "react-bootstrap";
+import CertificateTemplate from "../cert-templates/cert-temp";
 
 function Upload() {
-
-  let usertoken = JSON.parse(localStorage.getItem('bonafideNITT2020user')).split('.')[1];
+  let usertoken = JSON.parse(
+    localStorage.getItem("bonafideNITT2020user")
+  ).split(".")[1];
   const decodedData = JSON.parse(window.atob(usertoken));
   const user = decodedData.data.username;
   const [emailCount, setCount] = useState(0);
   const [emails, setEmails] = useState([]);
   const [fileButton, setFileButton] = useState(false);
   const [pdf, setPdf] = useState(null);
+  const [file, setFile] = useState("Bonafide");
   const [fileModal, setFileModal] = useState(false);
   const [fileName, setFileName] = useState("");
-
 
   const handleFileUpload = (e) => {
     if (e.target.files[0]) {
@@ -25,18 +27,15 @@ function Upload() {
       setFileName("hello");
       setFileButton(true);
       setFileName(true);
-    }
-    else {
+    } else {
       // setFileModal(false);
       setFileName("hiii");
       setFileName(null);
       setFileButton(true);
     }
-    console.log(e.target.files[0])
+    console.log(e.target.files[0]);
     setPdf(URL.createObjectURL(e.target.files[0]));
-
-
-  }
+  };
 
   const handleClose = () => setFileModal(false);
   const handleFileOpen = () => setFileModal(true);
@@ -75,138 +74,177 @@ function Upload() {
       }
     }
   };
-  const calculate_source = () =>{
-    let anch = document.getElementById('anchorClick');
-    if(anch){
-      let typeSelect = document.getElementById('typeSelect')
-      if(typeSelect){
-
-    let value = typeSelect.value;
-    if(value === 'bonafide')
-    anch.href = '/bf.pdf';
-    else if(value === 'X')
-    anch.href = '/trans.pdf';
-    anch.click();
+  const calculate_source = () => {
+    let anch = document.getElementById("anchorClick");
+    if (anch) {
+      let typeSelect = document.getElementById("typeSelect");
+      if (typeSelect) {
+        let value = typeSelect.value;
+        if (value === "bonafide") anch.href = "/bf.pdf";
+        else if (value === "X") anch.href = "/trans.pdf";
+        anch.click();
       }
     }
-   
+
     // return '/bf.pdf';
     // console.log(document.getElementById('typeSelect').value)
-  }
+  };
   return (
-    <>
-      <div className="container" id="cert-upl">
-        <h2 className="text-center cert-upl-head">
-          Request Certificate Verification
+    // <>
+    <div className="container" id="cert-upl">
+      <h2 className="text-center cert-upl-head">
+        Request Certificate Verification
       </h2>
-        <div className="row">
-          <div className="col-md-6 form-left">
-            <form>
-              <div className="form-group">
-                <label htmlFor="emailaddr">Email address</label>
-                <input
-                  type="email"
-                  className="form-control"
-                  name="emailaddr"
-                  id="emailaddr"
-                  aria-describedby="emailHelp"
-                  required
-                />
-                <small id="emailHelp" className="form-text text-muted">
-                  Enter email addresses in the order of processing.
+      <div className="row">
+        <div className="col-md-6 form-left">
+          <form>
+            <div className="form-group">
+              <label htmlFor="emailaddr">Email address</label>
+              <input
+                type="email"
+                className="form-control"
+                name="emailaddr"
+                id="emailaddr"
+                aria-describedby="emailHelp"
+                required
+              />
+              <small id="emailHelp" className="form-text text-muted">
+                Enter email addresses in the order of processing.
               </small>
-              </div>
-              <div className="text-center">
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    let emailValues = document.getElementById("emailaddr");
-                    if (emailValues.value !== "") {
-                      const re = /\S+@nitt\.edu/;
-                      if (re.test(emailValues.value) === true) {
-                        setCount(emailCount + 1);
-                        setEmails(emails.concat(emailValues.value));
-                        console.log(emailCount);
-                        console.log(emails);
-                      } else {
-                        alert("Enter valid nitt email.");
-                      }
-                      emailValues.value = "";
+            </div>
+            <div className="text-center">
+              <button
+                type="submit"
+                className="btn btn-primary"
+                onClick={(e) => {
+                  e.preventDefault();
+                  let emailValues = document.getElementById("emailaddr");
+                  if (emailValues.value !== "") {
+                    const re = /\S+@nitt\.edu/;
+                    if (re.test(emailValues.value) === true) {
+                      setCount(emailCount + 1);
+                      setEmails(emails.concat(emailValues.value));
+                      console.log(emailCount);
+                      console.log(emails);
+                    } else {
+                      alert("Enter valid nitt email.");
                     }
-                  }}
-                >
-                  Add
+                    emailValues.value = "";
+                  }
+                }}
+              >
+                Add
               </button>
-              </div>
-              <br />
-              <div className="form-group">
-                <label htmlFor="certType">Enter certificate type</label>
-                <a onClick={calculate_source} id='anchorClick' download class="float-right small-link">Download sample</a>
-                <select name="certType" id="certType" className="form-control" id='typeSelect'>
-                  <option value="bonafide" selected>Bonafide</option>
-                  <option value="X">Certificate X</option>
-                </select>
-              </div>
-              <div className="form-group">
-                <label htmlFor="cert">Add certificate</label>
-                <input type="file" onChange={handleFileUpload} className="form-control-file" id="cert" />
-              </div>
-              <br />
+            </div>
+            <br />
+            <div className="form-group">
+              <label htmlFor="certType">Enter certificate type</label>
+              <a
+                onClick={calculate_source}
+                id="anchorClick"
+                download
+                class="float-right small-link"
+              >
+                Download Template
+              </a>
+              <select
+                name="certType"
+                id="certType"
+                className="form-control"
+                id="typeSelect"
+                onChange={(e) => {
+                  let certType = e.target.value;
+                  console.log("Cert", certType);
+                  setFile(certType);
+                }}
+              >
+                <option value="bonafide" selected>
+                  Bonafide
+                </option>
+                <option value="X">Certificate X</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label htmlFor="cert">Add certificate</label>
+              <input
+                type="file"
+                onChange={handleFileUpload}
+                className="form-control-file"
+                id="cert"
+              />
+            </div>
+            <br />
 
-              <div className="form-group text-center">
-                {fileButton ? <button className="btn btn-primary mr-2" onClick={handleFileOpen}>Show Uploaded File</button> : <></>}
+            <div className="form-group text-center">
+              {fileButton ? (
                 <button
-                  type="submit"
-                  className="btn btn-success"
-                  onClick={certificateRequest}
+                  className="btn btn-primary mr-2"
+                  onClick={handleFileOpen}
                 >
-                  Submit
+                  Show Uploaded File
+                </button>
+              ) : (
+                <></>
+              )}
+              <button
+                type="submit"
+                className="btn btn-success"
+                onClick={certificateRequest}
+              >
+                Submit
               </button>
-                <ToastContainer
-                  position="top-center"
-                  autoClose={2000}
-                  hideProgressBar={false}
-                  newestOnTop={false}
-                  closeOnClick
-                  rtl={false}
-                  pauseOnFocusLoss
-                  draggable
-                  pauseOnHover
-                />
-              </div>
-            </form>
-          </div>
-          <div className="col-md-6  cert-right d-flex justify-content-center">
-            <ul className="list-group emailList">
-              {emails.length > 0 ? <li className='list-group-item'>{user + '@nitt.edu'}</li> : <></>}
-              {emails.map((email, index) => {
+              <ToastContainer
+                position="top-center"
+                autoClose={2000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+              />
+            </div>
+          </form>
+        </div>
 
-                return (
-                  <div key={index} >
-                    <div className='d-block text-center'>
-                      <img src='/down.svg' alt="Down arrow" height='60' width='30' /></div>
-                    {/* </div> */}
-                    <li key={index} className="list-group-item gray">
-                      {email}
-                      <button
-                        className="btn btn-del"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setCount(emailCount - 1);
-                          emails.splice(index - 1, 1);
-                          setEmails(emails);
-                        }}
-                      >
-                        <span>&#127335;</span>
-                      </button>
-                    </li>
+        <div className="col-md-6  cert-right d-flex justify-content-center">
+          <ul className="list-group emailList">
+            {emails.length > 0 ? (
+              <li className="list-group-item">{user + "@nitt.edu"}</li>
+            ) : (
+              <></>
+            )}
+            {emails.map((email, index) => {
+              return (
+                <div key={index}>
+                  <div className="d-block text-center">
+                    <img
+                      src="/down.svg"
+                      alt="Down arrow"
+                      height="60"
+                      width="30"
+                    />
                   </div>
-                );
-              })}
-            </ul>
-          </div>
+                  {/* </div> */}
+                  <li key={index} className="list-group-item gray">
+                    {email}
+                    <button
+                      className="btn btn-del"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setCount(emailCount - 1);
+                        emails.splice(index - 1, 1);
+                        setEmails(emails);
+                      }}
+                    >
+                      <span>&#127335;</span>
+                    </button>
+                  </li>
+                </div>
+              );
+            })}
+          </ul>
         </div>
       </div>
       <Modal
@@ -223,16 +261,12 @@ function Upload() {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-
-          <embed
-            src={pdf}
-            
-            className="embed-modal"
-          />
-
+          <embed src={pdf} className="embed-modal" />
         </Modal.Body>
       </Modal>
-    </>
+      <CertificateTemplate fileType={file} />
+    </div>
+    // </>
   );
 }
 

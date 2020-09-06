@@ -2,33 +2,40 @@ import React from "react";
 import "./login.css";
 import spider from "../utils/API";
 import { useHistory } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Login(props) {
   const history = useHistory();
   const loginHandler = (e) => {
-    console.log("clicked")
+    console.log("clicked");
     e.preventDefault();
     let username = document.getElementById("rno").value;
     let password = document.getElementById("pass").value;
-
+    const re = /\S+@nitt\.edu/;
     if (username.length && password.length) {
-      spider
-        .post("/login", {
-          username: username,
-          password: password,
-        })
-        .then((res, err) => {
-          console.log("Cool");
-          localStorage.setItem(
-            "bonafideNITT2020user",
-            JSON.stringify(res.data.token)
-          );
-          console.log(localStorage.getItem("bonafideNITT2020user"));
-          history.push("/student");
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      if (re.test(username) === false) {
+        spider
+          .post("/login", {
+            username: username,
+            password: password,
+          })
+          .then((res, err) => {
+            console.log(res);
+            localStorage.setItem(
+              "bonafideNITT2020user",
+              JSON.stringify(res.data.token)
+            );
+            console.log(localStorage.getItem("bonafideNITT2020user"));
+            if (isNaN(username)) history.push("/admin");
+            else history.push("/student");
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else {
+        alert("Not @nitt");
+      }
     } else {
       console.log("Invalid username or password");
     }
@@ -77,6 +84,17 @@ function Login(props) {
           </button>
         </div>
       </div>
+      <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 }

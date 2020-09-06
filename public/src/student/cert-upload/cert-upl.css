@@ -16,6 +16,10 @@
   padding: 20px;
 }
 
+.form-left {
+  border-right: 2px inset;
+}
+
 .btn-del {
   float: right;
   padding: 0;

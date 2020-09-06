@@ -1,7 +1,6 @@
 import React from "react";
 import "./navbar.css";
-import Upload from "../cert-upload/cert-upl";
-import { Link, animateScroll as scroll } from "react-scroll";
+import { Link } from "react-scroll";
 
 function NavBar() {
   const logoutHandler = (e) => {
@@ -21,20 +20,16 @@ function NavBar() {
           &times;
         </a>
         <Link to="certificateTemplate" spy={true} smooth={true} duration={500}>
-          <a href="#templates">Templates</a>
+          <span id="navEntry">Templates</span>
         </Link>
         <Link to="req-status" spy={true} smooth={true} duration={500}>
-          <a href="#timeline" onClick={Upload.executeScroll}>
-          Timeline
-          </a>
+          <span id="navEntry">Timeline</span>
         </Link>
         <Link to="cert-upl" spy={true} smooth={true} duration={500}>
-          <a href="#request_certificate">Request Certificate</a>
+          <span id="navEntry">Request Certificate</span>
         </Link>
-        <Link to="#!">
-          <a href="#logout" onClick={logoutHandler}>
-            Logout
-          </a>
+        <Link to="#!" onClick={logoutHandler}>
+          <span id="navEntry">Logout</span>
         </Link>
       </div>
       <span

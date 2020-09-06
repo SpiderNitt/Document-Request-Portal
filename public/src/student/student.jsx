@@ -9,13 +9,11 @@ function Student() {
   return (
     <div>
       <NavBar screen={0} />
-      <CertificateTemplate />
+      <Upload />
+
       <br />
       <br />
       <Status />
-      <br />
-      <br />
-      <Upload />
     </div>
   );
 }

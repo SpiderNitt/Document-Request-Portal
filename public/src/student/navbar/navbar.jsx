@@ -2,6 +2,9 @@ import React from "react";
 import "./navbar.css";
 import { Link } from "react-scroll";
 
+import Status from "../status/status"
+import Upload from "../cert-upload/cert-upl"
+
 function NavBar(props) {
   const logoutHandler = (e) => {
     localStorage.removeItem("bonafideNITT2020user");
@@ -21,20 +24,21 @@ function NavBar(props) {
         </a>
         {props.screen !== 1 && (
           <>
-            <Link
+            {/* <Link
               to="certificateTemplate"
               spy={true}
               smooth={true}
               duration={500}
             >
               <span id="navEntry">Templates</span>
-            </Link>
-            <Link to="req-status" spy={true} smooth={true} duration={500}>
-              <span id="navEntry">Timeline</span>
-            </Link>
-            <Link to="cert-upl" spy={true} smooth={true} duration={500}>
+            </Link> */}
+             <Link to="cert-upl" spy={true} smooth={true} duration={500}>
               <span id="navEntry">Request Certificate</span>
             </Link>
+            <Link to="cert-status"spy={true} smooth={true} duration={500}>
+              <span id="navEntry">View status</span>
+            </Link>
+           
           </>
         )}
         <Link to="#!" onClick={logoutHandler}>

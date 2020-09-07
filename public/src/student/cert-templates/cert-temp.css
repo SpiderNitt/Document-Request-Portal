@@ -17,7 +17,7 @@
 }
 @media only screen and (max-width: 800px) {
   .mobl-docView {
-    display: block;
+    display: none;
   }
 
   .mobl-docView > a {

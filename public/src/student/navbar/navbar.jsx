@@ -1,9 +1,11 @@
 import React from "react";
 import "./navbar.css";
-import Upload from "../cert-upload/cert-upl";
-import { Link, animateScroll as scroll } from "react-scroll";
+import { Link } from "react-scroll";
 
-function NavBar() {
+import Status from "../status/status"
+import Upload from "../cert-upload/cert-upl"
+
+function NavBar(props) {
   const logoutHandler = (e) => {
     localStorage.removeItem("bonafideNITT2020user");
     window.location.replace("/");
@@ -20,21 +22,27 @@ function NavBar() {
         >
           &times;
         </a>
-        <Link to="certificateTemplate" spy={true} smooth={true} duration={500}>
-          <a href="#templates">Templates</a>
-        </Link>
-        <Link to="req-status" spy={true} smooth={true} duration={500}>
-          <a href="#timeline" onClick={Upload.executeScroll}>
-          Timeline
-          </a>
-        </Link>
-        <Link to="cert-upl" spy={true} smooth={true} duration={500}>
-          <a href="#request_certificate">Request Certificate</a>
-        </Link>
-        <Link to="#!">
-          <a href="#logout" onClick={logoutHandler}>
-            Logout
-          </a>
+        {props.screen !== 1 && (
+          <>
+            {/* <Link
+              to="certificateTemplate"
+              spy={true}
+              smooth={true}
+              duration={500}
+            >
+              <span id="navEntry">Templates</span>
+            </Link> */}
+             <Link to="cert-upl" spy={true} smooth={true} duration={500}>
+              <span id="navEntry">Request Certificate</span>
+            </Link>
+            <Link to="cert-status"spy={true} smooth={true} duration={500}>
+              <span id="navEntry">View status</span>
+            </Link>
+           
+          </>
+        )}
+        <Link to="#!" onClick={logoutHandler}>
+          <span id="navEntry">Logout</span>
         </Link>
       </div>
       <span

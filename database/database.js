@@ -8,7 +8,8 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
         freezeTableName: true
     },
     host: process.env.DB_HOST,
-    dialect: 'mysql' /* one of 'mysql' | 'mariadb' | 'postgres' | 'mssql' */
+    dialect: 'mysql', /* one of 'mysql' | 'mariadb' | 'postgres' | 'mssql' */
+    logging: process.env.ENV === 'DEV' ? console.log : false
 });
 
 

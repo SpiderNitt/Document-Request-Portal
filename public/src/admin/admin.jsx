@@ -120,7 +120,6 @@ function CustomStylesGSheets() {
         res.data.forEach((cc) => {
           if (cc.status === "PENDING") temp = Object.assign([], res.data);
         });
-        // let temp = Object.assign([], res.data);
         console.log(temp.length);
         for (let i = 0; i < temp.length; i++) {
           temp[i].id = i + 1;

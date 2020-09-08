@@ -3,15 +3,12 @@ import "./cert-upl.css";
 import spider from "../../utils/API";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Modal, Button } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 import CertificateTemplate from "../cert-templates/cert-temp";
 
 function Upload() {
-  let usertoken = JSON.parse(
-    localStorage.getItem("bonafideNITT2020user")
-  ).split(".")[1];
-  const decodedData = JSON.parse(window.atob(usertoken));
-  const user = decodedData.data.username;
+  
+  const user = JSON.parse(localStorage.getItem("bonafideNITT2020user")).user;
   const [emailCount, setCount] = useState(0);
   const [emails, setEmails] = useState([]);
   const [fileButton, setFileButton] = useState(false);
@@ -28,7 +25,6 @@ function Upload() {
       setFileButton(true);
       setFileName(true);
     } else {
-      // setFileModal(false);
       setFileName("hiii");
       setFileName(null);
       setFileButton(true);
@@ -64,7 +60,7 @@ function Upload() {
           console.log(value);
         }
         spider
-          .post("api/certificate_request", cd)
+          .post("api/student/certificate_request", cd)
           .then((res) => {
             console.log("posted");
             console.log(res);
@@ -87,8 +83,6 @@ function Upload() {
       }
     }
 
-    // return '/bf.pdf';
-    // console.log(document.getElementById('certType').value)
   };
   return (
     // <>
@@ -141,6 +135,7 @@ function Upload() {
             <div className="form-group">
               <label htmlFor="certType">Enter certificate type</label>
               <a
+                href="#!"
                 onClick={calculate_source}
                 id="anchorClick"
                 download

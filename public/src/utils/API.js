@@ -3,20 +3,14 @@ import { toast } from "react-toastify";
 
 const spider = axios.create({
   baseURL: "https://spider.nitt.edu/bonafide/",
-  // headers: {
-  //   "Content-Type": "application/json",
-  // },
 });
 
-// spider.defaults.headers.post["Access-Control-Allow-Origin"] = "*";
-// spider.defaults.headers.post["Access-Control-Allow-Methods"] =
-//   "GET, PUT, POST, DELETE, OPTIONS";
 
 spider.interceptors.request.use(
   (config) => {
     const jwtToken = JSON.parse(localStorage.getItem("bonafideNITT2020user"));
     if (jwtToken) {
-      config.headers.Authorization = `Bearer ${jwtToken}`;
+      config.headers.Authorization = `Bearer ${jwtToken.jwt}`;
     }
     return config;
   },

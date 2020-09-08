@@ -4,6 +4,8 @@ import spider from "../utils/API";
 import { useHistory } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import jwtHandler from '../utils/parsejwt';
+
 
 function Login(props) {
   const history = useHistory();
@@ -22,9 +24,13 @@ function Login(props) {
           })
           .then((res, err) => {
             console.log(res);
+            const token = {};
+            token.jwt = res.data.token;
+            let user = jwtHandler(res.data.token);
+            token.user = user.data.username
             localStorage.setItem(
               "bonafideNITT2020user",
-              JSON.stringify(res.data.token)
+              JSON.stringify(token)
             );
             console.log(localStorage.getItem("bonafideNITT2020user"));
             if (isNaN(username)) history.push("/admin");

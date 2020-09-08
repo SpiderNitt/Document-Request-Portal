@@ -2,7 +2,7 @@ import React from "react";
 import spider from "../../utils/API";
 import "./status.css";
 import { FaDownload, FaHistory } from "react-icons/fa";
-import { useEffect } from "react";
+// import { useEffect } from "react";
 import Timeline from "../timeline/timeline";
 import { Collapse } from "react-bootstrap";
 
@@ -39,7 +39,7 @@ export default class Status extends React.Component {
     try {
       let cid = [];
       let certHis = Object.assign({}, this.state.certHis);
-      let res = await spider.get("/api");
+      let res = await spider.get("/api/student");
       let certs = res.data;
       cid = Object.assign([], certs);
       console.log("this is CID shankar:: ", cid);
@@ -50,7 +50,7 @@ export default class Status extends React.Component {
         // let cc = cid[index];
         // console.log(cc);
 
-        let response = await spider.get("/api/certificate_history", {
+        let response = await spider.get("/api/student/certificate_history", {
           params: { id: cc.id },
         });
         console.log("response??:", response);
@@ -75,7 +75,7 @@ export default class Status extends React.Component {
     ).split(".")[1];
     const decodedData = JSON.parse(window.atob(usertoken));
     const roll = decodedData.data.username;
-    let response = await spider.get("api/certificate_download", {
+    let response = await spider.get("api/student/certificate_download", {
       params: { id },
       responseType: "blob",
     });

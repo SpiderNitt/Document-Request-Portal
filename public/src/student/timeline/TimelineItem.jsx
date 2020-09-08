@@ -25,7 +25,7 @@ export default function TimelineItem(props) {
             <small className="text-muted">
               {" "}
               <br></br>
-              {props.data.status == "PENDING"
+              {props.data.status === "PENDING"
                 ? "N/A"
                 : formatDate(props.data.time)}
             </small>

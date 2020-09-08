@@ -4,6 +4,8 @@ import NavBar from "../student/navbar/navbar";
 import { Approve, Reject, Upload, Download } from "./sub_buttons";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Accordion from "react-bootstrap/Accordion";
+import Card from "react-bootstrap/Card";
 import "./admin.css";
 
 function Admin() {
@@ -42,7 +44,7 @@ function Admin() {
             certificates: [],
           };
           temp.map((c) => {
-            if (c.certificate_type == typ.certificate_type_id) {
+            if (c.certificate_type === typ.certificate_type_id) {
               delete c.certificate_type;
               tempType.certificates.push(c);
             }
@@ -56,82 +58,97 @@ function Admin() {
   }, []);
 
   return (
-    <div className="container-fluid admin">
+    <>
       <NavBar screen={1} />
-      <h2 className="text-center cert-upl-head">Admin Certificate Portal</h2>
-      <br />
-      {isLoading ? (
-        <p>LOADING</p>
-      ) : (
-        certReq.map((cert, index) => {
-          return (
-            <div key={index}>
-              <h4 className="text-center">
-                Certificate Type: {cert.certificate_type_id}
-              </h4>
-              <table className="table cert-table">
-                <thead className="thead-dark">
-                  <tr>
-                    <th scope="col">S.No</th>
-                    <th scope="col">Roll No.</th>
-                    {/* <th scope="col">Certificate Type</th> */}
-                    <th scope="col">Status</th>
-                    <th scope="col">Certificate file</th>
-                    <th scope="col">Upload Certificate</th>
-                    <th scope="col">Decision</th>
-                  </tr>
-                </thead>
+      <h1 className="text-center cert-upl-head">Admin Certificate Portal</h1>
+      <div className="container admin">
+        <br />
+        {isLoading ? (
+          <p>LOADING</p>
+        ) : (
+          certReq.map((cert, index) => {
+            return (
+              <Accordion key={index}>
+                <Card>
+                  <Card.Header className="tableHeader">
+                    <Accordion.Toggle
+                      as={Card.Header}
+                      variant="link"
+                      eventKey="0"
+                      className="text-center"
+                    >
+                      Certificate Type: {cert.certificate_type_id}
+                    </Accordion.Toggle>
+                  </Card.Header>
+                  <Accordion.Collapse eventKey="0">
+                    <Card.Body>
+                      <table className="table cert-table">
+                        <thead className="thead-dark">
+                          <tr>
+                            <th scope="col">S.No</th>
+                            <th scope="col">Roll No.</th>
+                            {/* <th scope="col">Certificate Type</th> */}
+                            <th scope="col">Status</th>
+                            <th scope="col">Certificate file</th>
+                            <th scope="col">Upload Certificate</th>
+                            <th scope="col">Decision</th>
+                          </tr>
+                        </thead>
 
-                <tbody>
-                  {cert.certificates.map((data, index) => {
-                    return (
-                      <tr key={index}>
-                        <th>{data.id}</th>
-                        <td>{data.applier_roll}</td>
-                        {/* <td>{data.certificate_type}</td> */}
-                        <th>{data.status}</th>
-                        <td>
-                          <Download
-                            certId={data.certificate_id}
-                            roll={data.applier_roll}
-                            certType={data.certificate_type}
-                          />
-                        </td>
-                        <td>
-                          <Upload />
-                        </td>
-                        <td>
-                          <Approve
-                            certId={data.certificate_id}
-                            status={data.status}
-                          />{" "}
-                          <Reject
-                            certId={data.certificate_id}
-                            roll={data.applier_roll}
-                            status={data.status}
-                          />
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          );
-        })
-      )}
-      <ToastContainer
-        position="top-center"
-        autoClose={2000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
-    </div>
+                        <tbody>
+                          {cert.certificates.map((data, index) => {
+                            return (
+                              <tr key={index}>
+                                <th>{data.id}</th>
+                                <td>{data.applier_roll}</td>
+                                {/* <td>{data.certificate_type}</td> */}
+                                <th>{data.status}</th>
+                                <td>
+                                  <Download
+                                    certId={data.certificate_id}
+                                    roll={data.applier_roll}
+                                    certType={data.certificate_type}
+                                  />
+                                </td>
+                                <td>
+                                  <Upload />
+                                </td>
+                                <td>
+                                  <Approve
+                                    certId={data.certificate_id}
+                                    status={data.status}
+                                  />{" "}
+                                  <Reject
+                                    certId={data.certificate_id}
+                                    roll={data.applier_roll}
+                                    status={data.status}
+                                  />
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </Card.Body>
+                  </Accordion.Collapse>
+                </Card>
+              </Accordion>
+            );
+          })
+        )}
+        <ToastContainer
+          position="top-center"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
+      </div>
+    </>
   );
 }
 

@@ -15,14 +15,13 @@ student.post("/certificate_request", async function (req, res) {
             console.log(err)
             return res.status(400).json({ 'message': req.fileValidationError });
         }
-        else if(!req.file){
+        else if (!req.file) {
             // OPTIONAL FIL APPROVE GOES HERE
             console.log(req.body.path)
-            res.status(400).json({'message': 'Please select a file'});
+            res.status(400).json({ 'message': 'Please select a file' });
             return;
         }
         else {
-            console.log("this file::: ", req.file)
             let applier_roll = req.jwt_payload.username;
             let { destination, filename } = req.file;
             let filepath = req.file.path;
@@ -38,8 +37,8 @@ student.post("/certificate_request", async function (req, res) {
                 res.status(500).json({ 'message': 'Some issue with the server. Try again later.' });
                 return;
             }
-            final_dest = final_dest +  '/' + filename;
-            let { type, path } = req.body;
+            final_dest = final_dest + '/' + filename;
+            let { type, path, comments } = req.body;
             if (typeof (path) == String)
                 path = path.split(',');
 
@@ -50,7 +49,7 @@ student.post("/certificate_request", async function (req, res) {
                     res.status(400).json({ 'message': 'All mail IDs must end with nitt.edu' })
                     return;
                 }
-                let response = await database.Certificate.create({ type, applier_roll, file: filename, status });
+                let response = await database.Certificate.create({ type, applier_roll, file: filename, status, comments });
 
                 let certificate_id = response.getDataValue('id');
                 let time = new Date(Date.now()).toISOString();
@@ -110,7 +109,7 @@ student.get('/certificate_download', async function (req, res) {
 
     }
     else {
-        
+
         row = await database.Certificate.findOne({
             attributes: ['file', 'applier_roll'],
             where: {
@@ -137,15 +136,26 @@ student.get('/certificate_history', async function (req, res) {
     try {
         let { id } = req.query;
         let { username } = req.jwt_payload;
+        let isnum = /^\d+$/.test(username);
+        let id_exists;
+        if (isnum) {
+            id_exists = await database.Certificate.findOne({
+                attributes: ['id', 'applier_roll', 'comments'],
+                where: {
+                    id,
+                    applier_roll: username
+                }
 
-        let id_exists = await database.Certificate.findOne({
-            attributes: ['id'],
-            where: {
-                id,
-                applier_roll: username
-            }
-
-        });
+            });
+        }
+        else {
+            id_exists = await database.Certificate.findOne({
+                attributes: ['id', 'applier_roll', 'comments'],
+                where: {
+                    id
+                }
+            });
+        }
         if (id_exists == null) {
             res.status(403).json({ 'message': "You do not have the appropriate permissions to access the resource." })
             return;
@@ -158,31 +168,83 @@ student.get('/certificate_history', async function (req, res) {
                     status: 'INITIATED REQUEST'
                 }
             });
+            let applier_roll = id_exists.getDataValue('applier_roll')
+            console.log("applier roll? ", applier_roll)
             let response_json = []
-            if (row != null) {
-                response_json.push({ 'path_email': username + '@nitt.edu', 'status': 'INITIATED REQUEST', 'time': row.getDataValue('time') });
+            response_json.push({ 'path_email': applier_roll + '@nitt.edu', 'status': 'INITIATED REQUEST', 'time': row.getDataValue('time'), 'comments': id_exists.getDataValue('comments') });
 
 
-            }
+
             let rows = await database.CertificatePaths.findAll({
-                attributes: ['path_email', 'updatedAt', 'status'],
+                attributes: ['path_email', 'updatedAt', 'status', 'comments'],
                 where: {
                     certificate_id: id
                 }
             });
-            rows.forEach(function (ele) {
-                response_json.push({
-                    'status': ele.getDataValue('status'),
-                    'path_email': ele.getDataValue('path_email'),
-                    'time': ele.getDataValue('updatedAt')
+            if (isnum) {
+                rows.forEach(function (ele) {
+                    response_json.push({
+                        'status': ele.getDataValue('status'),
+                        'path_email': ele.getDataValue('path_email'),
+                        'time': ele.getDataValue('updatedAt'),
+                        'comments': null
+                    })
                 })
-            })
+            }
+            else {
+                rows.forEach(function (ele) {
+                    response_json.push({
+                        'status': ele.getDataValue('status'),
+                        'path_email': ele.getDataValue('path_email'),
+                        'time': ele.getDataValue('updatedAt'),
+                        'comments': ele.getDataValue('comments')
+                    })
+                })
+            }
             res.status(200).json(response_json)
         }
         else {
             res.status(400).json({ 'message': 'ID needed for certificate history' })
         }
     } catch (err) {
+        console.log(err);
+        res.status(500).json({ 'message': 'Some issue with the server. Please try again later' });
+    }
+})
+
+student.post('/add_certificate', async function (req, res) {
+    let { cert_type } = req.body;
+    let { username } = req.jwt_payload;
+    let type_exists = await database.CertificateType.findOne({
+        attributes: ['id', 'type'],
+        where: {
+            type: cert_type
+        }
+    })
+    if (type_exists != null) {
+        res.status(400).json({ 'message': 'Certificate type already exists' })
+        return;
+    }
+    else {
+        await database.CertificateType.create({ type: cert_type, created_by: username });
+        res.status(200).json({ 'message': 'Created successfully' });
+    }
+
+})
+
+student.get('/certificate_types', async function (req, res) {
+    try {
+        let rows = await database.CertificateType.findAll();
+        let response_json = []
+        rows.forEach(function (ele) {
+            response_json.push({
+                'id': ele.getDataValue('id'),
+                'type': ele.getDataValue('type')
+            })
+        })
+        res.status(200).json(response_json);
+    }
+    catch (err) {
         console.log(err);
         res.status(500).json({ 'message': 'Some issue with the server. Please try again later' });
     }

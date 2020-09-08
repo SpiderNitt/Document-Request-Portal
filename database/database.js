@@ -23,6 +23,10 @@ const CertificateType = sequelize.define('certificate_types', {
     name: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    created_by: {
+        type: DataTypes.STRING,
+        allowNull: false
     }
 },
     {
@@ -56,14 +60,9 @@ const Certificate = sequelize.define('certificates', {
         type: DataTypes.STRING,
         allowNull: false
     },
-    date_created: {
-        type: DataTypes.DATE,
-        defaultValue: new Date(),
-    },
-    date_modified: {
-        type: DataTypes.DATE,
-        defaultValue: new Date(),
-        onUpdate: new Date()
+    comments: {
+        type: DataTypes.STRING,
+        allowNull: true
     }
 }, {
     freezeTableName: true
@@ -125,6 +124,10 @@ const CertificatePaths = sequelize.define('certificate_paths', {
     status: {
         type: DataTypes.ENUM(['PENDING', 'APPROVED', 'DECLINED']),
         allowNull: false
+    },
+    comments: {
+        type: DataTypes.STRING,
+        allowNull: true
     }
 }, {
     freezeTableName: true

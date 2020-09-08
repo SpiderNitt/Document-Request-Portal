@@ -28,7 +28,7 @@ admin.post('/approve', async function (req, res) {
             else {
 
 
-                let { certificate_id } = req.body;
+                let { certificate_id, comments } = req.body;
                 let { destination, filename } = req.file;
                 let filepath = req.file.path;
                 let initial_dest = appRoot + '/' + filepath;
@@ -70,7 +70,7 @@ admin.post('/approve', async function (req, res) {
                                 id: certificate_id
                             }
                         });
-                        await database.CertificatePaths.update({ status: 'APPROVED' }, {
+                        await database.CertificatePaths.update({ status: 'APPROVED', comments }, {
                             where: {
                                 certificate_id,
                                 path_email: rollno + "@nitt.edu"
@@ -96,7 +96,7 @@ admin.post('/approve', async function (req, res) {
 
 
 admin.post('/decline', multer().none(), async function (req, res) {
-    let { certificate_id } = req.body;
+    let { certificate_id, comments } = req.body;
     let rollno = req.jwt_payload.username;
     let flag = await helpers.approve_decline_rights(req, res, certificate_id);
     if (flag) {
@@ -107,7 +107,7 @@ admin.post('/decline', multer().none(), async function (req, res) {
                     id: certificate_id
                 }
             });
-            await database.CertificatePaths.update({ status: 'DECLINED' }, {
+            await database.CertificatePaths.update({ status: 'DECLINED', comments}, {
                 where: {
                     certificate_id,
                     path_email: rollno + "@nitt.edu"

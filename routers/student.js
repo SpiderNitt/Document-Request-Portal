@@ -181,26 +181,17 @@ student.get('/certificate_history', async function (req, res) {
                     certificate_id: id
                 }
             });
-            if (isnum) {
-                rows.forEach(function (ele) {
-                    response_json.push({
-                        'status': ele.getDataValue('status'),
-                        'path_email': ele.getDataValue('path_email'),
-                        'time': ele.getDataValue('updatedAt'),
-                        'comments': null
-                    })
+
+
+            rows.forEach(function (ele) {
+                response_json.push({
+                    'status': ele.getDataValue('status'),
+                    'path_email': ele.getDataValue('path_email'),
+                    'time': ele.getDataValue('updatedAt'),
+                    'comments': ele.getDataValue('comments')
                 })
-            }
-            else {
-                rows.forEach(function (ele) {
-                    response_json.push({
-                        'status': ele.getDataValue('status'),
-                        'path_email': ele.getDataValue('path_email'),
-                        'time': ele.getDataValue('updatedAt'),
-                        'comments': ele.getDataValue('comments')
-                    })
-                })
-            }
+            })
+
             res.status(200).json(response_json)
         }
         else {

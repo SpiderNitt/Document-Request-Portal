@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import "./cert-upl.css";
 import spider from "../../utils/API";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import "react-toastify/dist/ReactToastify.min.css";
+
 import { Modal } from "react-bootstrap";
 import CertificateTemplate from "../cert-templates/cert-temp";
 
 function Upload() {
-  
   const user = JSON.parse(localStorage.getItem("bonafideNITT2020user")).user;
   const [emailCount, setCount] = useState(0);
   const [emails, setEmails] = useState([]);
@@ -41,7 +41,7 @@ function Upload() {
     let fileUpload = document.getElementById("cert").files[0];
     let certType = document.getElementById("certType").value;
     console.log(certType);
-    if (emailCount && fileUpload && certType) {
+    if (emailCount && fileName && certType) {
       let r = window.confirm(`Confirm selection: ${emails}`);
       if (r === true) {
         let cd = new FormData();
@@ -63,7 +63,7 @@ function Upload() {
           .post("api/student/certificate_request", cd)
           .then((res) => {
             console.log("posted");
-            console.log(res);
+            console.log("ss", res);
           })
           .catch((err) => {
             console.log(err);
@@ -82,7 +82,6 @@ function Upload() {
         anch.click();
       }
     }
-
   };
   return (
     // <>
@@ -90,6 +89,17 @@ function Upload() {
       <h2 className="text-center cert-upl-head">
         Request Certificate Verification
       </h2>
+      <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <div className="row">
         <div className="col-md-6 form-left">
           <form>
@@ -139,7 +149,7 @@ function Upload() {
                 onClick={calculate_source}
                 id="anchorClick"
                 download
-                class="float-right small-link"
+                className="float-right small-link"
               >
                 Download Template
               </a>
@@ -153,7 +163,7 @@ function Upload() {
                   setFile(certType);
                 }}
               >
-                <option value="bonafide" selected>
+                <option value="bonafide" defaultValue>
                   Bonafide
                 </option>
                 <option value="X">Certificate X</option>
@@ -188,17 +198,6 @@ function Upload() {
               >
                 Submit
               </button>
-              <ToastContainer
-                position="top-center"
-                autoClose={2000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-              />
             </div>
           </form>
         </div>

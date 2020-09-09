@@ -2,7 +2,8 @@ import "./timeline.css";
 import React from "react";
 
 export default function TimelineItem(props) {
-  // console.log(props);
+
+  console.log(props);
   let status_map = {
     PENDING: "warning",
     "INITIATED REQUEST": "primary",
@@ -26,12 +27,17 @@ export default function TimelineItem(props) {
               {" "}
               <br></br>
               {props.data.status === "PENDING"
-                ? "N/A"
-                : formatDate(props.data.time)}
-            </small>
+                ? ""
+                : formatDate(props.data.time)
+              }
+              </small>
+              <br></br>
+              
+              {props.data.comments ? 
+              <small className='text-muted'>{props.data.comments}</small> :<small></small>}
           </p>
         </div>
-      </div>
+        </div>
     </li>
   );
 }

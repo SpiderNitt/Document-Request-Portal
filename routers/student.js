@@ -97,7 +97,7 @@ student.get('/certificate_download', async function (req, res) {
     let isnum = /^\d+$/.test(rollno);
     if (isnum) {
         applier_roll = rollno;
-        row = await Certificate.findOne({
+        row = await database.Certificate.findOne({
             attributes: ['file'],
             where: {
                 applier_roll: rollno,

@@ -5,7 +5,7 @@ import { Approve, Reject, Upload, Download } from "./sub_buttons";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Accordion from "react-bootstrap/Accordion";
-import Card from "react-bootstrap/Card";
+import { Card } from "react-bootstrap";
 import "./admin.css";
 
 function Admin() {
@@ -89,7 +89,6 @@ function Admin() {
                           <tr>
                             <th scope="col">S.No</th>
                             <th scope="col">Roll No.</th>
-                            {/* <th scope="col">Certificate Type</th> */}
                             <th scope="col">Status</th>
                             <th scope="col">Certificate file</th>
                             <th scope="col">Upload Certificate</th>
@@ -103,7 +102,6 @@ function Admin() {
                               <tr key={index}>
                                 <th>{data.id}</th>
                                 <td>{data.applier_roll}</td>
-                                {/* <td>{data.certificate_type}</td> */}
                                 <th>{data.status}</th>
                                 <td>
                                   <Download

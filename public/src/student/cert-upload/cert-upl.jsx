@@ -45,14 +45,7 @@ function Upload() {
         let cd = new FormData();
         cd.set("type", parseInt(1));
         cd.append("certificate", fileUpload);
-        // let emails_array = [];
-        // if (emails.length === 1) {
-        //   emails_array.push(emails[0] + ",");
-        // } else {
-        //   emails.forEach(function (ele) {
-        //     emails_array.push(ele);
-        //   });
-        // }
+
         cd.set("path", emails.toString());
         for (var value of cd.values()) {
           console.log(value);

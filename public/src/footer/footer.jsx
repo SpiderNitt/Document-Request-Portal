@@ -5,7 +5,12 @@ function Footer() {
   return (
     <footer>
       Weaved with 🕸 by
-      <a className="spider-link" href="https://spider.nitt.edu">
+      <a
+        className="spider-link"
+        href="https://spider.nitt.edu"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         {" "}
         Spider
       </a>

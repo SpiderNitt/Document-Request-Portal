@@ -22,12 +22,10 @@ export const Approve = (props) => {
           let cd = new FormData();
           cd.set("certificate_id", parseInt(props.certId));
           cd.append("certificate", file);
-          console.log(cd);
 
           spider
             .post("api/admin/approve", cd)
             .then((res) => {
-              console.log(res);
               console.log("Approved");
             })
             .catch((err) => {
@@ -63,7 +61,6 @@ export const Reject = (props) => {
               certificate_id: props.certId,
             })
             .then((res) => {
-              console.log("Done");
               window.location.reload();
             })
             .catch((err) => {

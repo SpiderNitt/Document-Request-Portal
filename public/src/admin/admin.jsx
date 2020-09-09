@@ -20,6 +20,7 @@ function Admin() {
         res.data.map((x) => {
           x.certificate_type_id = x.id;
           delete x.id;
+          return true;
         });
         setTypes(Object.assign(certTypes, res.data));
       })
@@ -48,6 +49,7 @@ function Admin() {
               delete c.certificate_type;
               tempType.certificates.push(c);
             }
+            return true;
           });
           merged.push(tempType);
         });

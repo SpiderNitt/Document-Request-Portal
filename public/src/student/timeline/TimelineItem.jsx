@@ -2,7 +2,7 @@ import "./timeline.css";
 import React from "react";
 
 export default function TimelineItem(props) {
-  console.log(props);
+  // console.log(props);
   let status_map = {
     PENDING: "warning",
     "INITIATED REQUEST": "primary",

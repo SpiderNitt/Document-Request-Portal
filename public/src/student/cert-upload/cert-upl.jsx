@@ -19,8 +19,7 @@ function Upload() {
 
   const handleFileUpload = (e) => {
     if (e.target.files[0]) {
-      const file = e.target.files[0];
-      console.log(file.name);
+      // const file = e.target.files[0];
       setFileName("hello");
       setFileButton(true);
       setFileName(true);
@@ -29,7 +28,6 @@ function Upload() {
       setFileName(null);
       setFileButton(true);
     }
-    console.log(e.target.files[0]);
     setPdf(URL.createObjectURL(e.target.files[0]));
   };
 
@@ -40,29 +38,29 @@ function Upload() {
     e.preventDefault();
     let fileUpload = document.getElementById("cert").files[0];
     let certType = document.getElementById("certType").value;
-    console.log(certType);
+    // console.log(certType);
     if (emailCount && fileName && certType) {
       let r = window.confirm(`Confirm selection: ${emails}`);
       if (r === true) {
         let cd = new FormData();
         cd.set("type", parseInt(1));
         cd.append("certificate", fileUpload);
-        let emails_array = [];
-        if (emails.length === 1) {
-          emails_array.push(emails[0] + ",");
-        } else {
-          emails.forEach(function (ele) {
-            emails_array.push(ele);
-          });
-        }
-        cd.set("path", emails_array);
+        // let emails_array = [];
+        // if (emails.length === 1) {
+        //   emails_array.push(emails[0] + ",");
+        // } else {
+        //   emails.forEach(function (ele) {
+        //     emails_array.push(ele);
+        //   });
+        // }
+        cd.set("path", emails.toString());
         for (var value of cd.values()) {
           console.log(value);
         }
         spider
           .post("api/student/certificate_request", cd)
           .then((res) => {
-            console.log("posted");
+            // console.log("posted");
             console.log("ss", res);
           })
           .catch((err) => {
@@ -79,7 +77,7 @@ function Upload() {
         let value = certType.value;
         if (value === "bonafide") anch.href = "/bf.pdf";
         else if (value === "X") anch.href = "/trans.pdf";
-        anch.click();
+        // anch.click();
       }
     }
   };
@@ -129,8 +127,8 @@ function Upload() {
                     if (re.test(emailValues.value) === true) {
                       setCount(emailCount + 1);
                       setEmails(emails.concat(emailValues.value));
-                      console.log(emailCount);
-                      console.log(emails);
+                      // console.log(emailCount);
+                      // console.log(emails);
                     } else {
                       alert("Enter valid nitt email.");
                     }
@@ -148,7 +146,8 @@ function Upload() {
                 href="#!"
                 onClick={calculate_source}
                 id="anchorClick"
-                download
+                target="_blank"
+                rel="noopener noreferrer"
                 className="float-right small-link"
               >
                 Download Template
@@ -159,7 +158,7 @@ function Upload() {
                 className="form-control"
                 onChange={(e) => {
                   let certType = e.target.value;
-                  console.log("Cert", certType);
+                  // console.log("Cert", certType);
                   setFile(certType);
                 }}
               >

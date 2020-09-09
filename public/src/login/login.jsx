@@ -4,13 +4,11 @@ import spider from "../utils/API";
 import { useHistory } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import jwtHandler from '../utils/parsejwt';
-
+import jwtHandler from "../utils/parsejwt";
 
 function Login(props) {
   const history = useHistory();
   const loginHandler = (e) => {
-    console.log("clicked");
     e.preventDefault();
     let username = document.getElementById("rno").value;
     let password = document.getElementById("pass").value;
@@ -27,12 +25,8 @@ function Login(props) {
             const token = {};
             token.jwt = res.data.token;
             let user = jwtHandler(res.data.token);
-            token.user = user.data.username
-            localStorage.setItem(
-              "bonafideNITT2020user",
-              JSON.stringify(token)
-            );
-            console.log(localStorage.getItem("bonafideNITT2020user"));
+            token.user = user.data.username;
+            localStorage.setItem("bonafideNITT2020user", JSON.stringify(token));
             if (isNaN(username)) history.push("/admin");
             else history.push("/student");
           })
@@ -81,7 +75,6 @@ function Login(props) {
         </div>
         <br />
         <div className="row lmain-btn justify-content-center">
-
           <div className="col-md-12">
             <button
               type="submit"
@@ -89,7 +82,7 @@ function Login(props) {
               className="btn btn-primary"
             >
               Login
-          </button>
+            </button>
           </div>
         </div>
       </form>

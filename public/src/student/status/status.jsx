@@ -53,14 +53,14 @@ export default class Status extends React.Component {
         let response = await spider.get("/api/student/certificate_history", {
           params: { id: cc.id },
         });
-        console.log("response??:", response);
+        // console.log("response??:", response);
         certHis[cc.id] = response.data;
-        console.log(certHis);
+        // console.log(certHis);
 
         // res.data.id = cc.id;
         // certHis.push(res.data);
       }
-      console.log("OUTSIDE IFF");
+      // console.log("OUTSIDE IFF");
       this.setState({
         certHis,
         loading: false,
@@ -130,7 +130,7 @@ export default class Status extends React.Component {
                               <FaHistory
                                 className="table-icons-item history"
                                 onClick={() => {
-                                  console.log("clicked");
+                                  // console.log("clicked");
                                   this.handleToggle(data.id);
                                 }}
                               />

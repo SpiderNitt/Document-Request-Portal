@@ -5,7 +5,7 @@ import { Approve, Reject, Upload, Download } from "./sub_buttons";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Accordion from "react-bootstrap/Accordion";
-import Card from "react-bootstrap/Card";
+import { Card } from "react-bootstrap";
 import "./admin.css";
 
 function Admin() {
@@ -17,8 +17,11 @@ function Admin() {
     spider
       .get("/api/student/certificate_types")
       .then((res) => {
+        console.log(res);
         res.data.map((x) => {
           x.certificate_type_id = x.id;
+          x.certificate_type = x.type;
+          delete x.type;
           delete x.id;
           return true;
         });
@@ -30,6 +33,7 @@ function Admin() {
     spider
       .get("/api/admin")
       .then((res) => {
+        console.log(res);
         let temp = [];
         res.data.forEach((cc) => {
           if (cc.status === "PENDING") temp = Object.assign([], res.data);
@@ -42,6 +46,7 @@ function Admin() {
         certTypes.forEach((typ) => {
           let tempType = {
             certificate_type_id: typ.certificate_type_id,
+            certificate_type: typ.certificate_type,
             certificates: [],
           };
           temp.map((c) => {
@@ -55,6 +60,7 @@ function Admin() {
         });
         setReq(Object.assign(certReq, merged));
         setLoad(false);
+        console.log(certReq);
       })
       .catch((err) => console.log(err));
   }, []);
@@ -79,7 +85,7 @@ function Admin() {
                       eventKey="0"
                       className="text-center"
                     >
-                      Certificate Type: {cert.certificate_type_id}
+                      {cert.certificate_type}
                     </Accordion.Toggle>
                   </Card.Header>
                   <Accordion.Collapse eventKey="0">
@@ -89,7 +95,6 @@ function Admin() {
                           <tr>
                             <th scope="col">S.No</th>
                             <th scope="col">Roll No.</th>
-                            {/* <th scope="col">Certificate Type</th> */}
                             <th scope="col">Status</th>
                             <th scope="col">Certificate file</th>
                             <th scope="col">Upload Certificate</th>
@@ -103,7 +108,6 @@ function Admin() {
                               <tr key={index}>
                                 <th>{data.id}</th>
                                 <td>{data.applier_roll}</td>
-                                {/* <td>{data.certificate_type}</td> */}
                                 <th>{data.status}</th>
                                 <td>
                                   <Download

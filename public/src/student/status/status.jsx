@@ -2,7 +2,6 @@ import React from "react";
 import spider from "../../utils/API";
 import "./status.css";
 import { FaDownload, FaHistory } from "react-icons/fa";
-// import { useEffect } from "react";
 import Timeline from "../timeline/timeline";
 import { Collapse } from "react-bootstrap";
 
@@ -70,11 +69,8 @@ export default class Status extends React.Component {
     }
   };
   handleDownload = async (id, type) => {
-    const usertoken = JSON.parse(
-      localStorage.getItem("bonafideNITT2020user")
-    ).split(".")[1];
-    const decodedData = JSON.parse(window.atob(usertoken));
-    const roll = decodedData.data.username;
+    const usertoken = JSON.parse(localStorage.getItem("bonafideNITT2020user"));
+    const roll = usertoken.user;
     let response = await spider.get("api/student/certificate_download", {
       params: { id },
       responseType: "blob",

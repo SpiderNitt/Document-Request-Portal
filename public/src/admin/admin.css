@@ -12,3 +12,13 @@
 .admin {
   border-radius: 10px !important;
 }
+
+.file-check-msg {
+  color: red;
+  font-size: medium;
+  padding: 5px;
+}
+
+.approveModal {
+  max-height: 50% !important;
+}

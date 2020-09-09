@@ -81,6 +81,11 @@ admin.post('/approve', async function (req, res) {
                     path_email: rollno + "@nitt.edu"
                 }
             })
+            await database.Certificate.update({ status: rollno + "@nitt.edu APPROVED"}, {
+                where:{
+                    id: certificate_id
+                }
+            })
             await database.History.create({ certificate_id, status: rollno + "@nitt.edu APPROVED", time: new Date(Date.now()).toISOString() })
             res.status(200).json({ 'message': "Approved successfully" });
         }

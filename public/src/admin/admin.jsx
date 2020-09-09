@@ -93,7 +93,7 @@ function Admin() {
                   </Card.Header>
                   <Accordion.Collapse eventKey="0">
                     <Card.Body>
-                      <table className="table cert-table text-center">
+                      <table className="table cert-table">
                         <thead className="thead-dark">
                           <tr>
                             <th scope="col">S.No</th>
@@ -116,7 +116,7 @@ function Admin() {
                                   <Download
                                     certId={data.certificate_id}
                                     roll={data.applier_roll}
-                                    certType={data.certificate_type}
+                                    certType={cert.certificate_type}
                                   />
                                 </td>
                                 <td>

@@ -7,7 +7,7 @@ import "react-toastify/dist/ReactToastify.min.css";
 import { Modal } from "react-bootstrap";
 import CertificateTemplate from "../cert-templates/cert-temp";
 
-function Upload() {
+function Upload(props) {
   const user = JSON.parse(localStorage.getItem("bonafideNITT2020user")).user;
   const [emailCount, setCount] = useState(0);
   const [emails, setEmails] = useState([]);
@@ -38,12 +38,12 @@ function Upload() {
     e.preventDefault();
     let fileUpload = document.getElementById("cert").files[0];
     let certType = document.getElementById("certType").value;
-    // console.log(certType);
     if (emailCount && fileName && certType) {
       let r = window.confirm(`Confirm selection: ${emails}`);
       if (r === true) {
         let cd = new FormData();
-        cd.set("type", parseInt(1));
+        if (certType === "Bonafide") cd.set("type", parseInt(1));
+        else cd.set("type", parseInt(2));
         cd.append("certificate", fileUpload);
 
         cd.set("path", emails.toString());
@@ -158,7 +158,7 @@ function Upload() {
                 <option value="bonafide" defaultValue>
                   Bonafide
                 </option>
-                <option value="X">Certificate X</option>
+                <option value="X">Transcript</option>
               </select>
             </div>
             <div className="form-group">

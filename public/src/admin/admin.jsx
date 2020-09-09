@@ -37,11 +37,14 @@ function Admin() {
         let temp = [];
         res.data.forEach((cc) => {
           if (cc.status === "PENDING") temp = Object.assign([], res.data);
+          console.log(cc.certificate_type);
+          console.log("ins", cc);
         });
         for (let i = 0; i < temp.length; i++) {
           temp[i].id = i + 1;
         }
         let merged = [];
+        console.log("temp;", temp);
 
         certTypes.forEach((typ) => {
           let tempType = {
@@ -76,8 +79,8 @@ function Admin() {
         ) : (
           certReq.map((cert, index) => {
             return (
-              <Accordion key={index}>
-                <Card>
+              <Accordion class="acc-main text-center" key={index}>
+                <Card className="table-main">
                   <Card.Header className="tableHeader">
                     <Accordion.Toggle
                       as={Card.Header}
@@ -90,7 +93,7 @@ function Admin() {
                   </Card.Header>
                   <Accordion.Collapse eventKey="0">
                     <Card.Body>
-                      <table className="table cert-table">
+                      <table className="table cert-table text-center">
                         <thead className="thead-dark">
                           <tr>
                             <th scope="col">S.No</th>

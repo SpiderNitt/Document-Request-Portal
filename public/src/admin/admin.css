@@ -22,3 +22,7 @@
 .approveModal {
   max-height: 50% !important;
 }
+
+.table-main {
+  padding: 10px;
+}

@@ -22,8 +22,6 @@ const docFilter = function (req, file, cb) {
 };
 
 function validate_mail(path) {
-    if (path.length == 2 && path[1] == '')
-        path = [path[0]]
     for (index in path) {
 
         let words = path[index].split('@');

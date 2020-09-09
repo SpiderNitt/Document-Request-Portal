@@ -16,7 +16,6 @@ student.post("/certificate_request", async function (req, res) {
             return res.status(400).json({ 'message': req.fileValidationError });
         }
         else if (!req.file) {
-            // OPTIONAL FIL APPROVE GOES HERE
             console.log(req.body.path)
             res.status(400).json({ 'message': 'Please select a file' });
             return;
@@ -39,8 +38,7 @@ student.post("/certificate_request", async function (req, res) {
             }
             final_dest = final_dest + '/' + filename;
             let { type, path, comments } = req.body;
-            if (typeof (path) == String)
-                path = path.split(',');
+            path = path.split(',');
 
 
             let status = "PENDING VERIFICATION"
@@ -56,7 +54,7 @@ student.post("/certificate_request", async function (req, res) {
                 status = "INITIATED REQUEST"
                 await database.History.create({ certificate_id, time, status })
                 for (index in path) {
-                    await database.CertificatePaths.create({ certificate_id, path_no: parseInt(index) + 1, path_email: path[index], path_name: path[index], status: 'PENDING' })
+                    await database.CertificatePaths.create({ certificate_id, path_no: parseInt(index) + 1, path_email: path[index].trim(), path_name: path[index].trim(), status: 'PENDING' })
                 }
 
                 res.status(200).json({ 'message': 'Requested Successfully' })
@@ -169,7 +167,6 @@ student.get('/certificate_history', async function (req, res) {
                 }
             });
             let applier_roll = id_exists.getDataValue('applier_roll')
-            console.log("applier roll? ", applier_roll)
             let response_json = []
             response_json.push({ 'path_email': applier_roll + '@nitt.edu', 'status': 'INITIATED REQUEST', 'time': row.getDataValue('time'), 'comments': id_exists.getDataValue('comments') });
 
@@ -230,7 +227,7 @@ student.get('/certificate_types', async function (req, res) {
         rows.forEach(function (ele) {
             response_json.push({
                 'id': ele.getDataValue('id'),
-                'type': ele.getDataValue('type')
+                'type': ele.getDataValue('name')
             })
         })
         res.status(200).json(response_json);

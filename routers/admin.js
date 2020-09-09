@@ -22,25 +22,19 @@ admin.post('/approve', async function (req, res) {
             return res.status(400).json({ 'message': req.fileValidationError });
         }
         else {
-            if (!req.file) {
-                res.status(400).json({ 'message': 'Please upload a file' });
-            }
-            else {
+            let { certificate_id, comments } = req.body;
+            let rollno = req.jwt_payload.username;
+            let flag = await helpers.approve_decline_rights(req, res, certificate_id);
 
-
-                let { certificate_id, comments } = req.body;
-                let { destination, filename } = req.file;
+            if (req.file) {
+                let { filename } = req.file;
                 let filepath = req.file.path;
                 let initial_dest = appRoot + '/' + filepath;
-                let rollno = req.jwt_payload.username;
-                let flag = await helpers.approve_decline_rights(req, res, certificate_id);
                 if (!flag) {
                     fs.unlinkSync(initial_dest);
                     return;
                 }
-
                 else {
-                    let filename = req.file.filename;
                     let status = rollno + "@nitt.edu APPROVED";
                     try {
                         let row = await database.Certificate.findOne({
@@ -51,49 +45,50 @@ admin.post('/approve', async function (req, res) {
                         })
                         let old_filename = row.getDataValue('file');
                         let applier_roll = row.getDataValue('applier_roll');
-                        let final_dest = appRoot + "/uploads/" + row.getDataValue('applier_roll') + '/' + old_filename;
+                        let final_dest = appRoot + "/uploads/" + applier_roll + '/' + filename;
                         try {
-
-                            console.log("HERE YO");
+                            fs.unlinkSync(appRoot + "/uploads/" + applier_roll + '/' + old_filename);
                             helpers.renameFile(initial_dest, final_dest);
                         }
                         catch (err) {
+                            fs.unlinkSync(initial_dest);
                             console.log(err);
                             res.json(500).json({ 'message': "Some problem with the file upload" });
                             // fs.unlinkSync(final_dest);
                             return;
 
                         }
-
                         await database.Certificate.update({ file: filename, status }, {
                             where: {
                                 id: certificate_id
                             }
                         });
-                        await database.CertificatePaths.update({ status: 'APPROVED', comments }, {
-                            where: {
-                                certificate_id,
-                                path_email: rollno + "@nitt.edu"
-                            }
-                        })
-                        await database.History.create({ certificate_id, status, time: new Date(Date.now()).toISOString() })
-                        res.status(200).json({ 'message': "Approved successfully" });
+
+                        // PROCESS FILE
                     }
                     catch (err) {
                         console.log(err);
-                        res.status(500).json({ 'message': "There was some error uploading the file. Try again later" });
+                        fs.unlinkSync(initial_dest);
+                        res.json(500).json({ 'message': "Some problem with the file upload" });
+                        return;
 
                     }
                 }
             }
+            await database.CertificatePaths.update({ status: 'APPROVED', comments }, {
+                where: {
+                    certificate_id,
+                    path_email: rollno + "@nitt.edu"
+                }
+            })
+            await database.History.create({ certificate_id, status: rollno + "@nitt.edu APPROVED", time: new Date(Date.now()).toISOString() })
+            res.status(200).json({ 'message': "Approved successfully" });
         }
-    });
 
 
-
+    })
 
 });
-
 
 admin.post('/decline', multer().none(), async function (req, res) {
     let { certificate_id, comments } = req.body;
@@ -107,7 +102,7 @@ admin.post('/decline', multer().none(), async function (req, res) {
                     id: certificate_id
                 }
             });
-            await database.CertificatePaths.update({ status: 'DECLINED', comments}, {
+            await database.CertificatePaths.update({ status: 'DECLINED', comments }, {
                 where: {
                     certificate_id,
                     path_email: rollno + "@nitt.edu"
@@ -135,7 +130,8 @@ admin.get("/", async function (req, res) {
         let path_details = await database.CertificatePaths.findAll({
             attributes: ['certificate_id', 'path_no', 'status'],
             where: {
-                path_email: rollno + '@nitt.edu'
+                path_email: rollno + '@nitt.edu',
+                status: 'PENDING'
             }
         });
         let path_objects = []

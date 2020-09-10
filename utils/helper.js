@@ -2,10 +2,9 @@ const uuid = require('uuid');
 const multer = require('multer');
 const database = require('../database/database')
 const fs = require('fs')
+import {MulterError} from 'multer'
 
 function renameFile(oldPath, newPath){
-    console.log("this is old path:: ", oldPath);
-    console.log("this is new path:: ", newPath);
     fs.renameSync(oldPath, newPath, (err)=>{
         if(err) throw err;
     })

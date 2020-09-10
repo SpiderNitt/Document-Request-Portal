@@ -86,7 +86,7 @@ function Admin() {
     <>
       <NavBar screen={1} />
       <h1 className="text-center cert-upl-head">Admin Certificate Portal</h1>
-      <div className="container admin">
+      <div className="container-fluid admin">
         <br />
         {isLoading ? (
           <Loader
@@ -156,7 +156,11 @@ function Admin() {
                                   />
                                 </td>
                                 <td>
-                                  <Upload />
+                                  <Upload ID={index} />
+                                  <span
+                                    className="cancel-btn"
+                                    id={"cancel-btn" + index}
+                                  ></span>
                                 </td>
                                 <td>
                                   <Approve

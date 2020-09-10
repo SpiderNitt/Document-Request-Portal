@@ -35,3 +35,8 @@
   height: 30px;
   background-color: #107dac;
 }
+
+.cancel-btn {
+  color: red;
+  font-size: large;
+}

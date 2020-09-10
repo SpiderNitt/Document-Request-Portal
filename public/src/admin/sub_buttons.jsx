@@ -177,7 +177,29 @@ export const Reject = (props) => {
     </>
   );
 };
-export const Upload = () => <input type="file" id="myfile" name="myfile" />;
+export const Upload = (props) => {
+  return (
+    <>
+      <input
+        type="file"
+        id={"myfile" + props.ID}
+        name="myfile"
+        onChange={(e) => {
+          let cal = "";
+          let cancelbtn = document.getElementById("cancel-btn" + props.ID);
+          if (e.target.value) cal = "&#127335;";
+          else cal = "";
+          console.log(e.target.value);
+          cancelbtn.innerHTML = cal;
+          cancelbtn.onclick = () => {
+            document.getElementById("myfile" + props.ID).value = "";
+            cancelbtn.innerHTML = "";
+          };
+        }}
+      />
+    </>
+  );
+};
 
 export const Download = (props) => (
   <button

@@ -54,6 +54,11 @@ function Upload(props) {
           .post("api/student/certificate_request", cd)
           .then((res) => {
             // console.log("posted");
+            setCount(0);
+            setEmails([]);
+            setFileButton(false);
+            setFileModal(false);
+            setFileName("");
             console.log("ss", res);
           })
           .catch((err) => {

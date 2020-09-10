@@ -18,7 +18,7 @@ export const Approve = (props) => {
       cd.append("certificate", file);
     }
     if (document.getElementById("comments-app").value) {
-      cd.set("comments", document.getElementById("comments").value);
+      cd.set("comments", document.getElementById("comments-app").value);
     }
     cd.set("certificate_id", parseInt(props.certId));
     spider
@@ -72,7 +72,7 @@ export const Approve = (props) => {
             <input
               type="text"
               className="form-control"
-              id="comments"
+              id="comments-app"
               placeholder="Add optional comments"
             />
             {!fileStatus ? (

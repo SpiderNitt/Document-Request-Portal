@@ -26,3 +26,12 @@
 .table-main {
   padding: 10px;
 }
+.req-notif {
+  float: right;
+  border-radius: 50% !important;
+  padding: 3px;
+  text-align: center;
+  width: 30px;
+  height: 30px;
+  background-color: #107dac;
+}

@@ -109,7 +109,11 @@ function Admin() {
                       eventKey="0"
                       className="text-center"
                     >
-                      {cert.certificate_type}
+                      {cert.certificate_type}{" "}
+                      <span className="req-notif">
+                        {" "}
+                        {cert.certificates.length}{" "}
+                      </span>
                     </Accordion.Toggle>
                   </Card.Header>
                   <Accordion.Collapse eventKey="0">

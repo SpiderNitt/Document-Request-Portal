@@ -6,7 +6,9 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Accordion from "react-bootstrap/Accordion";
 import { Card } from "react-bootstrap";
+import Loader from "react-loader-spinner";
 import "./admin.css";
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 
 function Admin() {
   const [certReq, setReq] = useState([]);
@@ -87,7 +89,14 @@ function Admin() {
       <div className="container admin">
         <br />
         {isLoading ? (
-          <p>LOADING</p>
+          <Loader
+            className="text-center"
+            type="Ball-Triangle"
+            color="rgb(13, 19, 41)"
+            height={100}
+            width={100}
+            timeout={3000} //3 secs
+          />
         ) : (
           certReq.map((cert, index) => {
             return (

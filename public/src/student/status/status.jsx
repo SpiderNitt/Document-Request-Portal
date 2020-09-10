@@ -4,6 +4,8 @@ import "./status.css";
 import { FaDownload, FaHistory } from "react-icons/fa";
 import Timeline from "../timeline/timeline";
 import { Collapse } from "react-bootstrap";
+import Loader from "react-loader-spinner";
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 
 const cert_mapping = {
   1: "Bonafide",
@@ -41,7 +43,6 @@ export default class Status extends React.Component {
       let res = await spider.get("/api/student");
       let certs = res.data;
       cid = Object.assign([], certs);
-      console.log("this is CID shankar:: ", cid);
       this.setState({ certData: cid });
 
       for (const cc of cid) {
@@ -87,7 +88,14 @@ export default class Status extends React.Component {
     return (
       <div id="cert-status">
         {this.state.loading ? (
-          <p>LOADING</p>
+          <Loader
+            className="text-center"
+            type="Ball-Triangle"
+            color="rgb(13, 19, 41)"
+            height={100}
+            width={100}
+            timeout={3000} //3 secs
+          />
         ) : (
           <>
             <div className="page-header row justify-content-center">

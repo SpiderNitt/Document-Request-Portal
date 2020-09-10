@@ -47,9 +47,7 @@ function Upload(props) {
         cd.append("certificate", fileUpload);
 
         cd.set("path", emails.toString());
-        for (var value of cd.values()) {
-          console.log(value);
-        }
+
         spider
           .post("api/student/certificate_request", cd)
           .then((res) => {
@@ -59,7 +57,7 @@ function Upload(props) {
             setFileButton(false);
             setFileModal(false);
             setFileName("");
-            console.log("ss", res);
+            // console.log("ss", res);
           })
           .catch((err) => {
             console.log(err);

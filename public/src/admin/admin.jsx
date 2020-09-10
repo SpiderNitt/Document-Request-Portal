@@ -17,7 +17,7 @@ function Admin() {
     spider
       .get("/api/student/certificate_types")
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         res.data.map((x) => {
           x.certificate_type_id = x.id;
           x.certificate_type = x.type;
@@ -32,19 +32,31 @@ function Admin() {
       });
     spider
       .get("/api/admin")
-      .then((res) => {
-        console.log(res);
+      .then(async (res) => {
+        // console.log(res);
         let temp = [];
         res.data.forEach((cc) => {
           if (cc.status === "PENDING") temp = Object.assign([], res.data);
-          console.log(cc.certificate_type);
-          console.log("ins", cc);
         });
         for (let i = 0; i < temp.length; i++) {
+          let approval_list = [];
+          temp[i].approved = [];
+
+          let res = await spider.get("/api/student/certificate_history", {
+            params: { id: temp[i].certificate_id },
+          });
+          res.data.forEach((t) => {
+            if (t.status === "APPROVED") {
+              approval_list.push(t.path_email);
+              console.log(approval_list);
+            }
+          });
+          temp[i].approved = approval_list;
+          // console.log("for:", approval_list[0]);
           temp[i].id = i + 1;
         }
         let merged = [];
-        console.log("temp;", temp);
+        // console.log("temp;", temp[0].approved[0]);
 
         certTypes.forEach((typ) => {
           let tempType = {
@@ -63,7 +75,7 @@ function Admin() {
         });
         setReq(Object.assign(certReq, merged));
         setLoad(false);
-        console.log(certReq);
+        console.log("final:", certReq[1].certificates[0]);
       })
       .catch((err) => console.log(err));
   }, []);
@@ -79,7 +91,7 @@ function Admin() {
         ) : (
           certReq.map((cert, index) => {
             return (
-              <Accordion class="acc-main text-center" key={index}>
+              <Accordion className="acc-main text-center" key={index}>
                 <Card className="table-main">
                   <Card.Header className="tableHeader">
                     <Accordion.Toggle
@@ -99,6 +111,7 @@ function Admin() {
                             <th scope="col">S.No</th>
                             <th scope="col">Roll No.</th>
                             <th scope="col">Status</th>
+                            <th scope="col">Previous Approvals</th>
                             <th scope="col">Certificate file</th>
                             <th scope="col">Upload Certificate</th>
                             <th scope="col">Decision</th>
@@ -112,6 +125,16 @@ function Admin() {
                                 <th>{data.id}</th>
                                 <td>{data.applier_roll}</td>
                                 <th>{data.status}</th>
+                                <td>
+                                  {data.approved.map((emails, index) => {
+                                    return (
+                                      <div key={index}>
+                                        {emails}
+                                        <br />
+                                      </div>
+                                    );
+                                  })}
+                                </td>
                                 <td>
                                   <Download
                                     certId={data.certificate_id}

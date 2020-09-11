@@ -90,7 +90,7 @@ export default class Status extends React.Component {
         {this.state.loading ? (
           <Loader
             className="text-center"
-            type="Ball-Triangle"
+            type="Audio"
             color="rgb(13, 19, 41)"
             height={100}
             width={100}

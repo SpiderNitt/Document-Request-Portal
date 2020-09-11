@@ -2,8 +2,8 @@ import React from "react";
 import "./navbar.css";
 import { Link } from "react-scroll";
 
-import Status from "../status/status"
-import Upload from "../cert-upload/cert-upl"
+// import Status from "../status/status"
+// import Upload from "../cert-upload/cert-upl"
 
 function NavBar(props) {
   const logoutHandler = (e) => {

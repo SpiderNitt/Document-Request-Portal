@@ -2,9 +2,10 @@ import React from "react";
 import spider from "../../utils/API";
 import "./status.css";
 import { FaDownload, FaHistory } from "react-icons/fa";
-import { useEffect } from "react";
 import Timeline from "../timeline/timeline";
 import { Collapse } from "react-bootstrap";
+import Loader from "react-loader-spinner";
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 
 const cert_mapping = {
   1: "Bonafide",
@@ -39,10 +40,9 @@ export default class Status extends React.Component {
     try {
       let cid = [];
       let certHis = Object.assign({}, this.state.certHis);
-      let res = await spider.get("/api");
+      let res = await spider.get("/api/student");
       let certs = res.data;
       cid = Object.assign([], certs);
-      console.log("this is CID shankar:: ", cid);
       this.setState({ certData: cid });
 
       for (const cc of cid) {
@@ -50,17 +50,17 @@ export default class Status extends React.Component {
         // let cc = cid[index];
         // console.log(cc);
 
-        let response = await spider.get("/api/certificate_history", {
+        let response = await spider.get("/api/student/certificate_history", {
           params: { id: cc.id },
         });
-        console.log("response??:", response);
+        // console.log("response??:", response);
         certHis[cc.id] = response.data;
-        console.log(certHis);
+        // console.log(certHis);
 
         // res.data.id = cc.id;
         // certHis.push(res.data);
       }
-      console.log("OUTSIDE IFF");
+      // console.log("OUTSIDE IFF");
       this.setState({
         certHis,
         loading: false,
@@ -70,12 +70,9 @@ export default class Status extends React.Component {
     }
   };
   handleDownload = async (id, type) => {
-    const usertoken = JSON.parse(
-      localStorage.getItem("bonafideNITT2020user")
-    ).split(".")[1];
-    const decodedData = JSON.parse(window.atob(usertoken));
-    const roll = decodedData.data.username;
-    let response = await spider.get("api/certificate_download", {
+    const usertoken = JSON.parse(localStorage.getItem("bonafideNITT2020user"));
+    const roll = usertoken.user;
+    let response = await spider.get("api/student/certificate_download", {
       params: { id },
       responseType: "blob",
     });
@@ -91,13 +88,20 @@ export default class Status extends React.Component {
     return (
       <div id="cert-status">
         {this.state.loading ? (
-          <p>LOADING</p>
+          <Loader
+            className="text-center"
+            type="Audio"
+            color="rgb(13, 19, 41)"
+            height={100}
+            width={100}
+            timeout={3000} //3 secs
+          />
         ) : (
           <>
             <div className="page-header row justify-content-center">
               <h1>Your Certificates</h1>
             </div>
-            <div className="container req-status">
+            <div className="container-fluid req-status">
               <table className="table cert-table status-table">
                 <thead className="thead-dark">
                   <tr>
@@ -130,7 +134,7 @@ export default class Status extends React.Component {
                               <FaHistory
                                 className="table-icons-item history"
                                 onClick={() => {
-                                  console.log("clicked");
+                                  // console.log("clicked");
                                   this.handleToggle(data.id);
                                 }}
                               />

@@ -91,7 +91,7 @@ function Admin() {
         {isLoading ? (
           <Loader
             className="text-center"
-            type="Ball-Triangle"
+            type="Audio"
             color="rgb(13, 19, 41)"
             height={100}
             width={100}

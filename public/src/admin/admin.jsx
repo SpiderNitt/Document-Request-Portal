@@ -164,6 +164,7 @@ function Admin() {
                                 </td>
                                 <td>
                                   <Approve
+                                    ID={index}
                                     certId={data.certificate_id}
                                     status={data.status}
                                   />{" "}

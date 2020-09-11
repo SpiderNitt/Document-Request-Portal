@@ -6,16 +6,18 @@ import { Modal } from "react-bootstrap";
 export const Approve = (props) => {
   const [showModal, setModal] = useState(false);
   const [fileStatus, setFileStatus] = useState(false);
-  const [, updateState] = useState();
-  // const forceUpdate = React.useCallback(() => updateState({}), []);
-  var file;
+  // const [, updateState] = useState();
+
   const handleClose = () => setModal(false);
+
   const approveHandler = (e) => {
-    console.log("clicke");
     e.preventDefault();
     let cd = new FormData();
     if (fileStatus) {
-      cd.append("certificate", file);
+      cd.append(
+        "certificate",
+        document.getElementById("myfile" + props.ID).files[0]
+      );
     }
     if (document.getElementById("comments-app").value) {
       cd.set("comments", document.getElementById("comments-app").value);
@@ -26,8 +28,8 @@ export const Approve = (props) => {
       .then((res) => {
         console.log("Approved");
         setModal(false);
-        updateState({}, []);
-        // window.location.reload();
+        // updateState({}, []);
+        window.location.reload();
       })
       .catch((err) => {
         console.log(err);
@@ -42,14 +44,9 @@ export const Approve = (props) => {
         type="button"
         onClick={(e) => {
           setModal(true);
-          console.log("click");
-          file =
-            e.target.parentNode.parentNode.childNodes[5].childNodes[0].files[0];
-          console.log(file);
+          let file = document.getElementById("myfile" + props.ID).files[0];
           if (file) setFileStatus(true);
           else setFileStatus(false);
-
-          console.log(fileStatus);
         }}
       >
         Approve
@@ -103,7 +100,6 @@ export const Reject = (props) => {
   const [showModal, setModal] = useState(false);
   const handleClose = () => setModal(false);
   const declineHandler = (e) => {
-    console.log("clicke");
     e.preventDefault();
     let comments = "";
     if (document.getElementById("comments-dec").value) {
@@ -117,7 +113,7 @@ export const Reject = (props) => {
       .then((res) => {
         console.log("Declined");
         setModal(false);
-        // window.location.reload();
+        window.location.reload();
       })
       .catch((err) => {
         console.log(err);

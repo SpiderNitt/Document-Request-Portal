@@ -46,7 +46,7 @@ function Upload(props) {
     let certType = document.getElementById("certType").value;
     // if (emailCount && fileName && certType) {
     let cd = new FormData();
-    if (certType === "Bonafide") cd.set("type", parseInt(1));
+    if (certType === "bonafide") cd.set("type", parseInt(1));
     else cd.set("type", parseInt(2));
     cd.append("certificate", fileUpload);
 

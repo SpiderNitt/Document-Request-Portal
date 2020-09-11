@@ -101,7 +101,7 @@ export default class Status extends React.Component {
             <div className="page-header row justify-content-center">
               <h1>Your Certificates</h1>
             </div>
-            <div className="container req-status">
+            <div className="container-fluid req-status">
               <table className="table cert-table status-table">
                 <thead className="thead-dark">
                   <tr>

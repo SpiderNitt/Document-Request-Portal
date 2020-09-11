@@ -31,8 +31,8 @@
   border-radius: 50% !important;
   padding: 3px;
   text-align: center;
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
   background-color: #107dac;
 }
 
@@ -43,4 +43,13 @@
 
 .card-header {
   cursor: pointer;
+}
+
+
+.placeholder-nil{
+  font-size: 1.5rem;
+}
+
+.acc-title{
+  font-size: 1.5rem;
 }

@@ -201,8 +201,8 @@ function Upload(props) {
                     Show Uploaded File
                   </button>
                 ) : (
-                  <></>
-                )}
+                    <></>
+                  )}
                 <button
                   type="submit"
                   className="btn btn-success"
@@ -224,6 +224,7 @@ function Upload(props) {
             keyboard={false}
             dialogClassName="approveModal"
             aria-labelledby="contained-modal-title-vcenter"
+            className='certModal'
           >
             <Modal.Header closeButton>
               <Modal.Title id="contained-modal-title-vcenter">
@@ -241,32 +242,43 @@ function Upload(props) {
                   timeout={3000} //3 secs
                 />
               ) : (
-                <>
-                  <h5 className="text-center">
-                    <strong>Confirm the email priority list:</strong>
-                  </h5>
-                  <br />
-                  <ul className="list-group text-center">
-                    {emails.map((email, index) => {
-                      return (
-                        <li key={index} className="list-group-item">
-                          {email}
-                        </li>
-                      );
-                    })}
-                  </ul>
-                  <br />
-                  <div className="text-center">
-                    <button
-                      type="submit"
-                      className="btn btn-primary"
-                      onClick={certificateRequest}
-                    >
-                      Approve
+                  <>
+                    <h5 className="text-center">
+                      <strong>Confirm the order of approval:</strong>
+                    </h5>
+                    <br />
+                    <ul className="modal-pop list-group text-center">
+                      <li className="modal-pop list-group-item">{user + "@nitt.edu"}</li>
+                      {emails.map((email, index) => {
+                        return (
+
+                          <li key={index} className="modal-pop list-group-item">
+                            <div className="d-block text-center">
+                              <img
+                                src="/down.svg"
+                                alt="Down arrow"
+                                height="60"
+                                width="30"
+                              />
+                            </div>
+                            {email}
+
+                          </li>
+                        );
+                      })}
+                    </ul>
+                    <br />
+                    <div className="text-center">
+                      <button
+                        type="submit"
+                        className="btn btn-primary"
+                        onClick={certificateRequest}
+                      >
+                        Submit
                     </button>
-                  </div>
-                </>
-              )}
+                    </div>
+                  </>
+                )}
             </Modal.Body>
           </Modal>
 
@@ -275,8 +287,8 @@ function Upload(props) {
               {emails.length > 0 ? (
                 <li className="list-group-item">{user + "@nitt.edu"}</li>
               ) : (
-                <></>
-              )}
+                  <></>
+                )}
               {emails.map((email, index) => {
                 return (
                   <div key={index}>
@@ -323,7 +335,7 @@ function Upload(props) {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <embed src={pdf} className="embed-modal" />
+            <embed src={pdf} className="embed-modal" height={document.documentElement.clientHeight * 0.75}/>
           </Modal.Body>
         </Modal>
         <CertificateTemplate fileType={file} />

@@ -45,10 +45,10 @@
 
 embed {
   width: 100%;
-  height: 100%;
+  height: 90vh%;
 }
 .modal-content {
-  height: 90vh;
+  height: auto;
 }
 
 .small-link {
@@ -67,4 +67,14 @@ div > div > a {
   #anchorClick {
     display: none;
   }
+}
+
+
+.modal-pop {
+  border: none;
+  margin-bottom: 0;
+}
+
+.cert-modal {
+  height: auto;
 }

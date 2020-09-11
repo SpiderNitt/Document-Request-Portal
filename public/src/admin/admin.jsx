@@ -10,6 +10,8 @@ import Loader from "react-loader-spinner";
 import "./admin.css";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 
+import { FaListAlt } from 'react-icons/fa'
+
 function Admin() {
   const [certReq, setReq] = useState([]);
   const [isLoading, setLoad] = useState(true);
@@ -98,94 +100,102 @@ function Admin() {
             timeout={3000} //3 secs
           />
         ) : (
-          certReq.map((cert, index) => {
-            return (
-              <Accordion className="acc-main text-center" key={index}>
-                <Card className="table-main">
-                  <Card.Header className="tableHeader">
-                    <Accordion.Toggle
-                      as={Card.Header}
-                      variant="link"
-                      eventKey="0"
-                      className="text-center card-header"
-                    >
-                      {cert.certificate_type}
-                      <span className="req-notif">
-                        {" "}
-                        {cert.certificates.length}{" "}
-                      </span>
-                    </Accordion.Toggle>
-                  </Card.Header>
-                  <Accordion.Collapse eventKey="0">
-                    <Card.Body>
-                      <table className="table cert-table">
-                        <thead className="thead-dark">
-                          <tr>
-                            <th scope="col">S.No</th>
-                            <th scope="col">Roll No.</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Previous Approvals</th>
-                            <th scope="col">Certificate file</th>
-                            <th scope="col">Upload Certificate</th>
-                            <th scope="col">Decision</th>
-                          </tr>
-                        </thead>
-
-                        <tbody>
-                          {cert.certificates.map((data, index) => {
-                            return (
-                              <tr key={index}>
-                                <th>{data.id}</th>
-                                <td>{data.applier_roll}</td>
-                                <th>{data.status}</th>
-                                <td>
-                                  {data.approved.map((emails, index) => {
-                                    return (
-                                      <div key={index}>
-                                        {emails}
-                                        <br />
-                                      </div>
-                                    );
-                                  })}
-                                </td>
-                                <td>
-                                  <Download
-                                    certId={data.certificate_id}
-                                    roll={data.applier_roll}
-                                    certType={cert.certificate_type}
-                                  />
-                                </td>
-                                <td>
-                                  <Upload ID={index} />
-                                  <span
-                                    className="cancel-btn"
-                                    id={"cancel-btn" + index}
-                                  ></span>
-                                </td>
-                                <td>
-                                  <Approve
-                                    ID={index}
-                                    certId={data.certificate_id}
-                                    status={data.status}
-                                  />{" "}
-                                  <Reject
-                                    certId={data.certificate_id}
-                                    roll={data.applier_roll}
-                                    status={data.status}
-                                  />
-                                </td>
+            certReq.map((cert, index) => {
+              return (
+                <Accordion className="acc-main text-center" key={index}>
+                  <Card className="table-main">
+                    <Card.Header className="tableHeader">
+                      <Accordion.Toggle
+                        as={Card.Header}
+                        variant="link"
+                        eventKey="0"
+                        className="text-center card-header acc-title"
+                      >
+                        {cert.certificate_type}
+                        <p className="req-notif">
+                          {" "}
+                          {cert.certificates.length}{" "}
+                        </p>
+                      </Accordion.Toggle>
+                    </Card.Header>
+                    <Accordion.Collapse eventKey="0">
+                      <Card.Body>
+                        {cert.certificates.length == 0 ? <p className="placeholder-nil text-center"><FaListAlt className='mr-2'/>No pending certificates </p> : <>
+                          <table className="table cert-table">
+                            <thead className="thead-dark">
+                              <tr>
+                                <th scope="col">S.No</th>
+                                <th scope="col">Roll No.</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Previous Approvals</th>
+                                <th scope="col">Certificate file</th>
+                                <th scope="col">Upload Certificate</th>
+                                <th scope="col">Decision</th>
                               </tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
-                    </Card.Body>
-                  </Accordion.Collapse>
-                </Card>
-              </Accordion>
-            );
-          })
-        )}
+                            </thead>
+
+                            <tbody>
+                              {
+                                cert.certificates.map((data, index) => {
+                                  return (
+                                    <tr key={index}>
+                                      <th>{data.id}</th>
+                                      <td>{data.applier_roll}</td>
+                                      <th>{data.status}</th>
+                                      <td>
+                                        {data.approved.length == 0 ? '-' :
+                                          data.approved.map((emails, index) => {
+                                            return (
+                                              <div key={index}>
+                                                {emails}
+                                                <br />
+                                              </div>
+                                            );
+                                          })}
+                                      </td>
+                                      <td>
+                                        <Download
+                                          certId={data.certificate_id}
+                                          roll={data.applier_roll}
+                                          certType={cert.certificate_type}
+                                        />
+                                      </td>
+                                      <td>
+                                        <Upload ID={index} />
+                                        <span
+                                          className="cancel-btn"
+                                          id={"cancel-btn" + index}
+                                        ></span>
+                                      </td>
+                                      <td>
+                                        <Approve
+                                          ID={index}
+                                          roll={data.applier_roll}
+                                          certId={data.certificate_id}
+                                          status={data.status}
+                                          certType={cert.certificate_type}
+                                        />{" "}
+                                        <Reject
+                                          roll={data.applier_roll}
+                                          certId={data.certificate_id}
+                                          status={data.status}
+                                          certType={cert.certificate_type}
+                                        />
+                                      </td>
+                                    </tr>
+                                  );
+                                })}
+                            </tbody>
+                          </table>
+                        </>
+                        }
+                      </Card.Body>
+                    </Accordion.Collapse>
+                  </Card>
+                </Accordion>
+              );
+            })
+          )}
         <ToastContainer
           position="top-center"
           autoClose={2000}

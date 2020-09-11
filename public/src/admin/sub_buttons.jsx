@@ -60,7 +60,7 @@ export const Approve = (props) => {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Approval - final
+          Are you sure you want to approve the {props.certType} for {props.roll} ? <br/>
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -80,11 +80,11 @@ export const Approve = (props) => {
                 <br />
               </>
             ) : (
-              <></>
-            )}
+                <></>
+              )}
             <button
               type="submit"
-              className="btn btn-primary"
+              className="btn btn-success"
               onClick={approveHandler}
             >
               Approve
@@ -147,25 +147,26 @@ export const Reject = (props) => {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Decline - final
+          Are you sure you want to decline the {props.certType} for {props.roll} ? <br/>
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className="form-group comments-main text-center">
-            <label htmlFor="comments-dec">Comments (Optional)</label>
+            <label htmlFor="comments-dec">Enter Comments (Optional)</label>
             <input
               type="text"
               className="form-control"
               id="comments-dec"
               placeholder="Add optional comments"
             />
+            <br />
 
             <button
               type="submit"
-              className="btn btn-primary"
+              className="btn btn-danger"
               onClick={declineHandler}
-            >
-              Approve
+            > 
+              Decline
             </button>
           </div>
         </Modal.Body>

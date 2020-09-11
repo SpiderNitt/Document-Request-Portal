@@ -77,11 +77,12 @@ export const Approve = (props) => {
                 <p className="file-check-msg">
                   <strong>No file uploaded! Proceed with approval?</strong>
                 </p>
-                <br />
+              
               </>
             ) : (
                 <></>
               )}
+                <br />
             <button
               type="submit"
               className="btn btn-success"

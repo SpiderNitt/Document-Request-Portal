@@ -107,9 +107,9 @@ function Admin() {
                       as={Card.Header}
                       variant="link"
                       eventKey="0"
-                      className="text-center"
+                      className="text-center card-header"
                     >
-                      {cert.certificate_type}{" "}
+                      {cert.certificate_type}
                       <span className="req-notif">
                         {" "}
                         {cert.certificates.length}{" "}

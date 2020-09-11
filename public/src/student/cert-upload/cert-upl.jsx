@@ -227,7 +227,7 @@ function Upload(props) {
           >
             <Modal.Header closeButton>
               <Modal.Title id="contained-modal-title-vcenter">
-                Approval - final
+                Submit Request - final
               </Modal.Title>
             </Modal.Header>
             <Modal.Body>
@@ -246,7 +246,15 @@ function Upload(props) {
                     <strong>Confirm the email priority list:</strong>
                   </h5>
                   <br />
-                  <h5 className="text-center">{emails}</h5>
+                  <ul className="list-group text-center">
+                    {emails.map((email, index) => {
+                      return (
+                        <li key={index} className="list-group-item">
+                          {email}
+                        </li>
+                      );
+                    })}
+                  </ul>
                   <br />
                   <div className="text-center">
                     <button

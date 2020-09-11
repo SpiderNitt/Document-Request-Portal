@@ -40,3 +40,7 @@
   color: red;
   font-size: large;
 }
+
+.card-header {
+  cursor: pointer;
+}

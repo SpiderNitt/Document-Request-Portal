@@ -81,8 +81,8 @@ admin.post('/approve', async function (req, res) {
                     path_email: rollno + "@nitt.edu"
                 }
             })
-            await database.Certificate.update({ status: rollno + "@nitt.edu APPROVED"}, {
-                where:{
+            await database.Certificate.update({ status: rollno + "@nitt.edu APPROVED" }, {
+                where: {
                     id: certificate_id
                 }
             })
@@ -155,7 +155,7 @@ admin.get("/", async function (req, res) {
 
             if (path_no == 1 && status === 'PENDING') {
                 const ele = await database.Certificate.findOne({
-                    attributes: ['applier_roll', 'type'],
+                    attributes: ['applier_roll', 'type', 'address', 'postal_status', 'email_status', 'receipt', 'email_address'],
                     where: {
                         id: certificate_id
                     }
@@ -164,7 +164,12 @@ admin.get("/", async function (req, res) {
                     applier_roll: ele.getDataValue('applier_roll'),
                     certificate_type: ele.getDataValue('type'),
                     certificate_id,
-                    status
+                    status,
+                    postal_status: ele.getDataValue('postal_status'),
+                    email_status: ele.getDataValue('email_status'),
+                    address: ele.getDataValue('address'),
+                    receipt: ele.getDataValue('receipt'),
+                    email: ele.getDataValue('email_address')
                 })
             }
             else if (path_no != 1) {
@@ -177,7 +182,7 @@ admin.get("/", async function (req, res) {
                 });
                 if (row != null) {
                     const ele = await database.Certificate.findOne({
-                        attributes: ['applier_roll', 'type'],
+                        attributes: ['applier_roll', 'type', 'address', 'postal_status', 'email_status', 'receipt', 'email_address'],
                         where: {
                             id: certificate_id
                         }
@@ -186,7 +191,14 @@ admin.get("/", async function (req, res) {
                         applier_roll: ele.getDataValue('applier_roll'),
                         certificate_type: ele.getDataValue('type'),
                         certificate_id,
-                        status
+                        status,
+                        postal_status: ele.getDataValue('postal_status'),
+                        email_status: ele.getDataValue('email_status'),
+                        address: ele.getDataValue('address'),
+                        receipt: ele.getDataValue('receipt'),
+                        email: ele.getDataValue('email_address')
+
+
                     })
                 }
 

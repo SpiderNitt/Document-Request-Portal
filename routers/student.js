@@ -37,7 +37,18 @@ student.post("/certificate_request", async function (req, res) {
                 return;
             }
             final_dest = final_dest + '/' + filename;
-            let { type, path, comments } = req.body;
+            if(!req.body.email && !req.body.address) 
+            {
+                res.status(400).json({'message': 'At least email or address must be present'});
+                return;
+            }
+            if(!req.body.receipt){
+
+                res.status(400).json({'message': 'No receipt number specified'});
+                return;
+            }
+             
+            let { type, path, comments, email, address, receipt } = req.body;
             path = path.split(',');
 
 
@@ -47,7 +58,7 @@ student.post("/certificate_request", async function (req, res) {
                     res.status(400).json({ 'message': 'All mail IDs must end with nitt.edu' })
                     return;
                 }
-                let response = await database.Certificate.create({ type, applier_roll, file: filename, status, comments });
+                let response = await database.Certificate.create({ type, applier_roll, file: filename, status, comments, email_address:email, address, receipt});
 
                 let certificate_id = response.getDataValue('id');
                 let time = new Date(Date.now()).toISOString();
@@ -75,7 +86,10 @@ student.get("/", async function (req, res) {
         attributes: [
             'id',
             'type',
-            'status'
+            'status',
+            'postal_status',
+            'email_status',
+            'email_address'
         ],
         where: {
             applier_roll: rollno
@@ -83,7 +97,7 @@ student.get("/", async function (req, res) {
     });
     let response_json = []
     rows.forEach(function (ele) {
-        response_json.push({ 'id': ele.getDataValue('id'), 'type': ele.getDataValue('type'), 'status': ele.getDataValue('status') })
+        response_json.push({ 'id': ele.getDataValue('id'), 'type': ele.getDataValue('type'), 'status': ele.getDataValue('status'), 'postal_status': ele.getDataValue('postal_status'), 'email_status': ele.getDataValue('email_status'), 'email_address': ele.getDataValue('email_address') })
     })
 
     res.status(200).json(response_json);

@@ -64,6 +64,10 @@ const Certificate = sequelize.define('certificates', {
         type: DataTypes.STRING,
         allowNull: true
     },
+    email_address : {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
     email_status:{
         type: DataTypes.STRING,
         allowNull: true

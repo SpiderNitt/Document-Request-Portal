@@ -11,6 +11,7 @@ function Certificate(props) {
     <div className="row justify-content-center">
       <object
         data={docpath}
+        aria-label={props.doc}
         type="application/pdf"
         className="docView"
       ></object>

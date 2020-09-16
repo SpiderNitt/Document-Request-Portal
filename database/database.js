@@ -63,6 +63,26 @@ const Certificate = sequelize.define('certificates', {
     comments: {
         type: DataTypes.STRING,
         allowNull: true
+    },
+    email_address : {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    email_status:{
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    postal_status:{
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    address:{
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    receipt: {
+        type: DataTypes.STRING,
+        allowNull: true
     }
 }, {
     freezeTableName: true
@@ -132,6 +152,7 @@ const CertificatePaths = sequelize.define('certificate_paths', {
 }, {
     freezeTableName: true
 })
+
 
 
 async function test_conn() {

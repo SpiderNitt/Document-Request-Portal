@@ -13,11 +13,13 @@ export const Approve = (props) => {
   const approveHandler = (e) => {
     e.preventDefault();
     let cd = new FormData();
-    if (fileStatus) {
-      cd.append(
-        "certificate",
-        document.getElementById("myfile" + props.ID).files[0]
-      );
+    if(props.certType === "Bonafide") {
+      if (fileStatus) {
+        cd.append(
+          "certificate",
+          document.getElementById("myfile" + props.ID).files[0]
+        );
+      }
     }
     if (document.getElementById("comments-app").value) {
       cd.set("comments", document.getElementById("comments-app").value);
@@ -44,12 +46,14 @@ export const Approve = (props) => {
         type="button"
         onClick={(e) => {
           setModal(true);
-          let file = document.getElementById("myfile" + props.ID).files[0];
-          if (file) setFileStatus(true);
-          else setFileStatus(false);
+          if(props.certType == "Bonafide") {
+            let file = document.getElementById("myfile" + props.ID).files[0];
+            if (file) setFileStatus(true);
+            else setFileStatus(false);
+          }
         }}
       >
-        Approve
+        Verify
       </button>
       <Modal
         show={showModal}
@@ -72,7 +76,7 @@ export const Approve = (props) => {
               id="comments-app"
               placeholder="Add optional comments"
             />
-            {!fileStatus ? (
+            {!fileStatus && props.certType === "Bonafide" ? (
               <>
                 <p className="file-check-msg">
                   <strong>No file uploaded! Proceed with approval?</strong>
@@ -88,7 +92,153 @@ export const Approve = (props) => {
               className="btn btn-success"
               onClick={approveHandler}
             >
-              Approve
+              Verify
+            </button>
+          </div>
+        </Modal.Body>
+      </Modal>
+    </>
+  );
+};
+
+export const AddEmailDetails = (props) => {
+  const [showModal, setModal] = useState(false);
+
+  const handleClose = () => setModal(false);
+
+  const approveHandler = (e) => {
+    e.preventDefault();
+    let data = new FormData();
+    
+    if (document.getElementById("email-body").value) {
+      data.set("email_body", document.getElementById("email-body").value);
+    }
+    // data.set("certificate_id", parseInt(props.certId));
+    spider
+      .post("", data)
+      .then((res) => {
+        console.log("Added email details");
+        setModal(false);
+        window.location.reload();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  return (
+    <>
+      <button
+        className="btn btn-success p-1 m-1"
+        width="50"
+        type="button"
+        onClick={(e) => {
+          setModal(true);
+        }}
+      >
+        Add Email Details
+      </button>
+      <Modal
+        show={showModal}
+        onHide={handleClose}
+        keyboard={false}
+        dialogClassName="approveModal"
+        aria-labelledby="contained-modal-title-vcenter"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+          Enter email body for sending {props.certType} to {props.roll}<br/>
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="form-group comments-main text-center">
+            <label htmlFor="comments-app">Email Body</label>
+            <textarea
+              type="text"
+              className="form-control"
+              id="email-body"
+              placeholder="Add email body"
+            />
+            <br />
+            <button
+              type="submit"
+              className="btn btn-success"
+              onClick={approveHandler}
+            >
+              Submit
+            </button>
+          </div>
+        </Modal.Body>
+      </Modal>
+    </>
+  );
+};
+
+export const AddPostalDetails = (props) => {
+  const [showModal, setModal] = useState(false);
+
+  const handleClose = () => setModal(false);
+
+  const approveHandler = (e) => {
+    e.preventDefault();
+    let data = new FormData();
+    
+    if (document.getElementById("postal").value) {
+      data.set("postal", document.getElementById("postal").value);
+    }
+    // data.set("certificate_id", parseInt(props.certId));
+    spider
+      .post("", data)
+      .then((res) => {
+        console.log("Added postal details");
+        setModal(false);
+        window.location.reload();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  return (
+    <>
+      <button
+        className="btn btn-success p-1 m-1"
+        width="50"
+        type="button"
+        onClick={(e) => {
+          setModal(true);
+        }}
+      >
+        Add Postal Details
+      </button>
+      <Modal
+        show={showModal}
+        onHide={handleClose}
+        keyboard={false}
+        dialogClassName="approveModal"
+        aria-labelledby="contained-modal-title-vcenter"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+          Enter details for sending {props.certType} to {props.roll} by post<br/>
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="form-group comments-main text-center">
+            <label htmlFor="comments-app">Postal Details</label>
+            <textarea
+              type="text"
+              className="form-control"
+              id="postal"
+              placeholder="Add email body"
+            />
+            <br />
+            <button
+              type="submit"
+              className="btn btn-success"
+              onClick={approveHandler}
+            >
+              Submit
             </button>
           </div>
         </Modal.Body>

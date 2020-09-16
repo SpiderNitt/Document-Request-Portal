@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import spider from "../utils/API";
 import NavBar from "../student/navbar/navbar";
-import { Approve, Reject, Upload, Download } from "./sub_buttons";
+import { Approve, Reject, Upload, Download, AddEmailDetails, AddPostalDetails } from "./sub_buttons";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Accordion from "react-bootstrap/Accordion";
@@ -78,6 +78,7 @@ function Admin() {
           merged.push(tempType);
         });
         setReq(Object.assign(certReq, merged));
+        console.log(certReq);
         setLoad(false);
         console.log("final:", certReq[1].certificates[0]);
       })
@@ -120,6 +121,15 @@ function Admin() {
                     </Card.Header>
                     <Accordion.Collapse eventKey="0">
                       <Card.Body>
+                        <div
+                          className="download-details"
+                        >
+                          <button
+                            className="btn btn-success p-1 m-1"
+                          >
+                            Download Details
+                          </button>
+                        </div>
                         {cert.certificates.length == 0 ? <p className="placeholder-nil text-center"><FaListAlt className='mr-2'/>No pending certificates </p> : <>
                           <table className="table cert-table">
                             <thead className="thead-dark">
@@ -129,8 +139,14 @@ function Admin() {
                                 <th scope="col">Status</th>
                                 <th scope="col">Previous Approvals</th>
                                 <th scope="col">Certificate file</th>
-                                <th scope="col">Upload Certificate</th>
+                                {cert.certificate_type === "Bonafide"
+                                ? <th scope="col">Upload Certificate</th>
+                                : <div></div>
+                                }
+                                <th scope="col">Email</th>
+                                <th scope="col">Postal</th>
                                 <th scope="col">Decision</th>
+                                <th></th>
                               </tr>
                             </thead>
 
@@ -139,7 +155,7 @@ function Admin() {
                                 cert.certificates.map((data, index) => {
                                   return (
                                     <tr key={index}>
-                                      <th>{data.id}</th>
+                                      <th>{index + 1}</th>
                                       <td>{data.applier_roll}</td>
                                       <th>{data.status}</th>
                                       <td>
@@ -160,12 +176,31 @@ function Admin() {
                                           certType={cert.certificate_type}
                                         />
                                       </td>
+                                      { cert.certificate_type === "Bonafide"
+                                      ? <td>
+                                          <Upload 
+                                            ID={index}
+                                            roll={data.applier_roll}
+                                            certType={cert.certificate_type}
+                                          />
+                                          <span
+                                            className="cancel-btn"
+                                            id={"cancel-btn" + index}
+                                          ></span>
+                                        </td> 
+                                      : <div></div>
+                                      }
                                       <td>
-                                        <Upload ID={index} />
-                                        <span
-                                          className="cancel-btn"
-                                          id={"cancel-btn" + index}
-                                        ></span>
+                                        <AddEmailDetails 
+                                          roll={data.applier_roll}
+                                          certType={cert.certificate_type}
+                                        />
+                                      </td>
+                                      <td>
+                                        <AddPostalDetails
+                                          roll={data.applier_roll}
+                                          certType={cert.certificate_type}
+                                        />
                                       </td>
                                       <td>
                                         <Approve
@@ -181,6 +216,9 @@ function Admin() {
                                           status={data.status}
                                           certType={cert.certificate_type}
                                         />
+                                      </td>
+                                      <td>
+                                        <input type="checkbox" />
                                       </td>
                                     </tr>
                                   );

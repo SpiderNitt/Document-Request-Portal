@@ -50,6 +50,12 @@
   font-size: 1.5rem;
 }
 
-.acc-title{
+.acc-title {
   font-size: 1.5rem;
+}
+
+.download-details {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
 }

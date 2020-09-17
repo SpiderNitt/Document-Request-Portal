@@ -13,7 +13,7 @@ export const Approve = (props) => {
   const approveHandler = (e) => {
     e.preventDefault();
     let cd = new FormData();
-    if(props.certType === "Bonafide") {
+    if (props.certType === "Bonafide") {
       if (fileStatus) {
         cd.append(
           "certificate",
@@ -31,7 +31,7 @@ export const Approve = (props) => {
         console.log("Approved");
         setModal(false);
         // updateState({}, []);
-        window.location.reload();
+        // window.location.reload();
       })
       .catch((err) => {
         console.log(err);
@@ -46,7 +46,7 @@ export const Approve = (props) => {
         type="button"
         onClick={(e) => {
           setModal(true);
-          if(props.certType == "Bonafide") {
+          if (props.certType == "Bonafide") {
             let file = document.getElementById("myfile" + props.ID).files[0];
             if (file) setFileStatus(true);
             else setFileStatus(false);
@@ -64,7 +64,8 @@ export const Approve = (props) => {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-          Are you sure you want to approve the {props.certType} for {props.roll} ? <br/>
+            Are you sure you want to approve the {props.certType} for{" "}
+            {props.roll} ? <br />
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -81,12 +82,11 @@ export const Approve = (props) => {
                 <p className="file-check-msg">
                   <strong>No file uploaded! Proceed with approval?</strong>
                 </p>
-              
               </>
             ) : (
-                <></>
-              )}
-                <br />
+              <></>
+            )}
+            <br />
             <button
               type="submit"
               className="btn btn-success"
@@ -109,24 +109,24 @@ export const AddEmailDetails = (props) => {
   const approveHandler = (e) => {
     e.preventDefault();
     let data = new FormData();
-    
-    if (document.getElementById("email-body").value) {
-      data.set("email_body", document.getElementById("email-body").value);
-    }
+
     if (document.getElementById("upload-cert").value) {
-      data.set("upload-cert", document.getElementById("upload-cert").value);
+      data.append(
+        "certificate",
+        document.getElementById("upload-cert").files[0]
+      );
+      data.set("certificate_id", parseInt(props.certId));
+      spider
+        .post("/api/admin/email", data)
+        .then((res) => {
+          console.log(res, "Added email details");
+          setModal(false);
+          // window.location.reload();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
-    // data.set("certificate_id", parseInt(props.certId));
-    spider
-      .post("", data)
-      .then((res) => {
-        console.log("Added email details");
-        setModal(false);
-        window.location.reload();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
   };
 
   return (
@@ -150,24 +150,14 @@ export const AddEmailDetails = (props) => {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Enter email body for sending {props.certType} to {props.roll}<br/>
+            Enter email body for sending {props.certType} to {props.roll}
+            <br />
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className="form-group comments-main text-center">
-            <label htmlFor="comments-app">Email Body</label>
-            <textarea
-              type="text"
-              className="form-control"
-              id="email-body"
-              placeholder="Add email body"
-            />
             <br />
-            <input
-              type="file"
-              className="form-control"
-              id="upload-cert"
-            />
+            <input type="file" className="form-control" id="upload-cert" />
             <br />
             <button
               type="submit"
@@ -190,22 +180,22 @@ export const AddPostalDetails = (props) => {
 
   const approveHandler = (e) => {
     e.preventDefault();
-    let data = new FormData();
-    
+
     if (document.getElementById("postal").value) {
-      data.set("postal", document.getElementById("postal").value);
+      spider
+        .post("/api/admin/postal_status", {
+          postal_status: document.getElementById("postal").value,
+          certificate_id: props.certId,
+        })
+        .then((res) => {
+          console.log("Added postal details", res);
+          setModal(false);
+          // window.location.reload();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
-    // data.set("certificate_id", parseInt(props.certId));
-    spider
-      .post("", data)
-      .then((res) => {
-        console.log("Added postal details");
-        setModal(false);
-        window.location.reload();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
   };
 
   return (
@@ -229,17 +219,24 @@ export const AddPostalDetails = (props) => {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-          Enter details for sending {props.certType} to {props.roll} by post<br/>
+            Enter details for sending {props.certType} to {props.roll} by post
+            <br />
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className="form-group comments-main text-center">
             <label htmlFor="comments-app">Postal Details</label>
-            <textarea
+            {/* <textarea
               type="text"
               className="form-control"
               id="postal"
               placeholder="Add email body"
+            /> */}
+            <input
+              type="text"
+              className="form-control"
+              id="postal"
+              placeholder="Add postal information"
             />
             <br />
             <button
@@ -307,7 +304,8 @@ export const Reject = (props) => {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-          Are you sure you want to decline the {props.certType} for {props.roll} ? <br/>
+            Are you sure you want to decline the {props.certType} for{" "}
+            {props.roll} ? <br />
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -325,7 +323,7 @@ export const Reject = (props) => {
               type="submit"
               className="btn btn-danger"
               onClick={declineHandler}
-            > 
+            >
               Decline
             </button>
           </div>

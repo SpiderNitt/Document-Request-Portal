@@ -42,6 +42,7 @@ export default class Status extends React.Component {
       let certHis = Object.assign({}, this.state.certHis);
       let res = await spider.get("/api/student");
       let certs = res.data;
+      console.log(certs);
       cid = Object.assign([], certs);
       this.setState({ certData: cid });
 
@@ -153,7 +154,11 @@ export default class Status extends React.Component {
                           <tr>
                             <td colSpan={4}>
                               {/* {" "}/ */}
-                              <Timeline data={this.state.certHis[data.id]} />
+                              <Timeline
+                                data={this.state.certHis[data.id]}
+                                email={data.email_status}
+                                postal={data.postal_status}
+                              />
                             </td>
                           </tr>
                         </Collapse>

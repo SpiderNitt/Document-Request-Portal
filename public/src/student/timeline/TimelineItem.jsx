@@ -36,6 +36,20 @@ export default function TimelineItem(props) {
             ) : (
               <small></small>
             )}
+            {props.email ? (
+              <small>Email sent to your email address.</small>
+            ) : (
+              <></>
+            )}
+            <br />
+            {props.postal ? (
+              <small>
+                Document sent. <br></br>
+                <i>Postal info: {props.postal}</i>
+              </small>
+            ) : (
+              <></>
+            )}
           </p>
         </div>
       </div>

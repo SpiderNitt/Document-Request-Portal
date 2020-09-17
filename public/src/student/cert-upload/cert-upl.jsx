@@ -69,7 +69,7 @@ function Upload(props) {
     cd.append("certificate", fileUpload);
     if (emailDel) cd.set("email", emailDel);
     if (address) cd.set("address", address);
-    if (file === "X") cd.set("receipt", feeReceipt);
+    if (feeReceipt) cd.set("receipt", feeReceipt);
     cd.set("path", emails.toString());
     for (var pair of cd.entries()) {
       console.log("ccd:", pair[0] + ", " + pair[1]);
@@ -373,26 +373,26 @@ function Upload(props) {
               <br />
 
               {/* Fee Receipt */}
-              {file === "X" ? (
-                <div className="fee-receipt">
-                  <div className="form-group">
-                    <label htmlFor="emailaddr">Fee Reference Number</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="feer"
-                      id="feer"
-                      required
-                      onChange={(e) => {
-                        setFee(e.target.value);
-                        console.log(feeReceipt);
-                      }}
-                    />
-                  </div>
+              {/* {file === "X" ? ( */}
+              <div className="fee-receipt">
+                <div className="form-group">
+                  <label htmlFor="emailaddr">Fee Reference Number</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="feer"
+                    id="feer"
+                    required
+                    onChange={(e) => {
+                      setFee(e.target.value);
+                      console.log(feeReceipt);
+                    }}
+                  />
                 </div>
-              ) : (
+              </div>
+              {/* ) : (
                 <></>
-              )}
+              )} */}
               {file === "X" ? (
                 <></>
               ) : (

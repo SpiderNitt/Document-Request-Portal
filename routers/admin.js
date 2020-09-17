@@ -323,7 +323,7 @@ admin.post('/email', async function (req, res) {
 
                         } else {
                             let email_status = "Email Sent";
-                            await database.CertificateType.update(
+                             database.CertificateType.update(
                                 { email_status }, {
                                 where: {
                                     id: certificate_id

@@ -219,10 +219,10 @@ admin.get("/", async function (req, res) {
 admin.post('/postal_status', async function (req, res) {
     let { certificate_id, postal_status } = req.body;
     let flag = await helpers.approve_decline_rights(req, res, certificate_id);
-    if(flag){    
-        try{
+    if (flag) {
+        try {
             await database.Certificate.update({ postal_status }, {
-                where:{
+                where: {
                     id: certificate_id
                 }
             })
@@ -259,7 +259,7 @@ admin.post('/email', async function (req, res) {
                     id_exists = await database.Certificate.findOne({
                         attributes: ['id', 'email_status'],
                         where: {
-                            id : certificate_id
+                            id: certificate_id
                         }
                     });
 
@@ -267,8 +267,8 @@ admin.post('/email', async function (req, res) {
                         res.status(403).json({ 'message': "You do not have the appropriate permissions to access the resource." })
                         return;
                     }
-                    
-                    try{
+
+                    try {
                         let mailOptions = {
                             from: process.env.EMAIL,
                             to: id_exists.getDataValue('email_status'),
@@ -276,14 +276,14 @@ admin.post('/email', async function (req, res) {
                             text: content,
                             attachments: [
                                 {
-                                      filename: 'transcript',
-                                      path: initial_dest
+                                    filename: 'transcript',
+                                    path: initial_dest
                                 }
                             ]
                         };
-                        let resp= await SendMail(mailOptions);
+                        let resp = await SendMail(mailOptions);
                         fs.unlinkSync(initial_dest);
-                        if(resp)
+                        if (resp)
                             res.status(200).json({ 'message': "Email sent" });
                         else
                             res.status(500).json({ 'message': "Couldn't send email" });
@@ -297,16 +297,16 @@ admin.post('/email', async function (req, res) {
                     }
                 }
             }
-            else{
-                res.status(500).json({ 'message': "Upload certificate and try again" });
+            else {
+                res.status(500).json({ 'message': "Kindly upload the document" });
             }
         }
     })
 
 });
 
-async function SendMail(mailOptions){
-    return new Promise((resolve,reject)=>{
+async function SendMail(mailOptions) {
+    return new Promise((resolve, reject) => {
         let transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
@@ -320,11 +320,11 @@ async function SendMail(mailOptions){
             }
         });
 
-        transporter.sendMail(mailOptions, function(error, info){
+        transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
                 console.log(error);
                 resolve(false); // or use rejcet(false) but then you will have to handle errors
-            } 
+            }
             else {
                 console.log('Email sent: ' + info.response);
                 resolve(true);

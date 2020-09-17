@@ -168,7 +168,7 @@ export const AddEmailDetails = (props) => {
           <>
             <Modal.Header closeButton>
               <Modal.Title id="contained-modal-title-vcenter">
-                Enter email body for sending {props.certType} to {props.roll}
+                Send {props.certType} to {props.roll} by mail
                 <br />
               </Modal.Title>
             </Modal.Header>
@@ -239,7 +239,7 @@ export const AddPostalDetails = (props) => {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Enter details for sending {props.certType} to {props.roll} by post
+            Send {props.certType} to {props.roll} by post
             <br />
           </Modal.Title>
         </Modal.Header>

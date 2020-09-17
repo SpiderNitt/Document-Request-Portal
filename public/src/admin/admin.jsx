@@ -130,8 +130,10 @@ function Admin() {
         excelData.push(temp);
       }
     });
-    const xls = new xlsExport(excelData, "Info");
-    xls.exportToXLS("export.xls");
+    if (excelData.length) {
+      const xls = new xlsExport(excelData, "Info");
+      xls.exportToXLS("export.xls");
+    }
   };
 
   return (
@@ -140,6 +142,15 @@ function Admin() {
       <h1 className="text-center cert-upl-head">Admin Certificate Portal</h1>
       <div className="container-fluid admin">
         <br />
+        <div className="download-details">
+          <button
+            onClick={() => {
+              exportToExcel();
+            }}
+          >
+            Export to Excel
+          </button>
+        </div>
         {isLoading ? (
           <Loader
             className="text-center"

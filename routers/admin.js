@@ -9,8 +9,6 @@ const nodemailer = require('nodemailer');
 const middlewares = require('../utils/middlewares')
 const database = require("../database/database")
 const helpers = require("../utils/helper");
-const { where } = require('sequelize/types');
-
 
 admin.use('/', middlewares.is_admin);
 
@@ -315,7 +313,7 @@ admin.post('/email', async function (req, res) {
                         ]
                     };
 
-                    helpers.mailTransporter.sendMail(mailDetails, function (err, data) {
+                    helpers.mailTransporter.sendMail(mailDetails, async function (err, data) {
                         if (err) {
                             console.log(err);
                             res.status(500).json({ 'message': 'Unable to send mail. Try again later' });
@@ -323,7 +321,7 @@ admin.post('/email', async function (req, res) {
 
                         } else {
                             let email_status = "Email Sent";
-                             database.CertificateType.update(
+                            await database.CertificateType.update(
                                 { email_status }, {
                                 where: {
                                     id: certificate_id

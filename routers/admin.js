@@ -9,6 +9,7 @@ const nodemailer = require('nodemailer');
 const middlewares = require('../utils/middlewares')
 const database = require("../database/database")
 const helpers = require("../utils/helper");
+const { response } = require('express');
 
 admin.use('/', middlewares.is_admin);
 
@@ -130,6 +131,18 @@ admin.post('/decline', multer().none(), async function (req, res) {
 })
 
 admin.get("/", async function (req, res) {
+    
+    /*
+    Get details for which given roll has approved.
+
+    Get details for which given roll has declined.
+
+    Get details for which given jwt roll is pending.
+    If path_no is 1, then push to response
+    else push to response only after path_no -1 has approved
+
+    */
+
     try {
         let rollno = req.jwt_payload.username;
 
@@ -172,9 +185,26 @@ admin.get("/", async function (req, res) {
             let path_object = path_objects[index];
             let { path_no, certificate_id, status } = path_object;
             if (status === 'APPROVED') {
-                const row = await database.CertificatePaths.findAll()
+                const ele = await database.Certificate.findOne({
+                    attributes: ['applier_roll', 'type', 'address', 'postal_status', 'email_status', 'receipt', 'email_address'],
+                    where: {
+                        id: certificate_id
+                    }
+                })
+                response_json.push({
+                    applier_roll: ele.getDataValue('applier_roll'),
+                    certificate_type: ele.getDataValue('type'),
+                    certificate_id,
+                    status,
+                    postal_status: ele.getDataValue('postal_status'),
+                    email_status: ele.getDataValue('email_status'),
+                    address: ele.getDataValue('address'),
+                    receipt: ele.getDataValue('receipt'),
+                    email: ele.getDataValue('email_address')
+                })
+
             }
-            if (path_no == 1 && status === 'PENDING') {
+            else if (path_no == 1 && status === 'PENDING') {
                 const ele = await database.Certificate.findOne({
                     attributes: ['applier_roll', 'type', 'address', 'postal_status', 'email_status', 'receipt', 'email_address'],
                     where: {

@@ -11,7 +11,6 @@ export default class Timeline extends React.Component {
           <div>
             <ul className="timeline timeline-horizontal pre-className-1">
               {this.props.data.map((ele, index) => {
-                console.log(this.props.email_status);
                 if (path_len === index + 1) {
                   return (
                     <TimelineItem

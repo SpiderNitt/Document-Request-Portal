@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import spider from "../utils/API";
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+import Loader from "react-loader-spinner";
 import "./admin.css";
 import { Modal } from "react-bootstrap";
 
@@ -46,7 +48,7 @@ export const Approve = (props) => {
         type="button"
         onClick={(e) => {
           setModal(true);
-          if (props.certType == "Bonafide") {
+          if (props.certType === "Bonafide") {
             let file = document.getElementById("myfile" + props.ID).files[0];
             if (file) setFileStatus(true);
             else setFileStatus(false);
@@ -103,13 +105,14 @@ export const Approve = (props) => {
 
 export const AddEmailDetails = (props) => {
   const [showModal, setModal] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
   const handleClose = () => setModal(false);
 
   const approveHandler = (e) => {
     e.preventDefault();
     let data = new FormData();
-
+    setLoading(true);
     if (document.getElementById("upload-cert").value) {
       data.append(
         "certificate",
@@ -148,26 +151,43 @@ export const AddEmailDetails = (props) => {
         dialogClassName="approveModal"
         aria-labelledby="contained-modal-title-vcenter"
       >
-        <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">
-            Send {props.certType} to {props.roll} by mail
+        {isLoading ? (
+          <>
             <br />
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="form-group comments-main text-center">
+            <Loader
+              className="text-center"
+              type="Audio"
+              color="rgb(13, 19, 41)"
+              height={100}
+              width={100}
+              timeout={3000} //3 secs
+            />
             <br />
-            <input type="file" className="form-control" id="upload-cert" />
-            <br />
-            <button
-              type="submit"
-              className="btn btn-success"
-              onClick={approveHandler}
-            >
-              Submit
-            </button>
-          </div>
-        </Modal.Body>
+          </>
+        ) : (
+          <>
+            <Modal.Header closeButton>
+              <Modal.Title id="contained-modal-title-vcenter">
+                Send {props.certType} to {props.roll} by mail
+                <br />
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="form-group comments-main text-center">
+                <br />
+                <input type="file" id="upload-cert" />
+                <br />
+                <button
+                  type="submit"
+                  className="btn btn-success"
+                  onClick={approveHandler}
+                >
+                  Submit
+                </button>
+              </div>
+            </Modal.Body>
+          </>
+        )}
       </Modal>
     </>
   );

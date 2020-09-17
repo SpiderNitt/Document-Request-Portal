@@ -142,6 +142,15 @@ function Admin() {
       <h1 className="text-center cert-upl-head">Admin Certificate Portal</h1>
       <div className="container-fluid admin">
         <br />
+        <div className="download-details">
+          <button
+            onClick={() => {
+              exportToExcel();
+            }}
+          >
+            Export to Excel
+          </button>
+        </div>
         {isLoading ? (
           <Loader
             className="text-center"
@@ -169,15 +178,6 @@ function Admin() {
                   </Card.Header>
                   <Accordion.Collapse eventKey="0">
                     <Card.Body>
-                      <div className="download-details">
-                        <button
-                          onClick={() => {
-                            exportToExcel();
-                          }}
-                        >
-                          Export to Excel
-                        </button>
-                      </div>
                       {cert.certificates.length === 0 ? (
                         <p className="placeholder-nil text-center">
                           <FaListAlt className="mr-2" />
@@ -228,7 +228,7 @@ function Admin() {
 
                             <tbody>
                               {cert.certificates.map((data, index) => {
-                                if(data.status !== "APPROVED") {
+                                if (data.status !== "APPROVED") {
                                   return (
                                     <tr key={index}>
                                       <th>{index + 1}</th>
@@ -237,14 +237,16 @@ function Admin() {
                                       <td>
                                         {data.approved.length == 0
                                           ? "-"
-                                          : data.approved.map((emails, index) => {
-                                              return (
-                                                <div key={index}>
-                                                  {emails}
-                                                  <br />
-                                                </div>
-                                              );
-                                            })}
+                                          : data.approved.map(
+                                              (emails, index) => {
+                                                return (
+                                                  <div key={index}>
+                                                    {emails}
+                                                    <br />
+                                                  </div>
+                                                );
+                                              }
+                                            )}
                                       </td>
                                       <td>
                                         <Download
@@ -320,7 +322,7 @@ function Admin() {
 
                             <tbody>
                               {cert.certificates.map((data, index) => {
-                                if(data.status === "APPROVED") {
+                                if (data.status === "APPROVED") {
                                   return (
                                     <tr key={index}>
                                       <th>{index + 1}</th>
@@ -329,14 +331,16 @@ function Admin() {
                                       <td>
                                         {data.approved.length == 0
                                           ? "-"
-                                          : data.approved.map((emails, index) => {
-                                              return (
-                                                <div key={index}>
-                                                  {emails}
-                                                  <br />
-                                                </div>
-                                              );
-                                            })}
+                                          : data.approved.map(
+                                              (emails, index) => {
+                                                return (
+                                                  <div key={index}>
+                                                    {emails}
+                                                    <br />
+                                                  </div>
+                                                );
+                                              }
+                                            )}
                                       </td>
                                       <td>
                                         <Download
@@ -374,12 +378,8 @@ function Admin() {
                                           certId={data.certificate_id}
                                         />
                                       </td>
-                                      <td>
-                                        {data.email}
-                                      </td>
-                                      <td>
-                                        {data.address}
-                                      </td>
+                                      <td>{data.email}</td>
+                                      <td>{data.address}</td>
                                       <td>
                                         <input
                                           id={data.id}

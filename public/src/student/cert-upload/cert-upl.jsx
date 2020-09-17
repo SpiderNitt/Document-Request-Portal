@@ -19,10 +19,11 @@ function Upload(props) {
   const [fileName, setFileName] = useState("");
   const [showModal, setModal] = useState(false);
   const [isLoading, setLoading] = useState(false);
-  const [feeReceipt, setFee] = useState([]);
-  const [emailDel, setEmailDel] = useState([]);
-  const [address, setAddress] = useState([]);
+  const [feeReceipt, setFee] = useState("");
+  const [emailDel, setEmailDel] = useState("");
+  const [address, setAddress] = useState("");
   const [preAddress, setPreAddr] = useState([]);
+  const [addressModal, setAddressModal] = useState(false);
 
   useEffect(() => {
     spider
@@ -39,6 +40,7 @@ function Upload(props) {
   }, []);
 
   const handleSubmitClose = () => setModal(false);
+  const handleAddressClose = () => setAddressModal(false);
 
   const handleFileUpload = (e) => {
     if (e.target.files[0]) {
@@ -142,6 +144,11 @@ function Upload(props) {
                   onChange={(e) => {
                     let certType = e.target.value;
                     setFile(certType);
+                    if (certType === "X") {
+                      setCount(emailCount + 1);
+                      setEmails(emails.concat("transcript@nitt.edu"));
+                      console.log(emails);
+                    }
                   }}
                 >
                   <option value="bonafide" defaultValue>
@@ -189,26 +196,19 @@ function Upload(props) {
                       name="email-del"
                       id="emaildel"
                       aria-describedby="emailHelp"
+                      onChange={(e) => {
+                        e.preventDefault();
+                        let emailValues = document.getElementById("emaildel");
+                        if (emailValues.value !== "") {
+                          setEmailDel(emailValues.value);
+                          console.log(emailDel, emailValues.value);
+                        }
+                      }}
                       required
                     />
                     <small id="emailHelp" className="form-text text-muted">
                       Enter your email
                     </small>
-                  </div>
-                  <div className="text-center">
-                    <button
-                      type="submit"
-                      className="btn btn-primary"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        let emailValues = document.getElementById("emaildel");
-                        if (emailValues.value !== "") {
-                          setEmailDel(emailDel.concat(emailValues.value));
-                        }
-                      }}
-                    >
-                      Add
-                    </button>
                   </div>
                 </div>
                 <div className="form-check">
@@ -240,21 +240,25 @@ function Upload(props) {
               {/* Postal information */}
 
               <>
-                <div id="postal-del-entry">
-                  <small id="emailHelp" className="form-text text-muted">
-                    Choose addresses from you previous list, else enter a new
-                    one.
-                  </small>
-                  {preAddress ? (
+                <div id="postal-del-entry" className="text-center">
+                  <p id="emailHelp" className="form-text text-muted">
+                    Choose addresses from your previous list.
+                  </p>
+                  {preAddress.length !== 0 ? (
                     preAddress.map((addr, index) => {
                       return (
-                        <div className="form-check address-radio" key={index}>
+                        <div className="form-check" key={index}>
                           <input
-                            className="form-check-input"
+                            className="form-check-input radio-addr"
                             type="radio"
                             name="radio"
                             id={"radio" + index}
                             value={addr}
+                            onChange={(e) => {
+                              console.log("asdkajd", e.target.value, "zdf");
+                              setAddress(e.target.value);
+                              console.log(address);
+                            }}
                           />
                           <label className="form-check-label" htmlFor="radio">
                             {addr}
@@ -263,52 +267,107 @@ function Upload(props) {
                       );
                     })
                   ) : (
-                    <></>
+                    <small className="form-text text-muted">
+                      No previous addresses
+                    </small>
                   )}
-                  <br />
-                  <div className="input-group">
-                    <div className="input-group-prepend">
-                      <span className="input-group-text">
-                        Postal address with zip code
-                      </span>
-                    </div>
-                    <textarea
-                      id="address-text-box"
-                      className="form-control"
-                      aria-label="With textarea"
-                    ></textarea>
-                  </div>
                   <br />
                   <div className="text-center">
                     <button
-                      type="submit"
-                      className="btn btn-primary"
+                      className="btn btn-success p-1 m-1"
+                      width="50"
+                      type="button"
                       onClick={(e) => {
-                        e.preventDefault();
-                        let addressText = document.getElementById(
-                          "address-text-box"
-                        );
-
-                        let radioData = "";
+                        setAddressModal(true);
                         Array.prototype.forEach.call(
-                          document.getElementsByClassName("address-radio"),
+                          document.getElementsByClassName("radio-addr"),
                           (el) => {
-                            if (el.childNodes[0].checked) {
-                              radioData = el.childNodes[0].value;
+                            if (el.checked) {
+                              el.checked = false;
                             }
                           }
                         );
-                        if (radioData) {
-                          setAddress(address.concat(radioData));
-                        } else if (addressText.value !== "") {
-                          setAddress(address.concat(addressText.value));
-                        }
-                        console.log(address);
                       }}
                     >
-                      Add
+                      Add new address
                     </button>
                   </div>
+                  <br />
+                  <Modal
+                    show={addressModal}
+                    onHide={handleAddressClose}
+                    keyboard={false}
+                    dialogClassName="approveModal"
+                    aria-labelledby="contained-modal-title-vcenter"
+                    className="certModal"
+                  >
+                    <Modal.Header closeButton>
+                      <Modal.Title id="contained-modal-title-vcenter">
+                        Add New Address
+                      </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                      <br />
+                      <div className="input-group">
+                        <div className="input-group-prepend">
+                          <span className="input-group-text">Address*</span>
+                        </div>
+                        <textarea
+                          id="address-text-box1"
+                          className="form-control"
+                          aria-label="With textarea"
+                        ></textarea>
+                      </div>
+                      <br />
+                      <div className="input-group">
+                        <div className="input-group-prepend">
+                          <span className="input-group-text">Pin Code*</span>
+                        </div>
+                        <textarea
+                          id="address-text-box2"
+                          className="form-control"
+                          aria-label="With textarea"
+                        ></textarea>
+                      </div>
+                      <br />
+                      <small id="emailHelp" className="form-text text-muted">
+                        Optional
+                      </small>
+                      <div className="input-group">
+                        <div className="input-group-prepend">
+                          <span className="input-group-text">Landmark</span>
+                        </div>
+                        <textarea
+                          id="address-text-box3"
+                          className="form-control"
+                          aria-label="With textarea"
+                        ></textarea>
+                      </div>
+                      <br />
+                      <div className="text-center">
+                        <button
+                          type="submit"
+                          className="btn btn-primary"
+                          onClick={(e) => {
+                            let addressText =
+                              document.getElementById("address-text-box1")
+                                .value +
+                              "," +
+                              document.getElementById("address-text-box2")
+                                .value +
+                              "," +
+                              document.getElementById("address-text-box3")
+                                .value;
+                            setAddress(addressText);
+                            console.log(address, addressText);
+                            setAddressModal(false);
+                          }}
+                        >
+                          Add
+                        </button>
+                      </div>
+                    </Modal.Body>
+                  </Modal>
                 </div>
               </>
               <br />
@@ -317,14 +376,40 @@ function Upload(props) {
               {file === "X" ? (
                 <div className="fee-receipt">
                   <div className="form-group">
-                    <label htmlFor="emailaddr">Fee Receipt</label>
+                    <label htmlFor="emailaddr">Fee Reference Number</label>
                     <input
                       type="text"
                       className="form-control"
                       name="feer"
                       id="feer"
                       required
+                      onChange={(e) => {
+                        setFee(e.target.value);
+                        console.log(feeReceipt);
+                      }}
                     />
+                  </div>
+                </div>
+              ) : (
+                <></>
+              )}
+              {file === "X" ? (
+                <></>
+              ) : (
+                <>
+                  <div className="form-group">
+                    <label htmlFor="emailaddr">Email address</label>
+                    <input
+                      type="email"
+                      className="form-control"
+                      name="emailaddr"
+                      id="emailaddr"
+                      aria-describedby="emailHelp"
+                      required
+                    />
+                    <small id="emailHelp" className="form-text text-muted">
+                      Enter email addresses in the order of processing.
+                    </small>
                   </div>
                   <div className="text-center">
                     <button
@@ -332,57 +417,26 @@ function Upload(props) {
                       className="btn btn-primary"
                       onClick={(e) => {
                         e.preventDefault();
-                        let feer = document.getElementById("feer");
-                        if (feer.value !== "") {
-                          setFee(feeReceipt.concat(feer.value));
+                        let emailValues = document.getElementById("emailaddr");
+                        if (emailValues.value !== "") {
+                          const re = /\S+@nitt\.edu/;
+                          if (re.test(emailValues.value) === true) {
+                            setCount(emailCount + 1);
+                            setEmails(emails.concat(emailValues.value));
+                            // console.log(emailCount);
+                            // console.log(emails);
+                          } else {
+                            alert("Enter valid nitt email.");
+                          }
+                          emailValues.value = "";
                         }
                       }}
                     >
                       Add
                     </button>
                   </div>
-                </div>
-              ) : (
-                <></>
+                </>
               )}
-              <div className="form-group">
-                <label htmlFor="emailaddr">Email address</label>
-                <input
-                  type="email"
-                  className="form-control"
-                  name="emailaddr"
-                  id="emailaddr"
-                  aria-describedby="emailHelp"
-                  required
-                />
-                <small id="emailHelp" className="form-text text-muted">
-                  Enter email addresses in the order of processing.
-                </small>
-              </div>
-              <div className="text-center">
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    let emailValues = document.getElementById("emailaddr");
-                    if (emailValues.value !== "") {
-                      const re = /\S+@nitt\.edu/;
-                      if (re.test(emailValues.value) === true) {
-                        setCount(emailCount + 1);
-                        setEmails(emails.concat(emailValues.value));
-                        // console.log(emailCount);
-                        // console.log(emails);
-                      } else {
-                        alert("Enter valid nitt email.");
-                      }
-                      emailValues.value = "";
-                    }
-                  }}
-                >
-                  Add
-                </button>
-              </div>
               <br />
               <div className="form-group">
                 <label htmlFor="cert">Add certificate</label>

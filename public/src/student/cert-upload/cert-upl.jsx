@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import spider from "../../utils/API";
 import { ToastContainer } from "react-toastify";
 import { Modal } from "react-bootstrap";
@@ -19,12 +19,29 @@ function Upload(props) {
   const [fileName, setFileName] = useState("");
   const [showModal, setModal] = useState(false);
   const [isLoading, setLoading] = useState(false);
+  const [feeReceipt, setFee] = useState([]);
+  const [emailDel, setEmailDel] = useState([]);
+  const [address, setAddress] = useState([]);
+  const [preAddress, setPreAddr] = useState([]);
+
+  useEffect(() => {
+    spider
+      .get("/api/student/address")
+      .then((res) => {
+        res.data.forEach((add) => {
+          setPreAddr(preAddress.concat(add));
+        });
+        // console.log(preAddress);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   const handleSubmitClose = () => setModal(false);
 
   const handleFileUpload = (e) => {
     if (e.target.files[0]) {
-      // const file = e.target.files[0];
       setFileName("hello");
       setFileButton(true);
       setFileName(true);
@@ -44,14 +61,17 @@ function Upload(props) {
     setLoading(true);
     let fileUpload = document.getElementById("cert").files[0];
     let certType = document.getElementById("certType").value;
-    // if (emailCount && fileName && certType) {
     let cd = new FormData();
     if (certType === "bonafide") cd.set("type", parseInt(1));
     else cd.set("type", parseInt(2));
     cd.append("certificate", fileUpload);
-
+    if (emailDel) cd.set("email", emailDel);
+    if (address) cd.set("address", address);
+    if (file === "X") cd.set("receipt", feeReceipt);
     cd.set("path", emails.toString());
-
+    for (var pair of cd.entries()) {
+      console.log("ccd:", pair[0] + ", " + pair[1]);
+    }
     spider
       .post("api/student/certificate_request", cd)
       .then((res) => {
@@ -85,17 +105,6 @@ function Upload(props) {
   };
   return (
     <>
-      {/* {isLoading ? (
-        <Loader
-          className="text-center"
-          type="Audio"
-          color="rgb(13, 19, 41)"
-          height={100}
-          width={100}
-          timeout={3000} //3 secs
-        />
-      ) : (
-        <> */}
       <div className="container" id="cert-upl">
         <h2 className="text-center cert-upl-head">
           Request Certificate Verification
@@ -114,6 +123,228 @@ function Upload(props) {
         <div className="row">
           <div className="col-md-6 form-left">
             <form id="request-main">
+              <div className="form-group">
+                <label htmlFor="certType">Enter certificate type</label>
+                <a
+                  href="#!"
+                  onClick={calculate_source}
+                  id="anchorClick"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="float-right small-link"
+                >
+                  Download Template
+                </a>
+                <select
+                  name="certType"
+                  id="certType"
+                  className="form-control"
+                  onChange={(e) => {
+                    let certType = e.target.value;
+                    setFile(certType);
+                  }}
+                >
+                  <option value="bonafide" defaultValue>
+                    Bonafide
+                  </option>
+                  <option value="X">Transcript</option>
+                </select>
+              </div>
+
+              {/* Certificate Delivery */}
+
+              <div className="form-group">
+                <label htmlFor="delivery-sel">
+                  Select certificate delivery method
+                </label>
+                <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    name="email-sel"
+                    id="email-sel"
+                    value="email"
+                    onChange={(e) => {
+                      if (document.getElementById("email-sel").checked) {
+                        document.getElementById(
+                          "email-del-entry"
+                        ).style.display = "block";
+                      } else {
+                        document.getElementById(
+                          "email-del-entry"
+                        ).style.display = "none";
+                      }
+                    }}
+                  />
+                  <label className="form-check-label" htmlFor="email">
+                    Email
+                  </label>
+                </div>
+                {/* Email delivery */}
+                <div id="email-del-entry">
+                  <div className="form-group">
+                    <input
+                      type="email"
+                      className="form-control"
+                      name="email-del"
+                      id="emaildel"
+                      aria-describedby="emailHelp"
+                      required
+                    />
+                    <small id="emailHelp" className="form-text text-muted">
+                      Enter your email
+                    </small>
+                  </div>
+                  <div className="text-center">
+                    <button
+                      type="submit"
+                      className="btn btn-primary"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        let emailValues = document.getElementById("emaildel");
+                        if (emailValues.value !== "") {
+                          setEmailDel(emailDel.concat(emailValues.value));
+                        }
+                      }}
+                    >
+                      Add
+                    </button>
+                  </div>
+                </div>
+                <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    name="postal"
+                    id="postal-del"
+                    value="postal"
+                    onChange={(e) => {
+                      if (document.getElementById("postal-del").checked) {
+                        document.getElementById(
+                          "postal-del-entry"
+                        ).style.display = "block";
+                      } else {
+                        console.log("Ddf");
+                        document.getElementById(
+                          "postal-del-entry"
+                        ).style.display = "none";
+                      }
+                    }}
+                  />
+                  <label className="form-check-label" htmlFor="postal">
+                    Postal delivery
+                  </label>
+                </div>
+              </div>
+
+              {/* Postal information */}
+
+              <>
+                <div id="postal-del-entry">
+                  <small id="emailHelp" className="form-text text-muted">
+                    Choose addresses from you previous list, else enter a new
+                    one.
+                  </small>
+                  {preAddress ? (
+                    preAddress.map((addr, index) => {
+                      return (
+                        <div className="form-check address-radio" key={index}>
+                          <input
+                            className="form-check-input"
+                            type="radio"
+                            name="radio"
+                            id={"radio" + index}
+                            value={addr}
+                          />
+                          <label className="form-check-label" htmlFor="radio">
+                            {addr}
+                          </label>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <></>
+                  )}
+                  <br />
+                  <div className="input-group">
+                    <div className="input-group-prepend">
+                      <span className="input-group-text">
+                        Postal address with zip code
+                      </span>
+                    </div>
+                    <textarea
+                      id="address-text-box"
+                      className="form-control"
+                      aria-label="With textarea"
+                    ></textarea>
+                  </div>
+                  <br />
+                  <div className="text-center">
+                    <button
+                      type="submit"
+                      className="btn btn-primary"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        let addressText = document.getElementById(
+                          "address-text-box"
+                        );
+
+                        let radioData = "";
+                        Array.prototype.forEach.call(
+                          document.getElementsByClassName("address-radio"),
+                          (el) => {
+                            if (el.childNodes[0].checked) {
+                              radioData = el.childNodes[0].value;
+                            }
+                          }
+                        );
+                        if (radioData) {
+                          setAddress(address.concat(radioData));
+                        } else if (addressText.value !== "") {
+                          setAddress(address.concat(addressText.value));
+                        }
+                        console.log(address);
+                      }}
+                    >
+                      Add
+                    </button>
+                  </div>
+                </div>
+              </>
+              <br />
+
+              {/* Fee Receipt */}
+              {file === "X" ? (
+                <div className="fee-receipt">
+                  <div className="form-group">
+                    <label htmlFor="emailaddr">Fee Receipt</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="feer"
+                      id="feer"
+                      required
+                    />
+                  </div>
+                  <div className="text-center">
+                    <button
+                      type="submit"
+                      className="btn btn-primary"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        let feer = document.getElementById("feer");
+                        if (feer.value !== "") {
+                          setFee(feeReceipt.concat(feer.value));
+                        }
+                      }}
+                    >
+                      Add
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <></>
+              )}
               <div className="form-group">
                 <label htmlFor="emailaddr">Email address</label>
                 <input
@@ -154,34 +385,6 @@ function Upload(props) {
               </div>
               <br />
               <div className="form-group">
-                <label htmlFor="certType">Enter certificate type</label>
-                <a
-                  href="#!"
-                  onClick={calculate_source}
-                  id="anchorClick"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="float-right small-link"
-                >
-                  Download Template
-                </a>
-                <select
-                  name="certType"
-                  id="certType"
-                  className="form-control"
-                  onChange={(e) => {
-                    let certType = e.target.value;
-                    // console.log("Cert", certType);
-                    setFile(certType);
-                  }}
-                >
-                  <option value="bonafide" defaultValue>
-                    Bonafide
-                  </option>
-                  <option value="X">Transcript</option>
-                </select>
-              </div>
-              <div className="form-group">
                 <label htmlFor="cert">Add certificate</label>
                 <input
                   type="file"
@@ -201,8 +404,8 @@ function Upload(props) {
                     Show Uploaded File
                   </button>
                 ) : (
-                    <></>
-                  )}
+                  <></>
+                )}
                 <button
                   type="submit"
                   className="btn btn-success"
@@ -224,7 +427,7 @@ function Upload(props) {
             keyboard={false}
             dialogClassName="approveModal"
             aria-labelledby="contained-modal-title-vcenter"
-            className='certModal'
+            className="certModal"
           >
             <Modal.Header closeButton>
               <Modal.Title id="contained-modal-title-vcenter">
@@ -242,43 +445,43 @@ function Upload(props) {
                   timeout={3000} //3 secs
                 />
               ) : (
-                  <>
-                    <h5 className="text-center">
-                      <strong>Confirm the order of approval:</strong>
-                    </h5>
-                    <br />
-                    <ul className="modal-pop list-group text-center">
-                      <li className="modal-pop list-group-item">{user + "@nitt.edu"}</li>
-                      {emails.map((email, index) => {
-                        return (
-
-                          <li key={index} className="modal-pop list-group-item">
-                            <div className="d-block text-center">
-                              <img
-                                src="/down.svg"
-                                alt="Down arrow"
-                                height="60"
-                                width="30"
-                              />
-                            </div>
-                            {email}
-
-                          </li>
-                        );
-                      })}
-                    </ul>
-                    <br />
-                    <div className="text-center">
-                      <button
-                        type="submit"
-                        className="btn btn-primary"
-                        onClick={certificateRequest}
-                      >
-                        Submit
+                <>
+                  <h5 className="text-center">
+                    <strong>Confirm the order of approval:</strong>
+                  </h5>
+                  <br />
+                  <ul className="modal-pop list-group text-center">
+                    <li className="modal-pop list-group-item">
+                      {user + "@nitt.edu"}
+                    </li>
+                    {emails.map((email, index) => {
+                      return (
+                        <li key={index} className="modal-pop list-group-item">
+                          <div className="d-block text-center">
+                            <img
+                              src="/down.svg"
+                              alt="Down arrow"
+                              height="60"
+                              width="30"
+                            />
+                          </div>
+                          {email}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                  <br />
+                  <div className="text-center">
+                    <button
+                      type="submit"
+                      className="btn btn-primary"
+                      onClick={certificateRequest}
+                    >
+                      Submit
                     </button>
-                    </div>
-                  </>
-                )}
+                  </div>
+                </>
+              )}
             </Modal.Body>
           </Modal>
 
@@ -287,8 +490,8 @@ function Upload(props) {
               {emails.length > 0 ? (
                 <li className="list-group-item">{user + "@nitt.edu"}</li>
               ) : (
-                  <></>
-                )}
+                <></>
+              )}
               {emails.map((email, index) => {
                 return (
                   <div key={index}>
@@ -335,7 +538,11 @@ function Upload(props) {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <embed src={pdf} className="embed-modal" height={document.documentElement.clientHeight * 0.75}/>
+            <embed
+              src={pdf}
+              className="embed-modal"
+              height={document.documentElement.clientHeight * 0.75}
+            />
           </Modal.Body>
         </Modal>
         <CertificateTemplate fileType={file} />

@@ -133,6 +133,15 @@ function Admin() {
       <h1 className="text-center cert-upl-head">Admin Certificate Portal</h1>
       <div className="container-fluid admin">
         <br />
+        <div
+          className="download-details"
+        >
+          <button
+            onClick={() => {exportToExcel()}}
+          >
+            Export to Excel
+          </button>
+        </div>
         {isLoading ? (
           <Loader
             className="text-center"
@@ -163,15 +172,6 @@ function Admin() {
                     </Card.Header>
                     <Accordion.Collapse eventKey="0">
                       <Card.Body>
-                      <div
-                          className="download-details"
-                        >
-                          <button
-                            onClick={() => {exportToExcel()}}
-                          >
-                            Export to Excel
-                          </button>
-                        </div>
                         {cert.certificates.length == 0 ? <p className="placeholder-nil text-center"><FaListAlt className='mr-2'/>No pending certificates </p> : <>
                           <table id="cert_table" className="table cert-table">
                             <thead className="thead-dark">

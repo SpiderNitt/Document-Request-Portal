@@ -1,8 +1,23 @@
+require('dotenv').config({ path: '../env/.env' })
+
 const uuid = require('uuid');
 const multer = require('multer');
 const database = require('../database/database')
 const fs = require('fs')
+const nodemailer = require('nodemailer');
 const MulterError = multer.MulterError
+
+
+
+const mailTransporter = nodemailer.createTransport({ 
+    service: 'gmail', 
+    auth: { 
+        user: process.env.EMAIL, 
+        pass: process.env.EMAIL_PASS
+    } 
+}); 
+  
+
 
 function renameFile(oldPath, newPath){
     fs.renameSync(oldPath, newPath, (err)=>{
@@ -97,5 +112,5 @@ const storage = multer.diskStorage({
 });
 
 module.exports =  {
-    docFilter, storage, approve_decline_rights, validate_mail, renameFile
+    docFilter, storage, approve_decline_rights, validate_mail, renameFile, mailTransporter
 }

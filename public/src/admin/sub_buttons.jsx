@@ -139,7 +139,7 @@ export const AddEmailDetails = (props) => {
           setModal(true);
         }}
       >
-        Add Email Details
+        Send via Email
       </button>
       <Modal
         show={showModal}
@@ -208,7 +208,7 @@ export const AddPostalDetails = (props) => {
           setModal(true);
         }}
       >
-        Add Postal Details
+        Send via Post
       </button>
       <Modal
         show={showModal}

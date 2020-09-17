@@ -1,6 +1,8 @@
 const admin = require('express').Router()
 const multer = require('multer')
 const fs = require('fs')
+const nodemailer = require('nodemailer');
+require('dotenv').config({ path: '../env/.env' })
 
 const middlewares = require('../utils/middlewares')
 const database = require("../database/database")
@@ -213,5 +215,122 @@ admin.get("/", async function (req, res) {
     }
 
 });
+
+admin.post('/postal_status', async function (req, res) {
+    let { certificate_id, postal_status } = req.body;
+    let flag = await helpers.approve_decline_rights(req, res, certificate_id);
+    if (flag) {
+        try {
+            await database.Certificate.update({ postal_status }, {
+                where: {
+                    id: certificate_id
+                }
+            })
+            res.status(200).json({ 'message': "Postal status Updated" });
+        }
+        catch (err) {
+            console.log(err);
+            res.status(500).json({ 'message': "There was some error uploading the message. Try again later" });
+        }
+    }
+});
+
+admin.post('/email', async function (req, res) {
+    const upload = multer({ storage: helpers.storage, fileFilter: helpers.docFilter }).single('certificate')
+
+    upload(req, res, async function (err) {
+        if (err) {
+            console.log(err)
+            return res.status(400).json({ 'message': req.fileValidationError });
+        }
+        else {
+
+            let { certificate_id, subject, content } = req.body;
+            let flag = await helpers.approve_decline_rights(req, res, certificate_id);
+            if (req.file) {
+                let { filename } = req.file;
+                let filepath = req.file.path;
+                let initial_dest = appRoot + '/' + filepath;
+                if (!flag) {
+                    fs.unlinkSync(initial_dest);
+                    return;
+                }
+                else {
+                    id_exists = await database.Certificate.findOne({
+                        attributes: ['id', 'email_status'],
+                        where: {
+                            id: certificate_id
+                        }
+                    });
+
+                    if (id_exists == null) {
+                        res.status(403).json({ 'message': "You do not have the appropriate permissions to access the resource." })
+                        return;
+                    }
+
+                    try {
+                        let mailOptions = {
+                            from: process.env.EMAIL,
+                            to: id_exists.getDataValue('email_status'),
+                            subject: subject,
+                            text: content,
+                            attachments: [
+                                {
+                                    filename: 'transcript',
+                                    path: initial_dest
+                                }
+                            ]
+                        };
+                        let resp = await SendMail(mailOptions);
+                        fs.unlinkSync(initial_dest);
+                        if (resp)
+                            res.status(200).json({ 'message': "Email sent" });
+                        else
+                            res.status(500).json({ 'message': "Couldn't send email" });
+                        return;
+                    }
+                    catch (err) {
+                        console.log(err);
+                        fs.unlinkSync(initial_dest);
+                        res.json(500).json({ 'message': "Some problem with sending email" });
+                        return;
+                    }
+                }
+            }
+            else {
+                res.status(500).json({ 'message': "Kindly upload the document" });
+            }
+        }
+    })
+
+});
+
+async function SendMail(mailOptions) {
+    return new Promise((resolve, reject) => {
+        let transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                // type: "login",
+                type: "OAuth2",
+                user: process.env.EMAIL,
+                clientId: "249637581520-7prmaub99ev3i8u9esht4697md6oej8o.apps.googleusercontent.com",
+                clientSecret: "NQr9hfikmrlTurD8YN2GAti7",
+                refreshToken: "REFRESH_TOKEN_HERE"
+                // pass: process.env.PASS
+            }
+        });
+
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                console.log(error);
+                resolve(false); // or use rejcet(false) but then you will have to handle errors
+            }
+            else {
+                console.log('Email sent: ' + info.response);
+                resolve(true);
+            }
+        });
+    })
+}
 
 module.exports = admin;

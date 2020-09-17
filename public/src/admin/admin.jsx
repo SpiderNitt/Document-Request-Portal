@@ -123,8 +123,10 @@ function Admin() {
         excelData.push(temp);
       }
     });
-    const xls = new xlsExport(excelData, "Info");
-    xls.exportToXLS('export.xls')
+    if(excelData.length) {
+      const xls = new xlsExport(excelData, "Info");
+      xls.exportToXLS('export.xls')
+    }
   }
 
   return (

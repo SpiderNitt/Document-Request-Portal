@@ -8,7 +8,8 @@ const nodemailer = require('nodemailer');
 
 const middlewares = require('../utils/middlewares')
 const database = require("../database/database")
-const helpers = require("../utils/helper")
+const helpers = require("../utils/helper");
+const { where } = require('sequelize/types');
 
 
 admin.use('/', middlewares.is_admin);
@@ -152,11 +153,29 @@ admin.get("/", async function (req, res) {
                 path_no, certificate_id, status
             })
         })
+        let approved_details = await database.CertificatePaths.findAll({
+            attributes: ['certificate_id', 'path_no', 'status'],
+            where: {
+                path_email: rollno + '@nitt.edu',
+                status: 'APPROVED'
+            }
+        })
+        approved_details.forEach(function (ele) {
+            let path_no = ele.getDataValue('path_no');
+            let certificate_id = ele.getDataValue('certificate_id');
+            let status = ele.getDataValue('status')
+            path_objects.push({
+                path_no, certificate_id, status
+            })
+        })
+
         let response_json = []
         for (const index in path_objects) {
             let path_object = path_objects[index];
             let { path_no, certificate_id, status } = path_object;
-
+            if (status === 'APPROVED') {
+                const row = await database.CertificatePaths.findAll()
+            }
             if (path_no == 1 && status === 'PENDING') {
                 const ele = await database.Certificate.findOne({
                     attributes: ['applier_roll', 'type', 'address', 'postal_status', 'email_status', 'receipt', 'email_address'],
@@ -220,21 +239,19 @@ admin.get("/", async function (req, res) {
 
 admin.post('/postal_status', async function (req, res) {
     let { certificate_id, postal_status } = req.body;
-    let flag = await helpers.approve_decline_rights(req, res, certificate_id);
-    if (flag) {
-        try {
-            await database.Certificate.update({ postal_status }, {
-                where: {
-                    id: certificate_id
-                }
-            })
-            res.status(200).json({ 'message': "Postal status Updated" });
-        }
-        catch (err) {
-            console.log(err);
-            res.status(500).json({ 'message': "There was some error uploading the message. Try again later" });
-        }
+    try {
+        await database.Certificate.update({ postal_status }, {
+            where: {
+                id: certificate_id
+            }
+        })
+        res.status(200).json({ 'message': "Postal status Updated" });
     }
+    catch (err) {
+        console.log(err);
+        res.status(500).json({ 'message': "There was some error uploading the message. Try again later" });
+    }
+
 });
 
 admin.post('/email', async function (req, res) {
@@ -260,7 +277,7 @@ admin.post('/email', async function (req, res) {
                 let { filename } = req.file;
                 let filepath = req.file.path;
                 let initial_dest = appRoot + '/' + filepath;
-              
+
 
                 id_exists = await database.Certificate.findOne({
                     attributes: ['id', 'email_address', 'applier_roll', 'type'],
@@ -305,11 +322,19 @@ admin.post('/email', async function (req, res) {
                             fs.unlinkSync(initial_dest);
 
                         } else {
+                            let email_status = "Email Sent";
+                            await database.CertificateType.update(
+                                { email_status }, {
+                                where: {
+                                    id: certificate_id
+                                }
+
+                            })
                             res.status(200).json({ 'message': 'Email sent successfully' });
                             fs.unlinkSync(initial_dest);
 
                         }
-                    });         
+                    });
                 }
                 catch (err) {
                     console.log(err);
@@ -327,32 +352,5 @@ admin.post('/email', async function (req, res) {
 
 });
 
-async function SendMail(mailOptions) {
-    return new Promise((resolve, reject) => {
-        let transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                // type: "login",
-                type: "OAuth2",
-                user: process.env.EMAIL,
-                clientId: "249637581520-7prmaub99ev3i8u9esht4697md6oej8o.apps.googleusercontent.com",
-                clientSecret: "NQr9hfikmrlTurD8YN2GAti7",
-                refreshToken: "REFRESH_TOKEN_HERE"
-                // pass: process.env.PASS
-            }
-        });
-
-        transporter.sendMail(mailOptions, function (error, info) {
-            if (error) {
-                console.log(error);
-                resolve(false); // or use rejcet(false) but then you will have to handle errors
-            }
-            else {
-                console.log('Email sent: ' + info.response);
-                resolve(true);
-            }
-        });
-    })
-}
 
 module.exports = admin;

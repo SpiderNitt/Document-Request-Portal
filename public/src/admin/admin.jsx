@@ -9,6 +9,7 @@ import { Card } from "react-bootstrap";
 import Loader from "react-loader-spinner";
 import "./admin.css";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+import xlsExport from "xlsexport";
 
 import { FaListAlt } from 'react-icons/fa'
 
@@ -16,7 +17,7 @@ function Admin() {
   const [certReq, setReq] = useState([]);
   const [isLoading, setLoad] = useState(true);
   const [certTypes, setTypes] = useState([]);
-
+  
   useEffect(() => {
     spider
       .get("/api/student/certificate_types")
@@ -78,12 +79,53 @@ function Admin() {
           merged.push(tempType);
         });
         setReq(Object.assign(certReq, merged));
-        console.log(certReq);
+        console.log(certReq, certReq[0].certificates);
         setLoad(false);
         console.log("final:", certReq[1].certificates[0]);
       })
       .catch((err) => console.log(err));
   }, []);
+
+  const exportToExcel = () => {
+    var excelData = [];
+    let index = 0;
+    certReq[0].certificates.map(cert => {
+      let temp = {};
+      index = index + 1;
+      if(document.getElementById(cert.id).checked === true) {
+        temp["S.No"] = index;
+        temp["Roll number"] = cert["applier_roll"];
+        temp["Address"] = cert["address"];
+        temp["Email"] = cert["email"];
+        temp["Status"] = cert["status"];
+        temp["Postal Status"] = cert["postal_status"];
+        temp["Email Status"] = cert["email_status"];
+        temp["Receipt"] = cert["receipt"];
+        temp["Approved"] = cert["approved"];
+        temp["Certificate Type"] = "Bonafide";
+        excelData.push(temp);
+      }
+    });
+    certReq[1].certificates.map(cert => {
+      index = index + 1;
+      let temp = {};
+      if(document.getElementById(cert.id).checked === true) {
+        temp["S.No"] = index;
+        temp["Roll number"] = cert["applier_roll"];
+        temp["Address"] = cert["address"];
+        temp["Email"] = cert["email"];
+        temp["Status"] = cert["status"];
+        temp["Postal Status"] = cert["postal_status"];
+        temp["Email Status"] = cert["email_status"];
+        temp["Receipt"] = cert["receipt"];
+        temp["Approved"] = cert["approved"];
+        temp["Certificate Type"] = "Transcript";
+        excelData.push(temp);
+      }
+    });
+    const xls = new xlsExport(excelData, "Info");
+    xls.exportToXLS('export.xls')
+  }
 
   return (
     <>
@@ -121,17 +163,17 @@ function Admin() {
                     </Card.Header>
                     <Accordion.Collapse eventKey="0">
                       <Card.Body>
-                        <div
+                      <div
                           className="download-details"
                         >
                           <button
-                            className="btn btn-success p-1 m-1"
+                            onClick={() => {exportToExcel()}}
                           >
-                            Download Details
+                            Export to Excel
                           </button>
                         </div>
                         {cert.certificates.length == 0 ? <p className="placeholder-nil text-center"><FaListAlt className='mr-2'/>No pending certificates </p> : <>
-                          <table className="table cert-table">
+                          <table id="cert_table" className="table cert-table">
                             <thead className="thead-dark">
                               <tr>
                                 <th scope="col">S.No</th>
@@ -218,7 +260,12 @@ function Admin() {
                                         />
                                       </td>
                                       <td>
-                                        <input type="checkbox" />
+                                        <input 
+                                          id={data.id} 
+                                          certType={cert.certificate_type}
+                                          type="checkbox" 
+                                          defaultChecked="true" 
+                                        />
                                       </td>
                                     </tr>
                                   );

@@ -113,6 +113,9 @@ export const AddEmailDetails = (props) => {
     if (document.getElementById("email-body").value) {
       data.set("email_body", document.getElementById("email-body").value);
     }
+    if (document.getElementById("upload-cert").value) {
+      data.set("upload-cert", document.getElementById("upload-cert").value);
+    }
     // data.set("certificate_id", parseInt(props.certId));
     spider
       .post("", data)
@@ -147,7 +150,7 @@ export const AddEmailDetails = (props) => {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-          Enter email body for sending {props.certType} to {props.roll}<br/>
+            Enter email body for sending {props.certType} to {props.roll}<br/>
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -158,6 +161,12 @@ export const AddEmailDetails = (props) => {
               className="form-control"
               id="email-body"
               placeholder="Add email body"
+            />
+            <br />
+            <input
+              type="file"
+              className="form-control"
+              id="upload-cert"
             />
             <br />
             <button

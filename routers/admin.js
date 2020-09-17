@@ -1,8 +1,10 @@
+require('dotenv').config({ path: '../env/.env' })
+
+
 const admin = require('express').Router()
 const multer = require('multer')
 const fs = require('fs')
 const nodemailer = require('nodemailer');
-require('dotenv').config({ path: '../env/.env' })
 
 const middlewares = require('../utils/middlewares')
 const database = require("../database/database")
@@ -243,59 +245,79 @@ admin.post('/email', async function (req, res) {
             console.log(err)
             return res.status(400).json({ 'message': req.fileValidationError });
         }
+        if (!req.file) {
+            res.status(400).json({ "message": "Please upload a file" })
+            return;
+        }
         else {
-
-            let { certificate_id, subject, content } = req.body;
-            let flag = await helpers.approve_decline_rights(req, res, certificate_id);
+            console.log(req.file)
+            let { certificate_id } = req.body;
+            if (!certificate_id) {
+                res.status(400).json({ "message": "Please provide all required data" })
+                return;
+            }
             if (req.file) {
                 let { filename } = req.file;
                 let filepath = req.file.path;
                 let initial_dest = appRoot + '/' + filepath;
-                if (!flag) {
-                    fs.unlinkSync(initial_dest);
+              
+
+                id_exists = await database.Certificate.findOne({
+                    attributes: ['id', 'email_address', 'applier_roll', 'type'],
+                    where: {
+                        id: certificate_id
+                    }
+                });
+
+                if (id_exists == null) {
+                    res.status(403).json({ 'message': "You do not have the appropriate permissions to access the resource." })
                     return;
                 }
-                else {
-                    id_exists = await database.Certificate.findOne({
-                        attributes: ['id', 'email_status'],
+
+                try {
+                    let to_email = id_exists.getDataValue('email_address');
+                    let type_name_row = await database.CertificateType.findOne({
+                        attributes: ['name'],
                         where: {
-                            id: certificate_id
+                            id: id_exists.getDataValue('type')
                         }
-                    });
+                    })
+                    let type_name = type_name_row.getDataValue('name')
+                    let applier_roll = id_exists.getDataValue('applier_roll');
+                    let mailDetails = {
+                        from: process.env.EMAIL,
+                        to: to_email,
+                        subject: 'Transcript',
+                        text: 'Dear ' + applier_roll + ',\n. Please find attached the ' + type_name + ' document that you requested.',
+                        attachments: [
+                            {
+                                filename: applier_roll + '_' + type_name + '.pdf',
+                                path: initial_dest,
+                                cid: filename
+                            }
+                        ]
+                    };
 
-                    if (id_exists == null) {
-                        res.status(403).json({ 'message': "You do not have the appropriate permissions to access the resource." })
-                        return;
-                    }
+                    helpers.mailTransporter.sendMail(mailDetails, function (err, data) {
+                        if (err) {
+                            console.log(err);
+                            res.status(500).json({ 'message': 'Unable to send mail. Try again later' });
+                            fs.unlinkSync(initial_dest);
 
-                    try {
-                        let mailOptions = {
-                            from: process.env.EMAIL,
-                            to: id_exists.getDataValue('email_status'),
-                            subject: subject,
-                            text: content,
-                            attachments: [
-                                {
-                                    filename: 'transcript',
-                                    path: initial_dest
-                                }
-                            ]
-                        };
-                        let resp = await SendMail(mailOptions);
-                        fs.unlinkSync(initial_dest);
-                        if (resp)
-                            res.status(200).json({ 'message': "Email sent" });
-                        else
-                            res.status(500).json({ 'message': "Couldn't send email" });
-                        return;
-                    }
-                    catch (err) {
-                        console.log(err);
-                        fs.unlinkSync(initial_dest);
-                        res.json(500).json({ 'message': "Some problem with sending email" });
-                        return;
-                    }
+                        } else {
+                            res.status(200).json({ 'message': 'Email sent successfully' });
+                            fs.unlinkSync(initial_dest);
+
+                        }
+                    });         
                 }
+                catch (err) {
+                    console.log(err);
+                    fs.unlinkSync(initial_dest);
+                    res.json(500).json({ 'message': "Some problem with sending email" });
+                    return;
+                }
+
             }
             else {
                 res.status(500).json({ 'message': "Kindly upload the document" });

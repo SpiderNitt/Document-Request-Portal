@@ -4,7 +4,7 @@ const multer = require('multer')
 const helpers = require('../utils/helper')
 const helper = require('../utils/helper')
 const fs = require('fs')
-
+const sequelize = require('sequelize')
 
 
 
@@ -245,6 +245,35 @@ student.get('/certificate_types', async function (req, res) {
             })
         })
         res.status(200).json(response_json);
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).json({ 'message': 'Some issue with the server. Please try again later' });
+    }
+})
+
+
+student.get('/address', async function (req, res) {
+
+    let response_json = []
+    try {
+        let rows = await database.Certificate.findAll({
+            attributes: [sequelize.fn('DISTINCT', sequelize.col('address')) ,'address'],
+            where:{
+                applier_roll: req.jwt_payload.username
+            }
+        })
+        if(rows == null){
+            res.status(200).json([]);
+            return;
+        }
+        else {
+            rows.forEach(function(ele) {
+                response_json.push(ele.getDataValue('address'))
+            })
+            res.status(200).json(response_json);
+            return;
+        }
     }
     catch (err) {
         console.log(err);

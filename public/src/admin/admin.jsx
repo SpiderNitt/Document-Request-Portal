@@ -221,8 +221,6 @@ function Admin() {
                                 ) : (
                                   <div></div>
                                 )}
-                                <th scope="col">Email</th>
-                                <th scope="col">Postal</th>
                                 <th scope="col">Decision</th>
                                 <th></th>
                               </tr>
@@ -270,20 +268,6 @@ function Admin() {
                                       ) : (
                                         <div></div>
                                       )}
-                                      <td>
-                                        <AddEmailDetails
-                                          roll={data.applier_roll}
-                                          certType={cert.certificate_type}
-                                          certId={data.certificate_id}
-                                        />
-                                      </td>
-                                      <td>
-                                        <AddPostalDetails
-                                          roll={data.applier_roll}
-                                          certType={cert.certificate_type}
-                                          certId={data.certificate_id}
-                                        />
-                                      </td>
                                       <td>
                                         <Approve
                                           ID={index}

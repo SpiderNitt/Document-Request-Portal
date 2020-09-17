@@ -178,15 +178,6 @@ function Admin() {
                   </Card.Header>
                   <Accordion.Collapse eventKey="0">
                     <Card.Body>
-                      <div className="download-details">
-                        <button
-                          onClick={() => {
-                            exportToExcel();
-                          }}
-                        >
-                          Export to Excel
-                        </button>
-                      </div>
                       {cert.certificates.length === 0 ? (
                         <p className="placeholder-nil text-center">
                           <FaListAlt className="mr-2" />
@@ -245,7 +236,7 @@ function Admin() {
                                     <td>{data.applier_roll}</td>
                                     <th>{data.status}</th>
                                     <td>
-                                      {data.approved.length == 0
+                                      {data.approved.length === 0
                                         ? "-"
                                         : data.approved.map((emails, index) => {
                                             return (

@@ -42,11 +42,11 @@ student.post("/certificate_request", async function (req, res) {
                 res.status(400).json({'message': 'At least email or address must be present'});
                 return;
             }
-            if(!req.body.receipt){
+            // if(!req.body.receipt){
 
-                res.status(400).json({'message': 'No receipt number specified'});
-                return;
-            }
+            //     res.status(400).json({'message': 'No receipt number specified'});
+            //     return;
+            // }
              
             let { type, path, comments, email, address, receipt } = req.body;
             path = path.split(',');

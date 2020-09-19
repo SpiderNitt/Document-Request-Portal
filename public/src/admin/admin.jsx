@@ -85,6 +85,7 @@ function Admin() {
           merged.push(tempType);
         });
         setReq(Object.assign(certReq, merged));
+        console.log(certReq);
         // console.log(certReq, certReq[0].certificates);
         setLoad(false);
         // console.log("final:", certReq);
@@ -393,6 +394,8 @@ function Admin() {
                                         roll={data.applier_roll}
                                         certType={cert.certificate_type}
                                         certId={data.certificate_id}
+                                        email_status={data.email_status}
+                                        postal_status={data.postal_status}
                                       />
                                     </td>
                                     <td>
@@ -400,6 +403,8 @@ function Admin() {
                                         roll={data.applier_roll}
                                         certType={cert.certificate_type}
                                         certId={data.certificate_id}
+                                        email_status={data.email_status}
+                                        postal_status={data.postal_status}
                                       />
                                     </td>
                                     <td>{data.email}</td>

@@ -142,7 +142,11 @@ export const AddEmailDetails = (props) => {
           setModal(true);
         }}
       >
-        Send via Email
+        {
+          !props.email_status
+          ? <div>Send via Email</div>
+          : <div>Email Sent</div>
+        }
       </button>
       <Modal
         show={showModal}
@@ -228,7 +232,11 @@ export const AddPostalDetails = (props) => {
           setModal(true);
         }}
       >
-        Send via Post
+        {
+          !props.postal_status
+          ? <div>Send via Post</div>
+          : <div>Post Sent</div>
+        }
       </button>
       <Modal
         show={showModal}

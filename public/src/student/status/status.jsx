@@ -103,7 +103,16 @@ export default class Status extends React.Component {
               <h1>Your Certificates</h1>
             </div>
             <div className="container-fluid req-status">
+              
               <table className="table cert-table status-table">
+                
+               {this.state.certData.length===0 ? (
+                <thead className="thead-dark">
+                        <tr >
+                        <th colspan="12">No Requests sent</th>
+                        </tr>           
+                </thead>  ):(
+
                 <thead className="thead-dark">
                   <tr>
                     <th scope="col">S.No</th>
@@ -112,11 +121,14 @@ export default class Status extends React.Component {
                     <th scope="col">Actions</th>
                   </tr>
                 </thead>
+                )
+                }
+                   
 
-                <tbody>
+                <tbody>      
                   {this.state.certData.map((data, index) => {
-                    return (
-                      <>
+                      return (
+                        <>
                         <tr key={index}>
                           <td>{index + 1}</td>
                           <td>{cert_mapping[data.type]}</td>

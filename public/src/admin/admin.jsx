@@ -247,7 +247,7 @@ function Admin() {
                             {cert.certificates.map((data, index) => {
                               if (data.status !== "APPROVED") {
                                 return (
-                                  <tr key={index}>
+                                  <tr key={index + 1}>
                                     <th>{index + 1}</th>
                                     <td>{data.applier_roll}</td>
                                     {/* <th>{data.status}</th> */}
@@ -313,7 +313,7 @@ function Admin() {
                                   </tr>
                                 );
                               }
-                              return 0;
+                              // return 0;
                             })}
                           </tbody>
                         </table>
@@ -348,7 +348,7 @@ function Admin() {
                             {cert.certificates.map((data, index) => {
                               if (data.status === "APPROVED") {
                                 return (
-                                  <tr key={index}>
+                                  <tr key={index + 1}>
                                     <th>{index + 1}</th>
                                     <td>{data.applier_roll}</td>
                                     <th>{data.status}</th>
@@ -415,7 +415,7 @@ function Admin() {
                                   </tr>
                                 );
                               }
-                              return 0;
+                              // return 0;
                             })}
                           </tbody>
                         </table>

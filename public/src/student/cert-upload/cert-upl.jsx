@@ -32,7 +32,6 @@ function Upload(props) {
         res.data.forEach((add) => {
           setPreAddr(preAddress.concat(add));
         });
-        // console.log(preAddress);
       })
       .catch((err) => {
         console.log(err);
@@ -83,10 +82,14 @@ function Upload(props) {
         setFileButton(false);
         setFileModal(false);
         setFileName("");
+        setAddress("");
+        setPreAddr([]);
+        setEmailDel("");
+        setFee("");
         document.getElementById("cert").value = "";
+        document.getElementById("emaildel").value = "";
+        document.getElementById("feer").value = "";
         setModal(false);
-
-        // console.log("ss", res);
       })
       .catch((err) => {
         console.log(err);
@@ -126,7 +129,9 @@ function Upload(props) {
           <div className="col-md-6 form-left">
             <form id="request-main">
               <div className="form-group">
-                <label htmlFor="certType">Enter certificate type</label>
+                <label htmlFor="certType">
+                  Enter certificate type <span className="cmpl">*</span>
+                </label>
                 <a
                   href="#!"
                   onClick={calculate_source}
@@ -147,7 +152,6 @@ function Upload(props) {
                     if (certType === "X") {
                       setCount(emailCount + 1);
                       setEmails(emails.concat("transcript@nitt.edu"));
-                      console.log(emails);
                     }
                   }}
                 >
@@ -162,7 +166,8 @@ function Upload(props) {
 
               <div className="form-group">
                 <label htmlFor="delivery-sel">
-                  Select certificate delivery method
+                  Select certificate delivery method{" "}
+                  <span className="cmpl">*</span>
                 </label>
                 <div className="form-check">
                   <input
@@ -242,7 +247,7 @@ function Upload(props) {
               <>
                 <div id="postal-del-entry" className="text-center">
                   <p id="emailHelp" className="form-text text-muted">
-                    Choose addresses from your previous list.
+                    Choose addresses from your previous entries:
                   </p>
                   {preAddress.length !== 0 ? (
                     preAddress.map((addr, index) => {
@@ -253,11 +258,9 @@ function Upload(props) {
                             type="radio"
                             name="radio"
                             id={"radio" + index}
-                            value={addr}
+                            value={addr !== null ? addr : ""}
                             onChange={(e) => {
-                              console.log("asdkajd", e.target.value, "zdf");
                               setAddress(e.target.value);
-                              console.log(address);
                             }}
                           />
                           <label className="form-check-label" htmlFor="radio">
@@ -268,9 +271,23 @@ function Upload(props) {
                     })
                   ) : (
                     <small className="form-text text-muted">
-                      No previous addresses
+                      No previously saved addresses.
                     </small>
                   )}
+                  <br />
+                  {address ? (
+                    <>
+                      <small className="form-text text-muted">
+                        Address entered/selected: <strong>{address}</strong>
+                      </small>
+                      <br />
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                  <small className="form-text text-muted">
+                    Else, enter a new one:
+                  </small>
                   <br />
                   <div className="text-center">
                     <button
@@ -289,7 +306,7 @@ function Upload(props) {
                         );
                       }}
                     >
-                      Add new address
+                      Add New Address
                     </button>
                   </div>
                   <br />
@@ -310,7 +327,9 @@ function Upload(props) {
                       <br />
                       <div className="input-group">
                         <div className="input-group-prepend">
-                          <span className="input-group-text">Address*</span>
+                          <span className="input-group-text">
+                            Address <span className="cmpl">*</span>
+                          </span>
                         </div>
                         <textarea
                           id="address-text-box1"
@@ -321,13 +340,15 @@ function Upload(props) {
                       <br />
                       <div className="input-group">
                         <div className="input-group-prepend">
-                          <span className="input-group-text">Pin Code*</span>
+                          <span className="input-group-text">
+                            Pin Code <span className="cmpl">*</span>
+                          </span>
                         </div>
-                        <textarea
+                        <input
+                          type="number"
                           id="address-text-box2"
                           className="form-control"
-                          aria-label="With textarea"
-                        ></textarea>
+                        ></input>
                       </div>
                       <br />
                       <small id="emailHelp" className="form-text text-muted">
@@ -349,18 +370,22 @@ function Upload(props) {
                           type="submit"
                           className="btn btn-primary"
                           onClick={(e) => {
-                            let addressText =
-                              document.getElementById("address-text-box1")
-                                .value +
-                              "," +
-                              document.getElementById("address-text-box2")
-                                .value +
-                              "," +
-                              document.getElementById("address-text-box3")
-                                .value;
-                            setAddress(addressText);
-                            console.log(address, addressText);
-                            setAddressModal(false);
+                            let addr = document.getElementById(
+                              "address-text-box1"
+                            ).value;
+                            let pin = document.getElementById(
+                              "address-text-box2"
+                            ).value;
+                            let landm = document.getElementById(
+                              "address-text-box3"
+                            ).value;
+                            if (addr && pin) {
+                              let addressText =
+                                addr + " ," + pin + (landm ? " ," + landm : "");
+                              setAddress(addressText);
+                              console.log(address, addressText);
+                              setAddressModal(false);
+                            }
                           }}
                         >
                           Add
@@ -373,32 +398,36 @@ function Upload(props) {
               <br />
 
               {/* Fee Receipt */}
-              {/* {file === "X" ? ( */}
-              <div className="fee-receipt">
-                <div className="form-group">
-                  <label htmlFor="emailaddr">Fee Reference Number</label>
-                  <input
-                    type="text"
-                    className="form-control"
-                    name="feer"
-                    id="feer"
-                    required
-                    onChange={(e) => {
-                      setFee(e.target.value);
-                      console.log(feeReceipt);
-                    }}
-                  />
+              {file ? (
+                <div className="fee-receipt">
+                  <div className="form-group">
+                    <label htmlFor="emailaddr">
+                      Fee Reference Number <span className="cmpl">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      className="form-control"
+                      name="feer"
+                      id="feer"
+                      required
+                      onChange={(e) => {
+                        setFee(e.target.value);
+                        console.log(feeReceipt);
+                      }}
+                    />
+                  </div>
                 </div>
-              </div>
-              {/* ) : (
+              ) : (
                 <></>
-              )} */}
+              )}
               {file === "X" ? (
                 <></>
               ) : (
                 <>
                   <div className="form-group">
-                    <label htmlFor="emailaddr">Email address</label>
+                    <label htmlFor="emailaddr">
+                      Email address <span className="cmpl">*</span>
+                    </label>
                     <input
                       type="email"
                       className="form-control"
@@ -439,7 +468,9 @@ function Upload(props) {
               )}
               <br />
               <div className="form-group">
-                <label htmlFor="cert">Add certificate</label>
+                <label htmlFor="cert">
+                  Add certificate <span className="cmpl">*</span>
+                </label>
                 <input
                   type="file"
                   onChange={handleFileUpload}
@@ -463,10 +494,11 @@ function Upload(props) {
                 <button
                   type="submit"
                   className="btn btn-success"
-                  onClick={() => {
-                    let certType = document.getElementById("certType").value;
+                  onClick={(e) => {
+                    e.preventDefault();
+                    // let certType = document.getElementById("certType").value;
 
-                    if (certType && emailCount && fileName) setModal(true);
+                    if (file && emails && fileName) setModal(true);
                   }}
                 >
                   Submit

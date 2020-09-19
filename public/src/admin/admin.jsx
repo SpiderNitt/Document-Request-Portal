@@ -112,6 +112,7 @@ function Admin() {
         temp["Certificate Type"] = "Bonafide";
         excelData.push(temp);
       }
+      return 0;
     });
     certReq[1].certificates.map((cert) => {
       index = index + 1;
@@ -129,6 +130,7 @@ function Admin() {
         temp["Certificate Type"] = "Transcript";
         excelData.push(temp);
       }
+      return 0;
     });
     if (excelData.length) {
       const xls = new xlsExport(excelData, "Info");
@@ -235,7 +237,7 @@ function Admin() {
                                       <td>{data.applier_roll}</td>
                                       <th>{data.status}</th>
                                       <td>
-                                        {data.approved.length == 0
+                                        {data.approved.length === 0
                                           ? "-"
                                           : data.approved.map(
                                               (emails, index) => {
@@ -296,6 +298,7 @@ function Admin() {
                                     </tr>
                                   );
                                 }
+                                return 0;
                               })}
                             </tbody>
                           </table>
@@ -329,7 +332,7 @@ function Admin() {
                                       <td>{data.applier_roll}</td>
                                       <th>{data.status}</th>
                                       <td>
-                                        {data.approved.length == 0
+                                        {data.approved.length === 0
                                           ? "-"
                                           : data.approved.map(
                                               (emails, index) => {
@@ -391,6 +394,7 @@ function Admin() {
                                     </tr>
                                   );
                                 }
+                                return 0;
                               })}
                             </tbody>
                           </table>

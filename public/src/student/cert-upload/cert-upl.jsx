@@ -152,6 +152,9 @@ function Upload(props) {
                     if (certType === "X") {
                       setCount(emailCount + 1);
                       setEmails(emails.concat("transcript@nitt.edu"));
+                    } else {
+                      setCount(0);
+                      setEmails([]);
                     }
                   }}
                 >
@@ -251,23 +254,24 @@ function Upload(props) {
                   </p>
                   {preAddress.length !== 0 ? (
                     preAddress.map((addr, index) => {
-                      return (
-                        <div className="form-check" key={index}>
-                          <input
-                            className="form-check-input radio-addr"
-                            type="radio"
-                            name="radio"
-                            id={"radio" + index}
-                            value={addr !== null ? addr : ""}
-                            onChange={(e) => {
-                              setAddress(e.target.value);
-                            }}
-                          />
-                          <label className="form-check-label" htmlFor="radio">
-                            {addr}
-                          </label>
-                        </div>
-                      );
+                      if (addr !== "" || addr !== " ")
+                        return (
+                          <div className="form-check" key={index}>
+                            <input
+                              className="form-check-input radio-addr"
+                              type="radio"
+                              name="radio"
+                              id={"radio" + index}
+                              value={addr !== null ? addr : ""}
+                              onChange={(e) => {
+                                setAddress(e.target.value);
+                              }}
+                            />
+                            <label className="form-check-label" htmlFor="radio">
+                              {addr}
+                            </label>
+                          </div>
+                        );
                     })
                   ) : (
                     <small className="form-text text-muted">
@@ -398,7 +402,7 @@ function Upload(props) {
               <br />
 
               {/* Fee Receipt */}
-              {file ? (
+              {file === "X" ? (
                 <div className="fee-receipt">
                   <div className="form-group">
                     <label htmlFor="emailaddr">
@@ -426,7 +430,8 @@ function Upload(props) {
                 <>
                   <div className="form-group">
                     <label htmlFor="emailaddr">
-                      Email address <span className="cmpl">*</span>
+                      Administrator Email address{" "}
+                      <span className="cmpl">*</span>
                     </label>
                     <input
                       type="email"
@@ -592,17 +597,21 @@ function Upload(props) {
                     {/* </div> */}
                     <li key={index} className="list-group-item gray">
                       {email}
-                      <button
-                        className="btn btn-del"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setCount(emailCount - 1);
-                          emails.splice(index - 1, 1);
-                          setEmails(emails);
-                        }}
-                      >
-                        <span>&#127335;</span>
-                      </button>
+                      {file !== "X" ? (
+                        <button
+                          className="btn btn-del"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            setCount(emailCount - 1);
+                            emails.splice(index - 1, 1);
+                            setEmails(emails);
+                          }}
+                        >
+                          <span>&#127335;</span>
+                        </button>
+                      ) : (
+                        <></>
+                      )}
                     </li>
                   </div>
                 );

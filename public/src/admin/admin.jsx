@@ -144,15 +144,6 @@ function Admin() {
       <h1 className="text-center cert-upl-head">Admin Certificate Portal</h1>
       <div className="container-fluid admin">
         <br />
-        <div className="download-details">
-          <button
-            onClick={() => {
-              exportToExcel();
-            }}
-          >
-            Export to Excel
-          </button>
-        </div>
         {isLoading ? (
           <Loader
             className="text-center"
@@ -163,7 +154,19 @@ function Admin() {
             timeout={3000} //3 secs
           />
         ) : (
-          certReq.map((cert, index) => {
+          
+          <div>
+            <div className="download-details">
+              <button
+                onClick={() => {
+                  exportToExcel();
+                }}
+              >
+                Export to Excel
+              </button>
+            </div>
+            {
+            certReq.map((cert, index) => {
             let pending = 0, approved = 0;
             cert.certificates.forEach((certificate) => {
               if(certificate.status === "APPROVED") {
@@ -186,7 +189,10 @@ function Admin() {
                       className="text-center card-header acc-title"
                     >
                       {cert.certificate_type}
-                      <p className="req-notif"> {cert.certificates.length} </p>
+                      <span className="pending-approved-number">
+                        <span>Pending <p className="req-notif">{pending}</p> </span>
+                        <span>Approved <p className="req-notif">{approved}</p> </span>
+                      </span>
                     </Accordion.Toggle>
                   </Card.Header>
                   <Accordion.Collapse eventKey="0">
@@ -438,6 +444,8 @@ function Admin() {
               </div>
             );
           })
+        }
+          </div>
         )}
         <ToastContainer
           position="top-center"

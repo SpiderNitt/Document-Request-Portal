@@ -55,13 +55,13 @@ student.post("/certificate_request", async function (req, res) {
             }
             let cert_final_dest = final_dest + '/' + cert_filename;
             let id_final_dest = final_dest + '/' + id_filename;
-            if(!req.body.email && !req.body.address) 
-            {
-                res.status(400).json({'message': 'At least email or address must be present'});
-                fs.unlinkSync(cert_final_dest);
-                fs.unlinkSync(id_final_dest);
-                return;
-            }
+            // if(!req.body.email && !req.body.address) 
+            // {
+            //     res.status(400).json({'message': 'At least email or address must be present'});
+            //     fs.unlinkSync(cert_final_dest);
+            //     fs.unlinkSync(id_final_dest);
+            //     return;
+            // }
             // if(!req.body.receipt){
 
             //     res.status(400).json({'message': 'No receipt number specified'});

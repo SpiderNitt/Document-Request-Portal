@@ -32,7 +32,7 @@ function Upload(props) {
       .get("/api/student/address")
       .then((res) => {
         res.data.forEach((add) => {
-          setPreAddr(preAddress.concat(add));
+          setPreAddr((p) => p.concat(add));
         });
       })
       .catch((err) => {
@@ -108,16 +108,16 @@ function Upload(props) {
         setPurpose("");
         setContact("");
         document.getElementById("cert").value = "";
-        if(document.getElementById("emaildel"))
-        document.getElementById("emaildel").value = "";
-        if(document.getElementById("feer"))
-        document.getElementById("feer").value = "";
+        if (document.getElementById("emaildel"))
+          document.getElementById("emaildel").value = "";
+        if (document.getElementById("feer"))
+          document.getElementById("feer").value = "";
         document.getElementById("contact-number").value = "";
         document.getElementById("purpose").value = "";
         document.getElementById("college-id").value = "";
         document.getElementById("certType").value = "bonafide";
         setFile("bonafide");
-        console.log("reset successfull")
+        console.log("reset successfull");
       })
       .catch((err) => {
         console.log(err);
@@ -605,7 +605,15 @@ function Upload(props) {
                     e.preventDefault();
                     // let certType = document.getElementById("certType").value;
                     console.log(emails, emailCount, fileName, contact);
-                    if (file && emails && emailCount && fileName && contact && purpose) setModal(true);
+                    if (
+                      file &&
+                      emails &&
+                      emailCount &&
+                      fileName &&
+                      contact &&
+                      purpose
+                    )
+                      setModal(true);
                   }}
                 >
                   Submit

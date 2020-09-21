@@ -24,6 +24,8 @@ function Upload(props) {
   const [address, setAddress] = useState("");
   const [preAddress, setPreAddr] = useState([]);
   const [addressModal, setAddressModal] = useState(false);
+  const [contact, setContact] = useState("");
+  const [purpose, setPurpose] = useState("");
 
   useEffect(() => {
     spider
@@ -61,14 +63,18 @@ function Upload(props) {
     e.preventDefault();
     setLoading(true);
     let fileUpload = document.getElementById("cert").files[0];
+    let college_id = document.getElementById("college-id").files[0];
     let certType = document.getElementById("certType").value;
     let cd = new FormData();
     if (certType === "bonafide") cd.set("type", parseInt(1));
     else cd.set("type", parseInt(2));
     cd.append("certificate", fileUpload);
+    cd.append("certificate", college_id);
     if (emailDel) cd.set("email", emailDel);
     if (address) cd.set("address", address);
     if (feeReceipt) cd.set("receipt", feeReceipt);
+    if(contact) cd.set("contact", contact);
+    if(contact) cd.set("purpose", purpose);
     cd.set("path", emails.toString());
     for (var pair of cd.entries()) {
       console.log("ccd:", pair[0] + ", " + pair[1]);
@@ -76,6 +82,7 @@ function Upload(props) {
     spider
       .post("api/student/certificate_request", cd)
       .then((res) => {
+        console.log(res);
         setLoading(false);
         setCount(0);
         setEmails([]);
@@ -400,7 +407,24 @@ function Upload(props) {
                 </div>
               </>
               <br />
-
+              <div className="form-group">
+                <label htmlFor="contact-number">
+                  Contact Number <span className="cmpl">*</span>
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="contact"
+                  id="contact-number"
+                  required
+                  onChange={(e) => {
+                    setContact(e.target.value);
+                  }}
+                />
+                <small className="form-text text-muted">
+                  Enter contact number.
+                </small>
+              </div>
               {/* Fee Receipt */}
               {file === "X" ? (
                 <div className="fee-receipt">
@@ -473,15 +497,71 @@ function Upload(props) {
               )}
               <br />
               <div className="form-group">
-                <label htmlFor="cert">
+                <label htmlFor="purpose">
+                  Purpose <span className="cmpl">*</span>
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="purpose"
+                  id="purpose"
+                  required
+                  onChange={(e) => {
+                    setPurpose(e.target.value);
+                  }}
+                />
+                <small className="form-text text-muted">
+                  Enter purpose for requesting certificate.
+                </small>
+              </div>
+              <div className="form-group">
+                <label htmlFor="cert" style={{width: '50%'}}>
                   Add certificate <span className="cmpl">*</span>
+                </label>
+                <label htmlFor="college-id" style={{width: '50%'}}>
+                  Upload Student ID <span className="cmpl">*</span>
                 </label>
                 <input
                   type="file"
                   onChange={handleFileUpload}
-                  className="form-control-file"
+                  // className="form-control-file"
                   id="cert"
+                  style={{width: '50%'}}
+                  onChange={(e) => {
+                      let file = document.getElementById("cert");
+                      let filePath = file.value;
+                      var allowedExtensions =  /(\.docx|\.DOCX|\.doc|\.DOC|\.pdf|\.PDF)$/;
+                      if (!allowedExtensions.exec(filePath)) { 
+                        file.value = '';
+                        document.getElementById("file-extension-check").innerHTML = "File extension must be .doc, .docx or .pdf";
+                      } else {
+                        document.getElementById("file-extension-check").innerHTML = "";
+                      }
+                    }
+                  }
                 />
+                <input
+                  type="file"
+                  onChange={handleFileUpload}
+                  // className="form-control-file"
+                  id="college-id"
+                  style={{width: '50%'}}
+                  onChange={(e) => {
+                    let file = document.getElementById("college-id");
+                    let filePath = file.value;
+                    var allowedExtensions =  /(\.docx|\.DOCX|\.doc|\.DOC|\.pdf|\.PDF)$/;
+                    if (!allowedExtensions.exec(filePath)) { 
+                      file.value = '';
+                      document.getElementById("file-extension-check").innerHTML = "File extension must be .doc, .docx or .pdf";
+                    } else {
+                      document.getElementById("file-extension-check").innerHTML = "";
+                    }
+                  }
+                }
+                />
+                <div style={{display: 'flex', justifyContent: 'center', fontSize: '1em', color: '#FF0000', margin: '1em'}}>
+                  <small id="file-extension-check"></small>
+                </div>
               </div>
               <br />
 

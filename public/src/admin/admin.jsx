@@ -45,7 +45,9 @@ function Admin() {
     spider
       .get("/api/admin")
       .then(async (res) => {
-        console.log(res);
+        if(res === undefined) {
+          window.location = "/";
+        }
         let temp = [];
         res.data.forEach((cc) => {
           temp = Object.assign([], res.data);

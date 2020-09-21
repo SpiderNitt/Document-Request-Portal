@@ -170,7 +170,7 @@ function Upload(props) {
                     setFile(certType);
                     if (certType === "X") {
                       setCount(emailCount + 1);
-                      setEmails(emails.concat("transcript@nitt.edu"));
+                      setEmails(["transcript@nitt.edu"]);
                     } else {
                       setCount(0);
                       setEmails([]);

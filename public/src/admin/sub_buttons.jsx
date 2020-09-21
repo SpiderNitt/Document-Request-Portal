@@ -134,20 +134,28 @@ export const AddEmailDetails = (props) => {
 
   return (
     <>
-      <button
-        className="btn btn-success p-1 m-1"
-        width="50"
-        type="button"
-        onClick={(e) => {
-          setModal(true);
-        }}
-      >
-        {
-          !props.email_status
-          ? <div>Send via Email</div>
-          : <div>Email Sent</div>
-        }
-      </button>
+      {props.email_status ? (
+        <button
+          className="btn btn-secondary p-1 m-1"
+          width="50"
+          type="button"
+          disabled
+        >
+          <div>Email Sent</div>
+        </button>
+      ) : (
+        <button
+          className="btn btn-success p-1 m-1"
+          width="50"
+          type="button"
+          onClick={(e) => {
+            setModal(true);
+          }}
+        >
+          <div>Send via Email</div>
+        </button>
+      )}
+
       <Modal
         show={showModal}
         onHide={handleClose}
@@ -224,20 +232,28 @@ export const AddPostalDetails = (props) => {
 
   return (
     <>
-      <button
-        className="btn btn-success p-1 m-1"
-        width="50"
-        type="button"
-        onClick={(e) => {
-          setModal(true);
-        }}
-      >
-        {
-          !props.postal_status
-          ? <div>Send via Post</div>
-          : <div>Post Sent</div>
-        }
-      </button>
+      {props.postal_status ? (
+        <button
+          className="btn btn-secondary p-1 m-1"
+          width="50"
+          type="button"
+          disabled
+        >
+          Post Sent
+        </button>
+      ) : (
+        <button
+          className="btn btn-success p-1 m-1"
+          width="50"
+          type="button"
+          onClick={(e) => {
+            setModal(true);
+          }}
+        >
+          Send via post
+        </button>
+      )}
+
       <Modal
         show={showModal}
         onHide={handleClose}

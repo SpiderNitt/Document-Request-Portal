@@ -154,7 +154,6 @@ function Admin() {
             timeout={3000} //3 secs
           />
         ) : (
-          
           <div>
             <div className="download-details">
               <button
@@ -165,286 +164,339 @@ function Admin() {
                 Export to Excel
               </button>
             </div>
-            {
-            certReq.map((cert, index) => {
-            let pending = 0, approved = 0;
-            cert.certificates.forEach((certificate) => {
-              if(certificate.status === "APPROVED") {
-                approved = approved + 1;
-              } else {
-                pending = pending + 1;
-              }
-            });
-            return (
-              <div>
-              {
-                cert.certificates.length
-                ? <Accordion className="acc-main text-center" key={index}>
-                <Card className="table-main">
-                  <Card.Header className="tableHeader">
-                    <Accordion.Toggle
-                      as={Card.Header}
-                      variant="link"
-                      eventKey="0"
-                      className="text-center card-header acc-title"
-                    >
-                      {cert.certificate_type}
-                      <span className="pending-approved-number">
-                        <span>Pending <p className="req-notif">{pending}</p> </span>
-                        <span>Approved <p className="req-notif">{approved}</p> </span>
-                      </span>
-                    </Accordion.Toggle>
-                  </Card.Header>
-                  <Accordion.Collapse eventKey="0">
-                    <Card.Body>
-                      {cert.certificates.length === 0 ? (
-                        <p className="placeholder-nil text-center">
-                          <FaListAlt className="mr-2" />
-                          No pending certificates{" "}
-                        </p>
-                      ) : (
-                        <>
-                          {/* <table
-                            id="cert_table_approved"
-                            className="table cert-table"
+            {certReq.map((cert, index) => {
+              let pending = 0,
+                approved = 0;
+              cert.certificates.forEach((certificate) => {
+                if (certificate.status === "APPROVED") {
+                  approved = approved + 1;
+                } else {
+                  pending = pending + 1;
+                }
+              });
+              return (
+                <div key={index}>
+                  {cert.certificates.length ? (
+                    <Accordion className="acc-main text-center">
+                      <Card className="table-main">
+                        <Card.Header className="tableHeader">
+                          <Accordion.Toggle
+                            as={Card.Header}
+                            variant="link"
+                            eventKey="0"
+                            className="card-header acc-title"
                           >
-                            <thead className="thead-dark">
-                              <tr>
-                                <th scope="col">S.No</th>
-                                <th scope="col">Roll No.</th>
-                                <th scope="col">Status</th>
-                                <th scope="col">Previous Approvals</th>
-                                <th scope="col">Certificate file</th>
-                                {cert.certificate_type === "Bonafide" ? (
-                                  <th scope="col">Upload Certificate</th>
+                            <p>{cert.certificate_type}</p>
+                            <span className="pending-approved-number">
+                              Pending:
+                              <span className="req-notif">{pending}</span>
+                            </span>
+                            <span className="pending-approved-number">
+                              Approved:
+                              <span className="req-notif">{approved}</span>
+                            </span>
+                          </Accordion.Toggle>
+                        </Card.Header>
+                        <Accordion.Collapse eventKey="0">
+                          <Card.Body>
+                            {cert.certificates.length === 0 ? (
+                              <p className="placeholder-nil text-center">
+                                <FaListAlt className="mr-2" />
+                                No pending certificates
+                              </p>
+                            ) : (
+                              <>
+                                {pending ? (
+                                  <div className="table-responsive">
+                                    <div style={{ fontWeight: "bold" }}>
+                                      Pending
+                                    </div>
+                                    <table
+                                      id="cert_table"
+                                      className="table cert-table"
+                                    >
+                                      <thead className="thead-dark">
+                                        <tr>
+                                          <th scope="col">S.No</th>
+                                          <th scope="col">Roll No.</th>
+                                          <th scope="col">
+                                            Previous Approvals
+                                          </th>
+                                          <th scope="col">Certificate file</th>
+                                          {cert.certificate_type ===
+                                          "Bonafide" ? (
+                                            <th scope="col">
+                                              Upload Certificate
+                                            </th>
+                                          ) : (
+                                            <></>
+                                          )}
+                                          <th scope="col">Decision</th>
+                                          <th></th>
+                                        </tr>
+                                      </thead>
+
+                                      <tbody>
+                                        {cert.certificates.map(
+                                          (data, index) => {
+                                            if (data.status !== "APPROVED") {
+                                              return (
+                                                <tr key={index + 1}>
+                                                  <th>{index + 1}</th>
+                                                  <td>{data.applier_roll}</td>
+                                                  <td>
+                                                    {data.approved.length === 0
+                                                      ? "-"
+                                                      : data.approved.map(
+                                                          (emails, index) => {
+                                                            return (
+                                                              <div key={index}>
+                                                                {emails}
+                                                                <br />
+                                                              </div>
+                                                            );
+                                                          }
+                                                        )}
+                                                  </td>
+                                                  <td>
+                                                    <Download
+                                                      certId={
+                                                        data.certificate_id
+                                                      }
+                                                      roll={data.applier_roll}
+                                                      certType={
+                                                        cert.certificate_type
+                                                      }
+                                                    />
+                                                  </td>
+                                                  {cert.certificate_type ===
+                                                  "Bonafide" ? (
+                                                    <td>
+                                                      <Upload
+                                                        ID={index}
+                                                        roll={data.applier_roll}
+                                                        certType={
+                                                          cert.certificate_type
+                                                        }
+                                                      />
+                                                      <span
+                                                        className="cancel-btn"
+                                                        id={
+                                                          "cancel-btn" + index
+                                                        }
+                                                      ></span>
+                                                    </td>
+                                                  ) : (
+                                                    <></>
+                                                  )}
+                                                  <td>
+                                                    <Approve
+                                                      ID={index}
+                                                      roll={data.applier_roll}
+                                                      certId={
+                                                        data.certificate_id
+                                                      }
+                                                      status={data.status}
+                                                      certType={
+                                                        cert.certificate_type
+                                                      }
+                                                    />{" "}
+                                                    <Reject
+                                                      roll={data.applier_roll}
+                                                      certId={
+                                                        data.certificate_id
+                                                      }
+                                                      status={data.status}
+                                                      certType={
+                                                        cert.certificate_type
+                                                      }
+                                                    />
+                                                  </td>
+                                                  <td>
+                                                    <input
+                                                      id={data.id}
+                                                      type="checkbox"
+                                                      defaultChecked="true"
+                                                    />
+                                                  </td>
+                                                </tr>
+                                              );
+                                            }
+                                          }
+                                        )}
+                                      </tbody>
+                                    </table>
+                                  </div>
                                 ) : (
-                                  <div></div>
+                                  <></>
                                 )}
-                                <th scope="col">Email</th>
-                                <th scope="col">Postal</th>
-                                <th scope="col">Decision</th>
-                                <th></th>
-                              </tr>
-                            </thead>
-                          </table> */}
+                                {approved ? (
+                                  <div className="table-responsive">
+                                    <div style={{ fontWeight: "bold" }}>
+                                      Approved
+                                    </div>
+                                    <table
+                                      id="cert_table"
+                                      className="table cert-table"
+                                    >
+                                      <thead className="thead-dark">
+                                        <tr>
+                                          <th scope="col">S.No</th>
+                                          <th scope="col">Roll No.</th>
+                                          <th scope="col">Status</th>
+                                          <th scope="col">
+                                            Previous Approvals
+                                          </th>
+                                          <th scope="col">Email Address</th>
+                                          <th scope="col">Postal Address</th>
+                                          <th scope="col">Certificate file</th>
+                                          {cert.certificate_type ===
+                                          "Bonafide" ? (
+                                            <th scope="col">
+                                              Upload Certificate
+                                            </th>
+                                          ) : (
+                                            <></>
+                                          )}
+                                          <th scope="col">Email</th>
+                                          <th scope="col">Postal</th>
 
-                          {pending
-                          ? 
-                          <div>
-                            <div style={{fontWeight: 'bold'}}> Pending </div>
-                            <table id="cert_table" className="table cert-table">
-                          <thead className="thead-dark">
-                            <tr>
-                              <th scope="col">S.No</th>
-                              <th scope="col">Roll No.</th>
-                              {/* <th scope="col">Status</th> */}
-                              <th scope="col">Previous Approvals</th>
-                              <th scope="col">Certificate file</th>
-                              {cert.certificate_type === "Bonafide" ? (
-                                <th scope="col">Upload Certificate</th>
-                              ) : (
-                                <div></div>
-                              )}
-                              <th scope="col">Decision</th>
-                              <th></th>
-                            </tr>
-                          </thead>
+                                          <th></th>
+                                        </tr>
+                                      </thead>
 
-                          <tbody>
-                            {cert.certificates.map((data, index) => {
-                              if (data.status !== "APPROVED") {
-                                return (
-                                  <tr key={index + 1}>
-                                    <th>{index + 1}</th>
-                                    <td>{data.applier_roll}</td>
-                                    {/* <th>{data.status}</th> */}
-                                    <td>
-                                      {data.approved.length === 0
-                                        ? "-"
-                                        : data.approved.map(
-                                            (emails, index) => {
+                                      <tbody>
+                                        {cert.certificates.map(
+                                          (data, index) => {
+                                            if (data.status === "APPROVED") {
                                               return (
-                                                <div key={index}>
-                                                  {emails}
-                                                  <br />
-                                                </div>
+                                                <tr key={index + 1}>
+                                                  <th>{index + 1}</th>
+                                                  <td>{data.applier_roll}</td>
+                                                  <th>{data.status}</th>
+                                                  <td>
+                                                    {data.approved.length === 0
+                                                      ? "-"
+                                                      : data.approved.map(
+                                                          (emails, index) => {
+                                                            return (
+                                                              <div key={index}>
+                                                                {emails}
+                                                                <br />
+                                                              </div>
+                                                            );
+                                                          }
+                                                        )}
+                                                  </td>
+
+                                                  <td>
+                                                    {data.email
+                                                      ? data.email
+                                                      : "-"}
+                                                  </td>
+
+                                                  <td>
+                                                    {data.address
+                                                      ? data.address
+                                                      : "-"}
+                                                  </td>
+                                                  <td>
+                                                    <Download
+                                                      certId={
+                                                        data.certificate_id
+                                                      }
+                                                      roll={data.applier_roll}
+                                                      certType={
+                                                        cert.certificate_type
+                                                      }
+                                                    />
+                                                  </td>
+                                                  {cert.certificate_type ===
+                                                  "Bonafide" ? (
+                                                    <td>
+                                                      <Upload
+                                                        ID={index}
+                                                        roll={data.applier_roll}
+                                                        certType={
+                                                          cert.certificate_type
+                                                        }
+                                                      />
+                                                      <span
+                                                        className="cancel-btn"
+                                                        id={
+                                                          "cancel-btn" + index
+                                                        }
+                                                      ></span>
+                                                    </td>
+                                                  ) : (
+                                                    <></>
+                                                  )}
+                                                  <td>
+                                                    <AddEmailDetails
+                                                      roll={data.applier_roll}
+                                                      certType={
+                                                        cert.certificate_type
+                                                      }
+                                                      certId={
+                                                        data.certificate_id
+                                                      }
+                                                      email_status={
+                                                        data.email_status
+                                                      }
+                                                      postal_status={
+                                                        data.postal_status
+                                                      }
+                                                    />
+                                                  </td>
+                                                  <td>
+                                                    <AddPostalDetails
+                                                      roll={data.applier_roll}
+                                                      certType={
+                                                        cert.certificate_type
+                                                      }
+                                                      certId={
+                                                        data.certificate_id
+                                                      }
+                                                      email_status={
+                                                        data.email_status
+                                                      }
+                                                      postal_status={
+                                                        data.postal_status
+                                                      }
+                                                    />
+                                                  </td>
+
+                                                  <td>
+                                                    <input
+                                                      id={data.id}
+                                                      type="checkbox"
+                                                      defaultChecked="true"
+                                                    />
+                                                  </td>
+                                                </tr>
                                               );
                                             }
-                                          )}
-                                    </td>
-                                    <td>
-                                      <Download
-                                        certId={data.certificate_id}
-                                        roll={data.applier_roll}
-                                        certType={cert.certificate_type}
-                                      />
-                                    </td>
-                                    {cert.certificate_type === "Bonafide" ? (
-                                      <td>
-                                        <Upload
-                                          ID={index}
-                                          roll={data.applier_roll}
-                                          certType={cert.certificate_type}
-                                        />
-                                        <span
-                                          className="cancel-btn"
-                                          id={"cancel-btn" + index}
-                                        ></span>
-                                      </td>
-                                    ) : (
-                                      <div></div>
-                                    )}
-                                    <td>
-                                      <Approve
-                                        ID={index}
-                                        roll={data.applier_roll}
-                                        certId={data.certificate_id}
-                                        status={data.status}
-                                        certType={cert.certificate_type}
-                                      />{" "}
-                                      <Reject
-                                        roll={data.applier_roll}
-                                        certId={data.certificate_id}
-                                        status={data.status}
-                                        certType={cert.certificate_type}
-                                      />
-                                    </td>
-                                    <td>
-                                      <input
-                                        id={data.id}
-                                        certType={cert.certificate_type}
-                                        type="checkbox"
-                                        defaultChecked="true"
-                                      />
-                                    </td>
-                                  </tr>
-                                );
-                              }
-                              // return 0;
-                            })}
-                          </tbody>
-                        </table>
-                          </div>
-                        : <div></div>
-                          }
-                          {approved
-                          ? <div>
-                            <div style={{fontWeight: 'bold'}}>Approved</div>
-                            <table id="cert_table" className="table cert-table">
-                          <thead className="thead-dark">
-                            <tr>
-                              <th scope="col">S.No</th>
-                              <th scope="col">Roll No.</th>
-                              <th scope="col">Status</th>
-                              <th scope="col">Previous Approvals</th>
-                              <th scope="col">Certificate file</th>
-                              {cert.certificate_type === "Bonafide" ? (
-                                <th scope="col">Upload Certificate</th>
-                              ) : (
-                                <div></div>
-                              )}
-                              <th scope="col">Email</th>
-                              <th scope="col">Postal</th>
-                              <th scope="col">Email Address</th>
-                              <th scope="col">Postal Address</th>
-                              <th></th>
-                            </tr>
-                          </thead>
-
-                          <tbody>
-                            {cert.certificates.map((data, index) => {
-                              if (data.status === "APPROVED") {
-                                return (
-                                  <tr key={index + 1}>
-                                    <th>{index + 1}</th>
-                                    <td>{data.applier_roll}</td>
-                                    <th>{data.status}</th>
-                                    <td>
-                                      {data.approved.length === 0
-                                        ? "-"
-                                        : data.approved.map(
-                                            (emails, index) => {
-                                              return (
-                                                <div key={index}>
-                                                  {emails}
-                                                  <br />
-                                                </div>
-                                              );
-                                            }
-                                          )}
-                                    </td>
-                                    <td>
-                                      <Download
-                                        certId={data.certificate_id}
-                                        roll={data.applier_roll}
-                                        certType={cert.certificate_type}
-                                      />
-                                    </td>
-                                    {cert.certificate_type === "Bonafide" ? (
-                                      <td>
-                                        <Upload
-                                          ID={index}
-                                          roll={data.applier_roll}
-                                          certType={cert.certificate_type}
-                                        />
-                                        <span
-                                          className="cancel-btn"
-                                          id={"cancel-btn" + index}
-                                        ></span>
-                                      </td>
-                                    ) : (
-                                      <div></div>
-                                    )}
-                                    <td>
-                                      <AddEmailDetails
-                                        roll={data.applier_roll}
-                                        certType={cert.certificate_type}
-                                        certId={data.certificate_id}
-                                        email_status={data.email_status}
-                                        postal_status={data.postal_status}
-                                      />
-                                    </td>
-                                    <td>
-                                      <AddPostalDetails
-                                        roll={data.applier_roll}
-                                        certType={cert.certificate_type}
-                                        certId={data.certificate_id}
-                                        email_status={data.email_status}
-                                        postal_status={data.postal_status}
-                                      />
-                                    </td>
-                                    <td>{data.email}</td>
-                                    <td>{data.address}</td>
-                                    <td>
-                                      <input
-                                        id={data.id}
-                                        certType={cert.certificate_type}
-                                        type="checkbox"
-                                        defaultChecked="true"
-                                      />
-                                    </td>
-                                  </tr>
-                                );
-                              }
-                              // return 0;
-                            })}
-                          </tbody>
-                        </table>
-                          </div>
-                        : <div></div>
-                        }
-                        </>
-                      )}
-                    </Card.Body>
-                  </Accordion.Collapse>
-                </Card>
-              </Accordion>
-              : <div></div>
-              }
-              </div>
-            );
-          })
-        }
+                                          }
+                                        )}
+                                      </tbody>
+                                    </table>
+                                  </div>
+                                ) : (
+                                  <></>
+                                )}
+                              </>
+                            )}
+                          </Card.Body>
+                        </Accordion.Collapse>
+                      </Card>
+                    </Accordion>
+                  ) : (
+                    <></>
+                  )}
+                </div>
+              );
+            })}
+            <br />
           </div>
         )}
         <ToastContainer

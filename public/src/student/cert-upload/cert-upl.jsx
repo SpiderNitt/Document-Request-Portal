@@ -83,8 +83,9 @@ function Upload(props) {
     if (emailDel) cd.set("email", emailDel);
     if (address) cd.set("address", address);
     if (feeReceipt) cd.set("receipt", feeReceipt);
+    console.log(contact);
     if (contact) cd.set("contact", contact);
-    if (contact) cd.set("purpose", purpose);
+    if (purpose) cd.set("purpose", purpose);
     cd.set("path", emails.toString());
     for (var pair of cd.entries()) {
       console.log("ccd:", pair[0] + ", " + pair[1]);
@@ -107,8 +108,16 @@ function Upload(props) {
         setPurpose("");
         setContact("");
         document.getElementById("cert").value = "";
+        if(document.getElementById("emaildel"))
         document.getElementById("emaildel").value = "";
+        if(document.getElementById("feer"))
         document.getElementById("feer").value = "";
+        document.getElementById("contact-number").value = "";
+        document.getElementById("purpose").value = "";
+        document.getElementById("college-id").value = "";
+        document.getElementById("certType").value = "bonafide";
+        setFile("bonafide");
+        console.log("reset successfull")
       })
       .catch((err) => {
         console.log(err);
@@ -447,6 +456,7 @@ function Upload(props) {
                   required
                   onChange={(e) => {
                     setContact(e.target.value);
+                    console.log(e.target.value);
                   }}
                 />
                 <small className="form-text text-muted">
@@ -594,8 +604,8 @@ function Upload(props) {
                   onClick={(e) => {
                     e.preventDefault();
                     // let certType = document.getElementById("certType").value;
-
-                    if (file && emails && fileName) setModal(true);
+                    console.log(emails, emailCount, fileName, contact);
+                    if (file && emails && emailCount && fileName && contact && purpose) setModal(true);
                   }}
                 >
                   Submit

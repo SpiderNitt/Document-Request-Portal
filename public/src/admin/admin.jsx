@@ -154,8 +154,8 @@ function Admin() {
             width={100}
             timeout={3000} //3 secs
           />
-        ) : (
-          <div>
+        ) : certReq[0].length + certReq[1].length
+          ? <div>
             <div className="download-details">
               <button
                 onClick={() => {
@@ -527,7 +527,10 @@ function Admin() {
             })}
             <br />
           </div>
-        )}
+          : <div style={{textAlign: 'center', fontWeight: 'bold', fontSize: '1.5em'}}>
+              No certificate requests
+            </div>
+        }
         <ToastContainer
           position="top-center"
           autoClose={2000}

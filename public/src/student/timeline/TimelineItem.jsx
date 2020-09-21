@@ -36,7 +36,7 @@ export default function TimelineItem(props) {
             ) : (
               <small></small>
             )}
-            {props.email ? (
+            {/* {props.email ? (
               <small>Email sent to your email address.</small>
             ) : (
               <></>
@@ -49,7 +49,7 @@ export default function TimelineItem(props) {
               </small>
             ) : (
               <></>
-            )}
+            )} */}
           </p>
         </div>
       </div>

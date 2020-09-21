@@ -88,6 +88,9 @@ export default class Status extends React.Component {
   render() {
     return (
       <div id="cert-status">
+        <div className="page-header row justify-content-center">
+          <h1>Your Certificates</h1>
+        </div>
         {this.state.loading ? (
           <Loader
             className="text-center"
@@ -99,40 +102,39 @@ export default class Status extends React.Component {
           />
         ) : (
           <>
-            <div className="page-header row justify-content-center">
-              <h1>Your Certificates</h1>
-            </div>
-            <div className="container-fluid req-status">
-              
+            <div className="container req-status">
               <table className="table cert-table status-table">
-                
-               {this.state.certData.length===0 ? (
-                <thead className="thead-dark">
-                        <tr >
-                        <th colspan="12">No Requests sent</th>
-                        </tr>           
-                </thead>  ):(
+                {this.state.certData.length === 0 ? (
+                  <thead className="thead-dark">
+                    <tr>
+                      <th colSpan="12">No Requests sent</th>
+                    </tr>
+                  </thead>
+                ) : (
+                  <thead className="thead-dark">
+                    <tr>
+                      <th scope="col">S.No</th>
+                      <th scope="col">Certificate Type</th>
+                      <th scope="col">Current Status</th>
+                      <th scope="col">Email Status</th>
+                      <th scope="col">Postal Status</th>
+                      <th scope="col">Actions</th>
+                    </tr>
+                  </thead>
+                )}
 
-                <thead className="thead-dark">
-                  <tr>
-                    <th scope="col">S.No</th>
-                    <th scope="col">Certificate Type</th>
-                    <th scope="col">Current Status</th>
-                    <th scope="col">Actions</th>
-                  </tr>
-                </thead>
-                )
-                }
-                   
-
-                <tbody>      
+                <tbody>
                   {this.state.certData.map((data, index) => {
-                      return (
-                        <>
+                    return (
+                      <>
                         <tr key={index}>
                           <td>{index + 1}</td>
                           <td>{cert_mapping[data.type]}</td>
                           <td>{data.status}</td>
+                          <td>{data.email_status ? data.email_status : "-"}</td>
+                          <td>
+                            {data.postal_status ? data.postal_status : "-"}
+                          </td>
                           <td>
                             <span className="table-icons">
                               <FaDownload
@@ -152,11 +154,6 @@ export default class Status extends React.Component {
                                 }}
                               />
                             </span>
-                            {/* <Download
-                      certId={data.certificate_id}
-                      roll={data.applier_roll}
-                      certType={data.certificate_type}
-                    /> */}
                           </td>
                         </tr>
                         <Collapse

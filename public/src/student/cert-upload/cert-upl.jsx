@@ -45,6 +45,16 @@ function Upload(props) {
 
   const handleFileUpload = (e) => {
     if (e.target.files[0]) {
+      let file = document.getElementById("cert");
+      let filePath = file.value;
+      var allowedExtensions = /(\.docx|\.DOCX|\.doc|\.DOC|\.pdf|\.PDF)$/;
+      if (!allowedExtensions.exec(filePath)) {
+        file.value = "";
+        document.getElementById("file-extension-check").innerHTML =
+          "File extension must be .doc, .docx or .pdf";
+      } else {
+        document.getElementById("file-extension-check").innerHTML = "";
+      }
       setFileName("hello");
       setFileButton(true);
       setFileName(true);
@@ -73,8 +83,8 @@ function Upload(props) {
     if (emailDel) cd.set("email", emailDel);
     if (address) cd.set("address", address);
     if (feeReceipt) cd.set("receipt", feeReceipt);
-    if(contact) cd.set("contact", contact);
-    if(contact) cd.set("purpose", purpose);
+    if (contact) cd.set("contact", contact);
+    if (contact) cd.set("purpose", purpose);
     cd.set("path", emails.toString());
     for (var pair of cd.entries()) {
       console.log("ccd:", pair[0] + ", " + pair[1]);
@@ -83,6 +93,7 @@ function Upload(props) {
       .post("api/student/certificate_request", cd)
       .then((res) => {
         console.log(res);
+        setModal(false);
         setLoading(false);
         setCount(0);
         setEmails([]);
@@ -93,10 +104,11 @@ function Upload(props) {
         setPreAddr([]);
         setEmailDel("");
         setFee("");
+        setPurpose("");
+        setContact("");
         document.getElementById("cert").value = "";
         document.getElementById("emaildel").value = "";
         document.getElementById("feer").value = "";
-        setModal(false);
       })
       .catch((err) => {
         console.log(err);
@@ -173,240 +185,256 @@ function Upload(props) {
               </div>
 
               {/* Certificate Delivery */}
-
-              <div className="form-group">
-                <label htmlFor="delivery-sel">
-                  Select certificate delivery method{" "}
-                  <span className="cmpl">*</span>
-                </label>
-                <div className="form-check">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    name="email-sel"
-                    id="email-sel"
-                    value="email"
-                    onChange={(e) => {
-                      if (document.getElementById("email-sel").checked) {
-                        document.getElementById(
-                          "email-del-entry"
-                        ).style.display = "block";
-                      } else {
-                        document.getElementById(
-                          "email-del-entry"
-                        ).style.display = "none";
-                      }
-                    }}
-                  />
-                  <label className="form-check-label" htmlFor="email">
-                    Email
-                  </label>
-                </div>
-                {/* Email delivery */}
-                <div id="email-del-entry">
+              {file === "X" ? (
+                <>
                   <div className="form-group">
-                    <input
-                      type="email"
-                      className="form-control"
-                      name="email-del"
-                      id="emaildel"
-                      aria-describedby="emailHelp"
-                      onChange={(e) => {
-                        e.preventDefault();
-                        let emailValues = document.getElementById("emaildel");
-                        if (emailValues.value !== "") {
-                          setEmailDel(emailValues.value);
-                          console.log(emailDel, emailValues.value);
-                        }
-                      }}
-                      required
-                    />
-                    <small id="emailHelp" className="form-text text-muted">
-                      Enter your email
-                    </small>
-                  </div>
-                </div>
-                <div className="form-check">
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    name="postal"
-                    id="postal-del"
-                    value="postal"
-                    onChange={(e) => {
-                      if (document.getElementById("postal-del").checked) {
-                        document.getElementById(
-                          "postal-del-entry"
-                        ).style.display = "block";
-                      } else {
-                        console.log("Ddf");
-                        document.getElementById(
-                          "postal-del-entry"
-                        ).style.display = "none";
-                      }
-                    }}
-                  />
-                  <label className="form-check-label" htmlFor="postal">
-                    Postal delivery
-                  </label>
-                </div>
-              </div>
-
-              {/* Postal information */}
-
-              <>
-                <div id="postal-del-entry" className="text-center">
-                  <p id="emailHelp" className="form-text text-muted">
-                    Choose addresses from your previous entries:
-                  </p>
-                  {preAddress.length !== 0 ? (
-                    preAddress.map((addr, index) => {
-                      if (addr !== "" || addr !== " ")
-                        return (
-                          <div className="form-check" key={index}>
-                            <input
-                              className="form-check-input radio-addr"
-                              type="radio"
-                              name="radio"
-                              id={"radio" + index}
-                              value={addr !== null ? addr : ""}
-                              onChange={(e) => {
-                                setAddress(e.target.value);
-                              }}
-                            />
-                            <label className="form-check-label" htmlFor="radio">
-                              {addr}
-                            </label>
-                          </div>
-                        );
-                    })
-                  ) : (
-                    <small className="form-text text-muted">
-                      No previously saved addresses.
-                    </small>
-                  )}
-                  <br />
-                  {address ? (
-                    <>
-                      <small className="form-text text-muted">
-                        Address entered/selected: <strong>{address}</strong>
-                      </small>
-                      <br />
-                    </>
-                  ) : (
-                    <></>
-                  )}
-                  <small className="form-text text-muted">
-                    Else, enter a new one:
-                  </small>
-                  <br />
-                  <div className="text-center">
-                    <button
-                      className="btn btn-success p-1 m-1"
-                      width="50"
-                      type="button"
-                      onClick={(e) => {
-                        setAddressModal(true);
-                        Array.prototype.forEach.call(
-                          document.getElementsByClassName("radio-addr"),
-                          (el) => {
-                            if (el.checked) {
-                              el.checked = false;
-                            }
+                    <label htmlFor="delivery-sel">
+                      Select certificate delivery method{" "}
+                      <span className="cmpl">*</span>
+                    </label>
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        name="email-sel"
+                        id="email-sel"
+                        value="email"
+                        onChange={(e) => {
+                          if (document.getElementById("email-sel").checked) {
+                            document.getElementById(
+                              "email-del-entry"
+                            ).style.display = "block";
+                          } else {
+                            document.getElementById(
+                              "email-del-entry"
+                            ).style.display = "none";
                           }
-                        );
-                      }}
-                    >
-                      Add New Address
-                    </button>
-                  </div>
-                  <br />
-                  <Modal
-                    show={addressModal}
-                    onHide={handleAddressClose}
-                    keyboard={false}
-                    dialogClassName="approveModal"
-                    aria-labelledby="contained-modal-title-vcenter"
-                    className="certModal"
-                  >
-                    <Modal.Header closeButton>
-                      <Modal.Title id="contained-modal-title-vcenter">
-                        Add New Address
-                      </Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                      <br />
-                      <div className="input-group">
-                        <div className="input-group-prepend">
-                          <span className="input-group-text">
-                            Address <span className="cmpl">*</span>
-                          </span>
-                        </div>
-                        <textarea
-                          id="address-text-box1"
-                          className="form-control"
-                          aria-label="With textarea"
-                        ></textarea>
-                      </div>
-                      <br />
-                      <div className="input-group">
-                        <div className="input-group-prepend">
-                          <span className="input-group-text">
-                            Pin Code <span className="cmpl">*</span>
-                          </span>
-                        </div>
+                        }}
+                      />
+                      <label className="form-check-label" htmlFor="email">
+                        Email
+                      </label>
+                    </div>
+                    {/* Email delivery */}
+                    <div id="email-del-entry">
+                      <div className="form-group">
                         <input
-                          type="number"
-                          id="address-text-box2"
+                          type="email"
                           className="form-control"
-                        ></input>
+                          name="email-del"
+                          id="emaildel"
+                          aria-describedby="emailHelp"
+                          onChange={(e) => {
+                            e.preventDefault();
+                            let emailValues = document.getElementById(
+                              "emaildel"
+                            );
+                            if (emailValues.value !== "") {
+                              setEmailDel(emailValues.value);
+                              console.log(emailDel, emailValues.value);
+                            }
+                          }}
+                          required
+                        />
+                        <small id="emailHelp" className="form-text text-muted">
+                          Enter your email
+                        </small>
                       </div>
+                    </div>
+                    <div className="form-check">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        name="postal"
+                        id="postal-del"
+                        value="postal"
+                        onChange={(e) => {
+                          if (document.getElementById("postal-del").checked) {
+                            document.getElementById(
+                              "postal-del-entry"
+                            ).style.display = "block";
+                          } else {
+                            console.log("Ddf");
+                            document.getElementById(
+                              "postal-del-entry"
+                            ).style.display = "none";
+                          }
+                        }}
+                      />
+                      <label className="form-check-label" htmlFor="postal">
+                        Postal delivery
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Postal information */}
+
+                  <>
+                    <div id="postal-del-entry" className="text-center">
+                      <p id="emailHelp" className="form-text text-muted">
+                        Choose addresses from your previous entries:
+                      </p>
+                      {preAddress.length !== 0 ? (
+                        preAddress.map((addr, index) => {
+                          if (addr !== "" || addr !== " ")
+                            return (
+                              <div className="form-check" key={index}>
+                                <input
+                                  className="form-check-input radio-addr"
+                                  type="radio"
+                                  name="radio"
+                                  id={"radio" + index}
+                                  value={addr !== null ? addr : ""}
+                                  onChange={(e) => {
+                                    setAddress(e.target.value);
+                                  }}
+                                />
+                                <label
+                                  className="form-check-label"
+                                  htmlFor="radio"
+                                >
+                                  {addr}
+                                </label>
+                              </div>
+                            );
+                        })
+                      ) : (
+                        <small className="form-text text-muted">
+                          No previously saved addresses.
+                        </small>
+                      )}
                       <br />
-                      <small id="emailHelp" className="form-text text-muted">
-                        Optional
+                      {address ? (
+                        <>
+                          <small className="form-text text-muted">
+                            Address entered/selected: <strong>{address}</strong>
+                          </small>
+                          <br />
+                        </>
+                      ) : (
+                        <></>
+                      )}
+                      <small className="form-text text-muted">
+                        Else, enter a new one:
                       </small>
-                      <div className="input-group">
-                        <div className="input-group-prepend">
-                          <span className="input-group-text">Landmark</span>
-                        </div>
-                        <textarea
-                          id="address-text-box3"
-                          className="form-control"
-                          aria-label="With textarea"
-                        ></textarea>
-                      </div>
                       <br />
                       <div className="text-center">
                         <button
-                          type="submit"
-                          className="btn btn-primary"
+                          className="btn btn-success p-1 m-1"
+                          width="50"
+                          type="button"
                           onClick={(e) => {
-                            let addr = document.getElementById(
-                              "address-text-box1"
-                            ).value;
-                            let pin = document.getElementById(
-                              "address-text-box2"
-                            ).value;
-                            let landm = document.getElementById(
-                              "address-text-box3"
-                            ).value;
-                            if (addr && pin) {
-                              let addressText =
-                                addr + " ," + pin + (landm ? " ," + landm : "");
-                              setAddress(addressText);
-                              console.log(address, addressText);
-                              setAddressModal(false);
-                            }
+                            setAddressModal(true);
+                            Array.prototype.forEach.call(
+                              document.getElementsByClassName("radio-addr"),
+                              (el) => {
+                                if (el.checked) {
+                                  el.checked = false;
+                                }
+                              }
+                            );
                           }}
                         >
-                          Add
+                          Add New Address
                         </button>
                       </div>
-                    </Modal.Body>
-                  </Modal>
-                </div>
-              </>
-              <br />
+                      <br />
+                      <Modal
+                        show={addressModal}
+                        onHide={handleAddressClose}
+                        keyboard={false}
+                        dialogClassName="approveModal"
+                        aria-labelledby="contained-modal-title-vcenter"
+                        className="certModal"
+                      >
+                        <Modal.Header closeButton>
+                          <Modal.Title id="contained-modal-title-vcenter">
+                            Add New Address
+                          </Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                          <br />
+                          <div className="input-group">
+                            <div className="input-group-prepend">
+                              <span className="input-group-text">
+                                Address <span className="cmpl">*</span>
+                              </span>
+                            </div>
+                            <textarea
+                              id="address-text-box1"
+                              className="form-control"
+                              aria-label="With textarea"
+                            ></textarea>
+                          </div>
+                          <br />
+                          <div className="input-group">
+                            <div className="input-group-prepend">
+                              <span className="input-group-text">
+                                Pin Code <span className="cmpl">*</span>
+                              </span>
+                            </div>
+                            <input
+                              type="number"
+                              id="address-text-box2"
+                              className="form-control"
+                            ></input>
+                          </div>
+                          <br />
+                          <small
+                            id="emailHelp"
+                            className="form-text text-muted"
+                          >
+                            Optional
+                          </small>
+                          <div className="input-group">
+                            <div className="input-group-prepend">
+                              <span className="input-group-text">Landmark</span>
+                            </div>
+                            <textarea
+                              id="address-text-box3"
+                              className="form-control"
+                              aria-label="With textarea"
+                            ></textarea>
+                          </div>
+                          <br />
+                          <div className="text-center">
+                            <button
+                              type="submit"
+                              className="btn btn-primary"
+                              onClick={(e) => {
+                                let addr = document.getElementById(
+                                  "address-text-box1"
+                                ).value;
+                                let pin = document.getElementById(
+                                  "address-text-box2"
+                                ).value;
+                                let landm = document.getElementById(
+                                  "address-text-box3"
+                                ).value;
+                                if (addr && pin) {
+                                  let addressText =
+                                    addr +
+                                    " ," +
+                                    pin +
+                                    (landm ? " ," + landm : "");
+                                  setAddress(addressText);
+                                  console.log(address, addressText);
+                                  setAddressModal(false);
+                                }
+                              }}
+                            >
+                              Add
+                            </button>
+                          </div>
+                        </Modal.Body>
+                      </Modal>
+                    </div>
+                  </>
+                  <br />
+                </>
+              ) : (
+                <></>
+              )}
               <div className="form-group">
                 <label htmlFor="contact-number">
                   Contact Number <span className="cmpl">*</span>
@@ -515,51 +543,35 @@ function Upload(props) {
                 </small>
               </div>
               <div className="form-group">
-                <label htmlFor="cert" style={{width: '50%'}}>
+                <label htmlFor="cert" style={{ width: "50%" }}>
                   Add certificate <span className="cmpl">*</span>
                 </label>
-                <label htmlFor="college-id" style={{width: '50%'}}>
+                <label htmlFor="college-id" style={{ width: "50%" }}>
                   Upload Student ID <span className="cmpl">*</span>
                 </label>
                 <input
                   type="file"
                   // className="form-control-file"
+                  onChange={handleFileUpload}
                   id="cert"
-                  style={{width: '50%'}}
-                  onChange={(e) => {
-                      let file = document.getElementById("cert");
-                      let filePath = file.value;
-                      var allowedExtensions =  /(\.docx|\.DOCX|\.doc|\.DOC|\.pdf|\.PDF)$/;
-                      if (!allowedExtensions.exec(filePath)) { 
-                        file.value = '';
-                        document.getElementById("file-extension-check").innerHTML = "File extension must be .doc, .docx or .pdf";
-                      } else {
-                        document.getElementById("file-extension-check").innerHTML = "";
-                        handleFileUpload(e);
-                      }
-                    }
-                  }
+                  style={{ width: "50%" }}
                 />
                 <input
                   type="file"
                   // className="form-control-file"
                   id="college-id"
-                  style={{width: '50%'}}
-                  onChange={(e) => {
-                    let file = document.getElementById("college-id");
-                    let filePath = file.value;
-                    var allowedExtensions =  /(\.docx|\.DOCX|\.doc|\.DOC|\.pdf|\.PDF)$/;
-                    if (!allowedExtensions.exec(filePath)) { 
-                      file.value = '';
-                      document.getElementById("file-extension-check").innerHTML = "File extension must be .doc, .docx or .pdf";
-                    } else {
-                      document.getElementById("file-extension-check").innerHTML = "";
-                      handleFileUpload(e);
-                    }
-                  }
-                }
+                  onChange={handleFileUpload}
+                  style={{ width: "50%" }}
                 />
-                <div style={{display: 'flex', justifyContent: 'center', fontSize: '1em', color: '#FF0000', margin: '1em'}}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    fontSize: "1em",
+                    color: "#FF0000",
+                    margin: "1em",
+                  }}
+                >
                   <small id="file-extension-check"></small>
                 </div>
               </div>

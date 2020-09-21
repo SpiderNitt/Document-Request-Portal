@@ -192,15 +192,23 @@ function Admin() {
                               Pending:
                               <span className="req-notif">{pending}</span>
                             </span>
-                            <span className="pending-approved-number">
-                              Approved:
-                              <span className="req-notif">{approved}</span>
-                            </span>
+                            {cert.certificate_type === "Transcript" ? (
+                              <span className="pending-approved-number">
+                                Approved:
+                                <span className="req-notif">{approved}</span>
+                              </span>
+                            ) : (
+                              <></>
+                            )}
                           </Accordion.Toggle>
                         </Card.Header>
                         <Accordion.Collapse eventKey="0">
                           <Card.Body>
-                            {cert.certificates.length === 0 ? (
+                            {(pending === 0 &&
+                              approved === 0 &&
+                              cert.certificate_type === "Transcript") ||
+                            (pending === 0 &&
+                              cert.certificate_type === "Bonafide") ? (
                               <p className="placeholder-nil text-center">
                                 <FaListAlt className="mr-2" />
                                 No pending certificates
@@ -275,13 +283,11 @@ function Admin() {
                                                   </td>
                                                   <td>
                                                     <DownloadStudentId
-                                                        Id={
-                                                          data.certificate_id
-                                                        }
-                                                        roll={data.applier_roll}
-                                                        certType={
-                                                          cert.certificate_type
-                                                        }
+                                                      Id={data.certificate_id}
+                                                      roll={data.applier_roll}
+                                                      certType={
+                                                        cert.certificate_type
+                                                      }
                                                     />
                                                   </td>
                                                   {cert.certificate_type ===
@@ -355,7 +361,8 @@ function Admin() {
                                 ) : (
                                   <></>
                                 )}
-                                {approved ? (
+                                {approved &&
+                                cert.certificate_type === "Transcript" ? (
                                   <div className="table-responsive">
                                     <div style={{ fontWeight: "bold" }}>
                                       Approved
@@ -461,38 +468,46 @@ function Admin() {
                                                     <></>
                                                   )}
                                                   <td>
-                                                    <AddEmailDetails
-                                                      roll={data.applier_roll}
-                                                      certType={
-                                                        cert.certificate_type
-                                                      }
-                                                      certId={
-                                                        data.certificate_id
-                                                      }
-                                                      email_status={
-                                                        data.email_status
-                                                      }
-                                                      postal_status={
-                                                        data.postal_status
-                                                      }
-                                                    />
+                                                    {data.email ? (
+                                                      <AddEmailDetails
+                                                        roll={data.applier_roll}
+                                                        certType={
+                                                          cert.certificate_type
+                                                        }
+                                                        certId={
+                                                          data.certificate_id
+                                                        }
+                                                        email_status={
+                                                          data.email_status
+                                                        }
+                                                        postal_status={
+                                                          data.postal_status
+                                                        }
+                                                      />
+                                                    ) : (
+                                                      <>-</>
+                                                    )}
                                                   </td>
                                                   <td>
-                                                    <AddPostalDetails
-                                                      roll={data.applier_roll}
-                                                      certType={
-                                                        cert.certificate_type
-                                                      }
-                                                      certId={
-                                                        data.certificate_id
-                                                      }
-                                                      email_status={
-                                                        data.email_status
-                                                      }
-                                                      postal_status={
-                                                        data.postal_status
-                                                      }
-                                                    />
+                                                    {data.address ? (
+                                                      <AddPostalDetails
+                                                        roll={data.applier_roll}
+                                                        certType={
+                                                          cert.certificate_type
+                                                        }
+                                                        certId={
+                                                          data.certificate_id
+                                                        }
+                                                        email_status={
+                                                          data.email_status
+                                                        }
+                                                        postal_status={
+                                                          data.postal_status
+                                                        }
+                                                      />
+                                                    ) : (
+                                                      <>-</>
+                                                    )}
                                                   </td>
 
                                                   <td>

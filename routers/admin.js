@@ -339,7 +339,7 @@ admin.post('/email', async function (req, res) {
                         from: process.env.EMAIL,
                         to: to_email,
                         subject: 'Transcript',
-                        text: 'Dear ' + applier_roll + ',\n. Please find attached the ' + type_name + ' document that you requested.',
+                        text: 'Dear ' + applier_roll + '\n. Please find attached the ' + type_name + ' document that you requested.',
                         attachments: [
                             {
                                 filename: applier_roll + '_' + type_name + '.pdf',

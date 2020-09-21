@@ -523,7 +523,6 @@ function Upload(props) {
                 </label>
                 <input
                   type="file"
-                  onChange={handleFileUpload}
                   // className="form-control-file"
                   id="cert"
                   style={{width: '50%'}}
@@ -536,13 +535,13 @@ function Upload(props) {
                         document.getElementById("file-extension-check").innerHTML = "File extension must be .doc, .docx or .pdf";
                       } else {
                         document.getElementById("file-extension-check").innerHTML = "";
+                        handleFileUpload(e);
                       }
                     }
                   }
                 />
                 <input
                   type="file"
-                  onChange={handleFileUpload}
                   // className="form-control-file"
                   id="college-id"
                   style={{width: '50%'}}
@@ -555,6 +554,7 @@ function Upload(props) {
                       document.getElementById("file-extension-check").innerHTML = "File extension must be .doc, .docx or .pdf";
                     } else {
                       document.getElementById("file-extension-check").innerHTML = "";
+                      handleFileUpload(e);
                     }
                   }
                 }

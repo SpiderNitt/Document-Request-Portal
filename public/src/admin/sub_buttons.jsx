@@ -428,3 +428,32 @@ export const Download = (props) => (
     Download
   </button>
 );
+
+export const DownloadStudentId = (props) => (
+  <button
+    className="btn btn-primary p-1 m-1"
+    width="50"
+    type="button"
+    onClick={(e) => [
+      spider
+        .get("api/student/certificate_download", {
+          params: { id: props.Id, id_cert: "junk" },
+          responseType: "blob",
+        })
+        .then((res) => {
+          console.log(res);
+          const url = window.URL.createObjectURL(new Blob([res.data]));
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute(
+            "download",
+            props.roll + "_id.pdf"
+          );
+          document.body.appendChild(link);
+          link.click();
+        }),
+    ]}
+  >
+    Download
+  </button>
+);

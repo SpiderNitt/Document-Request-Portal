@@ -6,6 +6,7 @@ import {
   Reject,
   Upload,
   Download,
+  DownloadStudentId,
   AddEmailDetails,
   AddPostalDetails,
 } from "./sub_buttons";
@@ -44,7 +45,7 @@ function Admin() {
     spider
       .get("/api/admin")
       .then(async (res) => {
-        // console.log(res);
+        console.log(res);
         let temp = [];
         res.data.forEach((cc) => {
           temp = Object.assign([], res.data);
@@ -223,6 +224,7 @@ function Admin() {
                                             Previous Approvals
                                           </th>
                                           <th scope="col">Certificate file</th>
+                                          <th scope="col">Student Id</th>
                                           {cert.certificate_type ===
                                           "Bonafide" ? (
                                             <th scope="col">
@@ -231,6 +233,8 @@ function Admin() {
                                           ) : (
                                             <></>
                                           )}
+                                          <th>Purpose</th>
+                                          <th>Contact</th>
                                           <th scope="col">Decision</th>
                                           <th></th>
                                         </tr>
@@ -269,6 +273,17 @@ function Admin() {
                                                       }
                                                     />
                                                   </td>
+                                                  <td>
+                                                    <DownloadStudentId
+                                                        Id={
+                                                          data.certificate_id
+                                                        }
+                                                        roll={data.applier_roll}
+                                                        certType={
+                                                          cert.certificate_type
+                                                        }
+                                                    />
+                                                  </td>
                                                   {cert.certificate_type ===
                                                   "Bonafide" ? (
                                                     <td>
@@ -289,6 +304,16 @@ function Admin() {
                                                   ) : (
                                                     <></>
                                                   )}
+                                                  <td>
+                                                    {data.purpose
+                                                      ? data.purpose
+                                                      : "-"}
+                                                  </td>
+                                                  <td>
+                                                    {data.contact
+                                                      ? data.contact
+                                                      : "-"}
+                                                  </td>
                                                   <td>
                                                     <Approve
                                                       ID={index}
@@ -343,12 +368,12 @@ function Admin() {
                                         <tr>
                                           <th scope="col">S.No</th>
                                           <th scope="col">Roll No.</th>
-                                          <th scope="col">Status</th>
                                           <th scope="col">
                                             Previous Approvals
                                           </th>
                                           <th scope="col">Email Address</th>
                                           <th scope="col">Postal Address</th>
+                                          <th scope="col">Contact</th>
                                           <th scope="col">Certificate file</th>
                                           {cert.certificate_type ===
                                           "Bonafide" ? (
@@ -373,7 +398,6 @@ function Admin() {
                                                 <tr key={index + 1}>
                                                   <th>{index + 1}</th>
                                                   <td>{data.applier_roll}</td>
-                                                  <th>{data.status}</th>
                                                   <td>
                                                     {data.approved.length === 0
                                                       ? "-"
@@ -398,6 +422,11 @@ function Admin() {
                                                   <td>
                                                     {data.address
                                                       ? data.address
+                                                      : "-"}
+                                                  </td>
+                                                  <td>
+                                                    {data.contact
+                                                      ? data.contact
                                                       : "-"}
                                                   </td>
                                                   <td>

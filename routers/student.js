@@ -9,37 +9,57 @@ const sequelize = require('sequelize')
 
 
 student.post("/certificate_request", async function (req, res) {
-    const upload = multer({ storage: helpers.storage, fileFilter: helpers.docFilter }).single('certificate');
+    const upload = multer({ storage: helpers.storage, fileFilter: helpers.docFilter }).array('certificate');
     upload(req, res, async function (err) {
         if (err) {
             console.log(err)
             return res.status(400).json({ 'message': req.fileValidationError });
         }
-        else if (!req.file) {
-            console.log(req.body.path)
-            res.status(400).json({ 'message': 'Please select a file' });
+        else if (!req.files) {
+            res.status(400).json({ 'message': 'Please select files' });
+            return;
+        }
+        else if(req.files.length == 1){
+            console.log(req.files)
+        }
+        else if(req.files.length!=2){
+            res.status(400).json({ 'message': 'Upload both certificate and ID' });
             return;
         }
         else {
             let applier_roll = req.jwt_payload.username;
-            let { destination, filename } = req.file;
-            let filepath = req.file.path;
+            let cert_destination = req.files[0].destination;
+            let cert_filepath = req.files[0].path;
+            let id_destination = req.files[1].destination;
+            let id_filepath = req.files[1].path;
+            let cert_filename = req.files[0].filename;
+            let id_filename = req.files[1].filename;
+            console.log(req.files[1])
+            // let { destination, filename } = req.files[0];
+            // let filepath = req.files[0].path;
             let final_dest = appRoot + '/uploads/' + applier_roll;
-            let initial_dest = appRoot + '/' + filepath;
+            let cert_initial_dest = appRoot + '/' + cert_filepath;
+            let id_initial_dest = appRoot + '/' + id_filepath;
+            console.log("paths:: ", cert_initial_dest, id_initial_dest)
             try {
                 fs.mkdirSync(final_dest, { recursive: true })
-                helper.renameFile(initial_dest, final_dest + '/' + filename);
+                helper.renameFile(cert_initial_dest, final_dest + '/' + cert_filename);
+                helper.renameFile(id_initial_dest, final_dest + '/' + "ID_" + id_filename);
             }
             catch (err) {
                 console.log(err);
-                fs.unlinkSync(initial_dest);
+                fs.unlinkSync(cert_initial_dest);
+                fs.unlinkSync(id_initial_dest);
                 res.status(500).json({ 'message': 'Some issue with the server. Try again later.' });
                 return;
             }
-            final_dest = final_dest + '/' + filename;
+            let cert_final_dest = final_dest + '/' + cert_filename;
+            let id_final_dest = final_dest + '/' + id_filename;
             if(!req.body.email && !req.body.address) 
             {
                 res.status(400).json({'message': 'At least email or address must be present'});
+                fs.unlinkSync(cert_final_dest);
+                fs.unlinkSync(id_final_dest);
                 return;
             }
             // if(!req.body.receipt){
@@ -47,8 +67,14 @@ student.post("/certificate_request", async function (req, res) {
             //     res.status(400).json({'message': 'No receipt number specified'});
             //     return;
             // }
+            if(!helper.check_compulsory(req.body, ['type', 'path','purpose', 'contact'])){
+                res.status(400).json({'message': 'All compulsory fields are not present'});
+                fs.unlinkSync(cert_final_dest);
+                fs.unlinkSync(id_final_dest);
+                return;
+            }
              
-            let { type, path, comments, email, address, receipt } = req.body;
+            let { type, path, comments, email, address, receipt, purpose, contact } = req.body;
             path = path.split(',');
 
 
@@ -56,9 +82,11 @@ student.post("/certificate_request", async function (req, res) {
             try {
                 if (!helpers.validate_mail(path)) {
                     res.status(400).json({ 'message': 'All mail IDs must end with nitt.edu' })
+                    fs.unlinkSync(cert_final_dest);
+                    fs.unlinkSync(id_final_dest);
                     return;
                 }
-                let response = await database.Certificate.create({ type, applier_roll, file: filename, status, comments, email_address:email, address, receipt});
+                let response = await database.Certificate.create({ type, applier_roll, file: cert_filename, status, comments, email_address:email, address, receipt, id_file: "ID_"+id_filename, contact, purpose});
 
                 let certificate_id = response.getDataValue('id');
                 let time = new Date(Date.now()).toISOString();
@@ -72,7 +100,8 @@ student.post("/certificate_request", async function (req, res) {
             }
             catch (err) {
                 console.log(err)
-                fs.unlinkSync(final_dest);
+                fs.unlinkSync(cert_final_dest);
+                fs.unlinkSync(id_final_dest);
                 res.status(400).json({ 'message': 'Invalid Data' })
             }
         }
@@ -89,7 +118,9 @@ student.get("/", async function (req, res) {
             'status',
             'postal_status',
             'email_status',
-            'email_address'
+            'email_address',
+            'contact',
+            'purpose'
         ],
         where: {
             applier_roll: rollno
@@ -97,7 +128,7 @@ student.get("/", async function (req, res) {
     });
     let response_json = []
     rows.forEach(function (ele) {
-        response_json.push({ 'id': ele.getDataValue('id'), 'type': ele.getDataValue('type'), 'status': ele.getDataValue('status'), 'postal_status': ele.getDataValue('postal_status'), 'email_status': ele.getDataValue('email_status'), 'email_address': ele.getDataValue('email_address') })
+        response_json.push({ 'id': ele.getDataValue('id'), 'type': ele.getDataValue('type'), 'status': ele.getDataValue('status'), 'postal_status': ele.getDataValue('postal_status'), 'email_status': ele.getDataValue('email_status'), 'email_address': ele.getDataValue('email_address'), 'contact': ele.getDataValue('contact'), 'purpose': ele.getDataValue('purpose') })
     })
 
     res.status(200).json(response_json);
@@ -106,13 +137,19 @@ student.get("/", async function (req, res) {
 student.get('/certificate_download', async function (req, res) {
 
     let id = parseInt(req.query.id);
+    let column_name = 'file'
+    console.log(req.query)
+    if(req.query.id_cert){
+        console.log("hihih")
+        column_name = 'id_file'
+    }
     let rollno = req.jwt_payload.username;
     let row, applier_roll;
     let isnum = /^\d+$/.test(rollno);
     if (isnum) {
         applier_roll = rollno;
         row = await database.Certificate.findOne({
-            attributes: ['file'],
+            attributes: [column_name],
             where: {
                 applier_roll: rollno,
                 id
@@ -123,7 +160,7 @@ student.get('/certificate_download', async function (req, res) {
     else {
 
         row = await database.Certificate.findOne({
-            attributes: ['file', 'applier_roll'],
+            attributes: [column_name, 'applier_roll'],
             where: {
 
                 id
@@ -136,7 +173,7 @@ student.get('/certificate_download', async function (req, res) {
         res.status(403).json({ "message": "You do not have appropriate permissions to access this resource." })
     else {
 
-        let filename = row.getDataValue('file');
+        let filename = row.getDataValue(column_name);
         let final_dest = appRoot + '/uploads/' + applier_roll + '/' + filename;
         res.status(200).sendFile(final_dest);
     }

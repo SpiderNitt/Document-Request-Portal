@@ -25,7 +25,6 @@ function renameFile(oldPath, newPath){
     })
 }
 
-
 const docFilter = function (req, file, cb) {
     if (!file.originalname.match(/\.(docx|DOCX|doc|DOC|pdf|PDF)$/)) {
         req.fileValidationError = 'Only pdf and doc files are allowed!';
@@ -102,6 +101,15 @@ function get_extension(file){
     return extension_array[extension_array.length - 1];
 }
 
+function check_compulsory(dict, keys){
+    for(const key of keys){
+        console.log(key)
+        if(!dict[key])
+        return false;
+    }
+    return true;
+
+}
 
 const storage = multer.diskStorage({
     destination: 'temp/',
@@ -113,5 +121,5 @@ const storage = multer.diskStorage({
 
 module.exports =  {
 
-    docFilter, storage, approve_decline_rights, validate_mail, renameFile, mailTransporter
+    docFilter, storage, approve_decline_rights, validate_mail, renameFile, mailTransporter, check_compulsory
 }

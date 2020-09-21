@@ -131,7 +131,7 @@ admin.post('/decline', multer().none(), async function (req, res) {
 })
 
 admin.get("/", async function (req, res) {
-    
+
     /*
     Get details for which given roll has approved.
 
@@ -186,7 +186,7 @@ admin.get("/", async function (req, res) {
             let { path_no, certificate_id, status } = path_object;
             if (status === 'APPROVED') {
                 const ele = await database.Certificate.findOne({
-                    attributes: ['applier_roll', 'type', 'address', 'postal_status', 'email_status', 'receipt', 'email_address'],
+                    attributes: ['applier_roll', 'type', 'address', 'postal_status', 'email_status', 'receipt', 'email_address', 'contact', 'purpose'],
                     where: {
                         id: certificate_id
                     }
@@ -200,13 +200,15 @@ admin.get("/", async function (req, res) {
                     email_status: ele.getDataValue('email_status'),
                     address: ele.getDataValue('address'),
                     receipt: ele.getDataValue('receipt'),
-                    email: ele.getDataValue('email_address')
+                    email: ele.getDataValue('email_address'),
+                    contact: ele.getDataValue('contact'),
+                    purpose: ele.getDataValue('purpose')
                 })
 
             }
             else if (path_no == 1 && status === 'PENDING') {
                 const ele = await database.Certificate.findOne({
-                    attributes: ['applier_roll', 'type', 'address', 'postal_status', 'email_status', 'receipt', 'email_address'],
+                    attributes: ['applier_roll', 'type', 'address', 'postal_status', 'email_status', 'receipt', 'email_address', 'contact', 'purpose'],
                     where: {
                         id: certificate_id
                     }
@@ -220,7 +222,9 @@ admin.get("/", async function (req, res) {
                     email_status: ele.getDataValue('email_status'),
                     address: ele.getDataValue('address'),
                     receipt: ele.getDataValue('receipt'),
-                    email: ele.getDataValue('email_address')
+                    email: ele.getDataValue('email_address'),
+                    contact: ele.getDataValue('contact'),
+                    purpose: ele.getDataValue('purpose')
                 })
             }
             else if (path_no != 1) {
@@ -233,7 +237,7 @@ admin.get("/", async function (req, res) {
                 });
                 if (row != null) {
                     const ele = await database.Certificate.findOne({
-                        attributes: ['applier_roll', 'type', 'address', 'postal_status', 'email_status', 'receipt', 'email_address'],
+                        attributes: ['applier_roll', 'type', 'address', 'postal_status', 'email_status', 'receipt', 'email_address', 'contact', 'purpose'],
                         where: {
                             id: certificate_id
                         }
@@ -247,7 +251,9 @@ admin.get("/", async function (req, res) {
                         email_status: ele.getDataValue('email_status'),
                         address: ele.getDataValue('address'),
                         receipt: ele.getDataValue('receipt'),
-                        email: ele.getDataValue('email_address')
+                        email: ele.getDataValue('email_address'),
+                        contact: ele.getDataValue('contact'),
+                        purpose: ele.getDataValue('purpose')
 
 
                     })

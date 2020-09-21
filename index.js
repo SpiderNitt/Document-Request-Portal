@@ -9,6 +9,8 @@ global.appRoot = path.resolve(__dirname);
 const app = express()
 const port = process.env.PORT || 3001
 
+const fs = require('fs')
+
 const apiRouter = require('./routers/api')
 const loginRouter = require('./routers/login')
 
@@ -22,13 +24,13 @@ app.use('/login', loginRouter);
 try {
 
 
-fs.mkdir(__dirname + "/temp");
-fs.mkdir(__dirname + "/uploads");
+    fs.mkdir(__dirname + "/temp");
+    fs.mkdir(__dirname + "/uploads");
+   
 }
-catch(err){
-    
+catch {
+    // console.log(err);
 }
-
 app.listen(port, function () {
     console.log("llistening on port " + port)
 })

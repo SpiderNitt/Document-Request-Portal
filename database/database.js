@@ -83,6 +83,18 @@ const Certificate = sequelize.define('certificates', {
     receipt: {
         type: DataTypes.STRING,
         allowNull: true
+    },
+    contact : {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    purpose: {
+        type: DataTypes.STRING, 
+        allowNull: false
+    }, 
+    id_file : {
+        type: DataTypes.STRING,
+        allowNull: false
     }
 }, {
     freezeTableName: true

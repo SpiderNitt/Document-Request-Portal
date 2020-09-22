@@ -1,11 +1,10 @@
 import React from "react";
-// import { useState } from "react";
 import "./cert-temp.css";
 
 function Certificate(props) {
-  let docpath = "Documents/bonafide.pdf";
-  if (props.doc === "bonafide") docpath = "Documents/bonafide.pdf";
-  else if (props.doc === "transcript") docpath = "Documents/transcript.pdf";
+  let docpath = "/Documents/bonafide.pdf";
+  if (props.doc === "bonafide") docpath = "/Documents/bonafide.pdf";
+  else if (props.doc === "transcript") docpath = "/Documents/transcript.pdf";
 
   return (
     <div className="row justify-content-center">

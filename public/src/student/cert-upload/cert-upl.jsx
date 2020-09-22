@@ -530,8 +530,13 @@ function Upload(props) {
                         if (emailValues.value !== "") {
                           const re = /\S+@nitt\.edu/;
                           if (re.test(emailValues.value) === true) {
-                            setCount(emailCount + 1);
-                            setEmails(emails.concat(emailValues.value));
+                            if (!emails.includes(emailValues.value)) {
+                              console.log("bomom");
+                              setCount(emailCount + 1);
+                              setEmails(emails.concat(emailValues.value));
+                            } else {
+                              alert("Duplicate entry!");
+                            }
                             // console.log(emailCount);
                             // console.log(emails);
                           } else {
@@ -634,11 +639,12 @@ function Upload(props) {
                       purpose &&
                       fileUpload &&
                       college_id
-                    )
+                    ) {
                       if (file === "transcript" && (emailDel || address)) {
                         setModal(true);
                       }
-                    setModal(true);
+                      setModal(true);
+                    }
                   }}
                 >
                   Submit

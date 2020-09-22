@@ -4,7 +4,7 @@ import Login from "./login/login";
 import Footer from "./footer/footer";
 import Student from "./student/student";
 import Admin from "./admin/admin.jsx";
-import { Switch, Route, BrowserRouter } from "react-router-dom";
+import { Switch, Route, HashRouter } from "react-router-dom";
 import { Redirect } from "react-router-dom/cjs/react-router-dom.min";
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
@@ -25,7 +25,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 function App() {
   return (
     <div className="App">
-      <BrowserRouter basename="/bonafide-system">
+      <HashRouter basename="/bonafide-system">
         <Switch>
           <Route exact strict path="/">
             <div className="row justify-content-center">
@@ -35,7 +35,7 @@ function App() {
           <PrivateRoute component={Student} path="/student" exact />
           <PrivateRoute component={Admin} path="/admin" exact />
         </Switch>
-      </BrowserRouter>
+      </HashRouter>
       <div className="row">
         <Footer />
       </div>

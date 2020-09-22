@@ -127,9 +127,8 @@ function Upload(props) {
       let certType = document.getElementById("certType");
       if (certType) {
         let value = certType.value;
-        if (value === "bonafide") anch.href = "/Documents/bonafide.pdf";
-        else if (value === "transcript")
-          anch.href = "/Documents/transcript.pdf";
+        if (value === "bonafide") anch.href = "Documents/bonafide.pdf";
+        else if (value === "transcript") anch.href = "Documents/transcript.pdf";
         // anch.click();
       }
     }

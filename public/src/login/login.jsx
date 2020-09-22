@@ -44,7 +44,7 @@ function Login(props) {
   return (
     <div className="container-fluid lmain ">
       <div className="row lmain-logo justify-content-center ">
-        <img src="/nitt-lr.png" alt="logo" />
+        <img src="nitt-lr.png" alt="logo" />
       </div>
       <br />
       <div className="row lmain-head justify-content-center">

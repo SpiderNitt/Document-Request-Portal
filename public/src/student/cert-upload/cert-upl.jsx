@@ -150,6 +150,9 @@ function Upload(props) {
           draggable
           pauseOnHover
         />
+
+        {/* Cetificate Type */}
+
         <div className="row">
           <div className="col-md-6 form-left">
             <form id="request-main">
@@ -191,6 +194,7 @@ function Upload(props) {
               </div>
 
               {/* Certificate Delivery */}
+
               {file === "transcript" ? (
                 <>
                   <div className="form-group">
@@ -221,7 +225,9 @@ function Upload(props) {
                         Email
                       </label>
                     </div>
+
                     {/* Email delivery */}
+
                     <div id="email-del-entry">
                       <div className="form-group">
                         <input
@@ -441,6 +447,9 @@ function Upload(props) {
               ) : (
                 <></>
               )}
+
+              {/* Contact information */}
+
               <div className="form-group">
                 <label htmlFor="contact-number">
                   Contact Number <span className="cmpl">*</span>
@@ -487,6 +496,9 @@ function Upload(props) {
               ) : (
                 <></>
               )}
+
+              {/* Administrator Email Addition */}
+
               {file === "transcript" ? (
                 <></>
               ) : (
@@ -535,6 +547,9 @@ function Upload(props) {
                 </>
               )}
               <br />
+
+              {/* Purpose */}
+
               <div className="form-group">
                 <label htmlFor="purpose">
                   Purpose <span className="cmpl">*</span>
@@ -553,6 +568,9 @@ function Upload(props) {
                   Enter purpose for requesting certificate.
                 </small>
               </div>
+
+              {/* Certificate Addition */}
+
               <div className="form-group">
                 <label htmlFor="cert" style={{ width: "50%" }}>
                   Add certificate <span className="cmpl">*</span>
@@ -599,6 +617,7 @@ function Upload(props) {
                 ) : (
                   <></>
                 )}
+
                 <button
                   type="submit"
                   className="btn btn-success"

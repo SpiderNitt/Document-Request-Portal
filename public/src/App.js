@@ -25,7 +25,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 function App() {
   return (
     <div className="App">
-      <HashRouter basename="/bonafide-system">
+      <HashRouter>
         <Switch>
           <Route exact strict path="/">
             <div className="row justify-content-center">

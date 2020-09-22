@@ -2,7 +2,7 @@ import React from "react";
 import "./cert-temp.css";
 
 function Certificate(props) {
-  let docpath = "/Documents/bonafide.pdf";
+  let docpath = "Documents/bonafide.pdf";
   if (props.doc === "bonafide") docpath = "Documents/bonafide.pdf";
   else if (props.doc === "transcript") docpath = "Documents/transcript.pdf";
 

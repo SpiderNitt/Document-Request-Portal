@@ -683,7 +683,7 @@ function Upload(props) {
                         <li key={index} className="modal-pop list-group-item">
                           <div className="d-block text-center">
                             <img
-                              src="/down.svg"
+                              src="down.svg"
                               alt="Down arrow"
                               height="60"
                               width="30"
@@ -721,7 +721,7 @@ function Upload(props) {
                   <div key={index}>
                     <div className="d-block text-center">
                       <img
-                        src="/down.svg"
+                        src="down.svg"
                         alt="Down arrow"
                         height="60"
                         width="30"

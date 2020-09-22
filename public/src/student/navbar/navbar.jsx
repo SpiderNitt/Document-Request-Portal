@@ -8,7 +8,7 @@ import { Link } from "react-scroll";
 function NavBar(props) {
   const logoutHandler = (e) => {
     localStorage.removeItem("bonafideNITT2020user");
-    window.location.replace("/");
+    window.location.reload();
   };
   return (
     <div className="navMain">

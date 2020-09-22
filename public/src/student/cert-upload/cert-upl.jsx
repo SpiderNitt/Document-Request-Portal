@@ -4,6 +4,7 @@ import { ToastContainer } from "react-toastify";
 import { Modal } from "react-bootstrap";
 import CertificateTemplate from "../cert-templates/cert-temp";
 import Loader from "react-loader-spinner";
+
 import "./cert-upl.css";
 import "react-toastify/dist/ReactToastify.min.css";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
@@ -45,25 +46,22 @@ function Upload(props) {
 
   const handleFileUpload = (e) => {
     if (e.target.files[0]) {
-      let file = document.getElementById("cert");
-      let filePath = file.value;
+      let filePath = e.target.value;
       var allowedExtensions = /(\.docx|\.DOCX|\.doc|\.DOC|\.pdf|\.PDF)$/;
       if (!allowedExtensions.exec(filePath)) {
-        file.value = "";
+        e.target.value = "";
         document.getElementById("file-extension-check").innerHTML =
           "File extension must be .doc, .docx or .pdf";
       } else {
         document.getElementById("file-extension-check").innerHTML = "";
+        setPdf(URL.createObjectURL(e.target.files[0]));
+        setFileButton(true);
+        setFileName(true);
       }
-      setFileName("hello");
-      setFileButton(true);
-      setFileName(true);
     } else {
-      setFileName("hiii");
       setFileName(null);
       setFileButton(true);
     }
-    setPdf(URL.createObjectURL(e.target.files[0]));
   };
 
   const handleClose = () => setFileModal(false);
@@ -83,7 +81,6 @@ function Upload(props) {
     if (emailDel) cd.set("email", emailDel);
     if (address) cd.set("address", address);
     if (feeReceipt) cd.set("receipt", feeReceipt);
-    console.log(contact);
     if (contact) cd.set("contact", contact);
     if (purpose) cd.set("purpose", purpose);
     cd.set("path", emails.toString());
@@ -130,8 +127,8 @@ function Upload(props) {
       let certType = document.getElementById("certType");
       if (certType) {
         let value = certType.value;
-        if (value === "bonafide") anch.href = "/bf.pdf";
-        else if (value === "X") anch.href = "/trans.pdf";
+        if (value === "bonafide") anch.href = "Documents/bonafide.pdf";
+        else if (value === "transcript") anch.href = "Documents/transcript.pdf";
         // anch.click();
       }
     }
@@ -177,7 +174,7 @@ function Upload(props) {
                   onChange={(e) => {
                     let certType = e.target.value;
                     setFile(certType);
-                    if (certType === "X") {
+                    if (certType === "transcript") {
                       setCount(emailCount + 1);
                       setEmails(["transcript@nitt.edu"]);
                     } else {
@@ -189,12 +186,12 @@ function Upload(props) {
                   <option value="bonafide" defaultValue>
                     Bonafide
                   </option>
-                  <option value="X">Transcript</option>
+                  <option value="transcript">Transcript</option>
                 </select>
               </div>
 
               {/* Certificate Delivery */}
-              {file === "X" ? (
+              {file === "transcript" ? (
                 <>
                   <div className="form-group">
                     <label htmlFor="delivery-sel">
@@ -449,14 +446,18 @@ function Upload(props) {
                   Contact Number <span className="cmpl">*</span>
                 </label>
                 <input
-                  type="text"
+                  type="number"
                   className="form-control"
                   name="contact"
                   id="contact-number"
                   required
                   onChange={(e) => {
-                    setContact(e.target.value);
-                    console.log(e.target.value);
+                    const re = /^\s*(?:\+?(\d{1,3}))?[- (]*(\d{3})[- )]*(\d{3})[- ]*(\d{4})(?: *[x/#]{1}(\d+))?\s*$/;
+
+                    if (re.test(e.target.value) === true) {
+                      setContact(e.target.value);
+                      console.log(e.target.value);
+                    }
                   }}
                 />
                 <small className="form-text text-muted">
@@ -464,14 +465,14 @@ function Upload(props) {
                 </small>
               </div>
               {/* Fee Receipt */}
-              {file === "X" ? (
+              {file === "transcript" ? (
                 <div className="fee-receipt">
                   <div className="form-group">
                     <label htmlFor="emailaddr">
                       Fee Reference Number <span className="cmpl">*</span>
                     </label>
                     <input
-                      type="number"
+                      type="text"
                       className="form-control"
                       name="feer"
                       id="feer"
@@ -486,7 +487,7 @@ function Upload(props) {
               ) : (
                 <></>
               )}
-              {file === "X" ? (
+              {file === "transcript" ? (
                 <></>
               ) : (
                 <>
@@ -593,7 +594,7 @@ function Upload(props) {
                     className="btn btn-primary mr-2"
                     onClick={handleFileOpen}
                   >
-                    Show Uploaded File
+                    Show Uploaded Certificate
                   </button>
                 ) : (
                   <></>
@@ -603,15 +604,18 @@ function Upload(props) {
                   className="btn btn-success"
                   onClick={(e) => {
                     e.preventDefault();
-                    // let certType = document.getElementById("certType").value;
-                    console.log(emails, emailCount, fileName, contact);
+                    let fileUpload = document.getElementById("cert").files[0];
+                    let college_id = document.getElementById("college-id")
+                      .files[0];
                     if (
                       file &&
-                      emails &&
                       emailCount &&
                       fileName &&
                       contact &&
-                      purpose
+                      purpose &&
+                      (emailDel || address) &&
+                      fileUpload &&
+                      college_id
                     )
                       setModal(true);
                   }}
@@ -707,7 +711,7 @@ function Upload(props) {
                     {/* </div> */}
                     <li key={index} className="list-group-item gray">
                       {email}
-                      {file !== "X" ? (
+                      {file !== "transcript" ? (
                         <button
                           className="btn btn-del"
                           onClick={(e) => {

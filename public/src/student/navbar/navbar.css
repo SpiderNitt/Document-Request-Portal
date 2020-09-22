@@ -20,12 +20,20 @@
   margin-left: 50px;
 }
 
-@media screen and (max-height: 450px) {
+.closebtn {
+  color: #f1f1f1 !important;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 650px) {
   .sidenav {
     padding-top: 15px;
   }
-  #navEntry {
+  .navEntry {
     font-size: 18px;
+  }
+  .greetings {
+    font-size: 28px !important;
   }
 }
 .icon-nav {
@@ -41,7 +49,7 @@
   z-index: 100;
 }
 
-#navEntry {
+.navEntry {
   cursor: pointer;
   padding: 8px 8px 8px 32px;
   text-decoration: none;
@@ -51,6 +59,14 @@
   transition: 0.3s;
 }
 
-#navEntry:hover {
+.navEntry:hover {
   color: #f1f1f1;
+}
+
+.greetings {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 35px;
+  color: #f1f1f1;
+  display: block;
 }

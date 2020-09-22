@@ -14,7 +14,7 @@ function NavBar(props) {
     <div className="navMain">
       <div id="sideNav" className="sidenav">
         <a
-          href="#!"
+          // href=""
           className="closebtn"
           onClick={() => {
             document.getElementById("sideNav").style.width = "0";
@@ -22,9 +22,9 @@ function NavBar(props) {
         >
           &times;
         </a>
-        {props.screen !== 1 && (
-          <>
-            {/* <Link
+        {/* {props.screen !== 1 && (
+          <> */}
+        {/* <Link
               to="certificateTemplate"
               spy={true}
               smooth={true}
@@ -32,17 +32,23 @@ function NavBar(props) {
             >
               <span id="navEntry">Templates</span>
             </Link> */}
-             <Link to="cert-upl" spy={true} smooth={true} duration={500}>
-              <span id="navEntry">Request Certificate</span>
-            </Link>
-            <Link to="cert-status"spy={true} smooth={true} duration={500}>
-              <span id="navEntry">View status</span>
-            </Link>
-           
-          </>
-        )}
+        {/* <Link to="cert-upl" spy={true} smooth={true} duration={500}>
+          <span id="navEntry">Request Certificate</span>
+        </Link>
+        <Link to="cert-status" spy={true} smooth={true} duration={500}>
+          <span id="navEntry">View status</span>
+        </Link> */}
+        <br />
+        <Link>
+          <span className="greetings">
+            Welcome{" "}
+            {JSON.parse(localStorage.getItem("bonafideNITT2020user")).user}
+          </span>
+        </Link>
+        {/* </>
+        )} */}
         <Link to="#!" onClick={logoutHandler}>
-          <span id="navEntry">Logout</span>
+          <span className="navEntry">Logout</span>
         </Link>
       </div>
       <span

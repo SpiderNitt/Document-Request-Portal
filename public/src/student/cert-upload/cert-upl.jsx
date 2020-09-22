@@ -632,11 +632,13 @@ function Upload(props) {
                       fileName &&
                       contact &&
                       purpose &&
-                      (emailDel || address) &&
                       fileUpload &&
                       college_id
                     )
-                      setModal(true);
+                      if (file === "transcript" && (emailDel || address)) {
+                        setModal(true);
+                      }
+                    setModal(true);
                   }}
                 >
                   Submit

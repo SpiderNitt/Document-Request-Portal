@@ -45,7 +45,7 @@ function Admin() {
     spider
       .get("/api/admin")
       .then(async (res) => {
-        if(res === undefined) {
+        if (res === undefined) {
           window.location = "/";
         }
         let temp = [];
@@ -156,8 +156,8 @@ function Admin() {
             width={100}
             timeout={3000} //3 secs
           />
-        ) : certReq[0].length + certReq[1].length
-          ? <div>
+        ) : certReq[0].certificates.length + certReq[1].certificates.length ? (
+          <div>
             <div className="download-details">
               <button
                 onClick={() => {
@@ -544,10 +544,17 @@ function Admin() {
             })}
             <br />
           </div>
-          : <div style={{textAlign: 'center', fontWeight: 'bold', fontSize: '1.5em'}}>
-              No certificate requests
-            </div>
-        }
+        ) : (
+          <div
+            style={{
+              textAlign: "center",
+              fontWeight: "bold",
+              fontSize: "1.5em",
+            }}
+          >
+            No certificate requests
+          </div>
+        )}
         <ToastContainer
           position="top-center"
           autoClose={2000}

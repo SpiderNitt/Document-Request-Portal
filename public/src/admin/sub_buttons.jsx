@@ -122,8 +122,8 @@ export const AddEmailDetails = (props) => {
       spider
         .post("/api/admin/email", data)
         .then((res) => {
-          console.log(res, "Added email details");
           setModal(false);
+          console.log(res, "Added email details");
           // window.location.reload();
         })
         .catch((err) => {
@@ -445,10 +445,7 @@ export const DownloadStudentId = (props) => (
           const url = window.URL.createObjectURL(new Blob([res.data]));
           const link = document.createElement("a");
           link.href = url;
-          link.setAttribute(
-            "download",
-            props.roll + "_id.pdf"
-          );
+          link.setAttribute("download", props.roll + "_id.pdf");
           document.body.appendChild(link);
           link.click();
         }),

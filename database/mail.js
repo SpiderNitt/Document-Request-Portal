@@ -1,6 +1,7 @@
 const database = require('./database')
 const sequelize = require('sequelize');
 const helper = require('../utils/helper')
+const cron = require('node-cron')
 // require('dotenv').config({ path: '../env/.env' })
 
 
@@ -59,7 +60,7 @@ async function driver() {
             where: {
                 path_email: mail,
                 status: {
-                  [sequelize.Op.or]:  ['PENDING' , 'APPROVED']
+                    [sequelize.Op.or]: ['PENDING', 'APPROVED']
                 },
             }
 
@@ -148,4 +149,8 @@ async function driver() {
 
 
 }
-driver();
+console.log("Cron started successfully")
+cron.schedule("0 9 * * *", function () {
+    console.log("Sending mail every 9AM")
+    driver();
+})

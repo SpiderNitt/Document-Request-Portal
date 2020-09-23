@@ -744,7 +744,7 @@ function Upload(props) {
                           onClick={(e) => {
                             e.preventDefault();
                             setCount(emailCount - 1);
-                            emails.splice(index - 1, 1);
+                            emails.splice(index, 1);
                             setEmails(emails);
                           }}
                         >

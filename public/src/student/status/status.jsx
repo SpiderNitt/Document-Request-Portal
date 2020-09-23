@@ -103,7 +103,7 @@ export default class Status extends React.Component {
         ) : (
           <>
             <div className="container req-status">
-              <table className="table cert-table status-table">
+              <table className="table cert-table table-responsive status-table  timeline-ovf">
                 {this.state.certData.length === 0 ? (
                   <thead className="thead-dark">
                     <tr>
@@ -161,7 +161,7 @@ export default class Status extends React.Component {
                           in={this.state.toggled.includes(data.id)}
                         >
                           <tr>
-                            <td colSpan={4}>
+                            <td colSpan={6}>
                               {/* {" "}/ */}
                               <Timeline
                                 data={this.state.certHis[data.id]}
@@ -176,12 +176,11 @@ export default class Status extends React.Component {
                   })}
                 </tbody>
               </table>
-
-              {/* {certificateId.map((cert, index) => {
-          return ( */}
-              {/* );
-        })} */}
             </div>
+            {/* {certificateId.map((cert, index) => {
+          return ( */}
+            {/* );
+        })} */}
           </>
         )}
       </div>

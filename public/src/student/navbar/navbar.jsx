@@ -39,12 +39,10 @@ function NavBar(props) {
           <span id="navEntry">View status</span>
         </Link> */}
         <br />
-        <Link>
-          <span className="greetings">
-            Welcome{" "}
-            {JSON.parse(localStorage.getItem("bonafideNITT2020user")).user}
-          </span>
-        </Link>
+        <span className="greetings">
+          Welcome{" "}
+          {JSON.parse(localStorage.getItem("bonafideNITT2020user")).user}
+        </span>
         {/* </>
         )} */}
         <Link to="#!" onClick={logoutHandler}>

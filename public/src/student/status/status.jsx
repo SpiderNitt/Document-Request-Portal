@@ -103,14 +103,14 @@ export default class Status extends React.Component {
         ) : (
           <>
             <div className="container req-status">
-              <table className="table cert-table table-responsive status-table  timeline-ovf">
-                {this.state.certData.length === 0 ? (
-                  <thead className="thead-dark">
-                    <tr>
-                      <th colSpan="12">No Requests sent</th>
-                    </tr>
-                  </thead>
-                ) : (
+              {this.state.certData.length === 0 ? (
+                <>
+                  <p className="nor">
+                    <strong>No Requests sent</strong>
+                  </p>
+                </>
+              ) : (
+                <table className="table cert-table status-table timeline-ovf">
                   <thead className="thead-dark">
                     <tr>
                       <th scope="col">S.No</th>
@@ -121,66 +121,64 @@ export default class Status extends React.Component {
                       <th scope="col">Actions</th>
                     </tr>
                   </thead>
-                )}
 
-                <tbody>
-                  {this.state.certData.map((data, index) => {
-                    return (
-                      <>
-                        <tr key={index}>
-                          <td>{index + 1}</td>
-                          <td>{cert_mapping[data.type]}</td>
-                          <td>{data.status}</td>
-                          <td>{data.email_status ? data.email_status : "-"}</td>
-                          <td>
-                            {data.postal_status ? data.postal_status : "-"}
-                          </td>
-                          <td>
-                            <span className="table-icons">
-                              <FaDownload
-                                onClick={() => {
-                                  this.handleDownload(
-                                    data.id,
-                                    cert_mapping[data.type]
-                                  );
-                                }}
-                                className="table-icons-item"
-                              />
-                              <FaHistory
-                                className="table-icons-item history"
-                                onClick={() => {
-                                  // console.log("clicked");
-                                  this.handleToggle(data.id);
-                                }}
-                              />
-                            </span>
-                          </td>
-                        </tr>
-                        <Collapse
-                          className="timeline-main"
-                          in={this.state.toggled.includes(data.id)}
-                        >
-                          <tr>
-                            <td colSpan={6}>
-                              {/* {" "}/ */}
-                              <Timeline
-                                data={this.state.certHis[data.id]}
-                                email={data.email_status}
-                                postal={data.postal_status}
-                              />
+                  <tbody>
+                    {this.state.certData.map((data, index) => {
+                      return (
+                        <>
+                          <tr key={index}>
+                            <td>{index + 1}</td>
+                            <td>{cert_mapping[data.type]}</td>
+                            <td>{data.status}</td>
+                            <td>
+                              {data.email_status ? data.email_status : "-"}
+                            </td>
+                            <td>
+                              {data.postal_status ? data.postal_status : "-"}
+                            </td>
+                            <td>
+                              <span className="table-icons">
+                                <FaDownload
+                                  onClick={() => {
+                                    this.handleDownload(
+                                      data.id,
+                                      cert_mapping[data.type]
+                                    );
+                                  }}
+                                  className="table-icons-item"
+                                />
+                                <FaHistory
+                                  className="table-icons-item history"
+                                  onClick={() => {
+                                    // console.log("clicked");
+                                    this.handleToggle(data.id);
+                                  }}
+                                />
+                              </span>
                             </td>
                           </tr>
-                        </Collapse>
-                      </>
-                    );
-                  })}
-                </tbody>
-              </table>
+                          <Collapse
+                            className="timeline-main"
+                            in={this.state.toggled.includes(data.id)}
+                          >
+                            <tr>
+                              <td colSpan={6}>
+                                {/* {" "}/ */}
+                                <Timeline
+                                  data={this.state.certHis[data.id]}
+                                  email={data.email_status}
+                                  postal={data.postal_status}
+                                />
+                              </td>
+                            </tr>
+                          </Collapse>
+                        </>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              )}
             </div>
-            {/* {certificateId.map((cert, index) => {
-          return ( */}
-            {/* );
-        })} */}
           </>
         )}
       </div>

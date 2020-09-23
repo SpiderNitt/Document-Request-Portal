@@ -31,8 +31,8 @@ function App() {
               <Login />
             </div>
           </Route>
-          //<PrivateRoute component={Student} path="/student" exact />
-          //<PrivateRoute component={Admin} path="/admin" exact />
+          {/* //<PrivateRoute component={Student} path="/student" exact />
+          //<PrivateRoute component={Admin} path="/admin" exact /> */}
         <PrivateRoutes />
         </Switch>
       </HashRouter>

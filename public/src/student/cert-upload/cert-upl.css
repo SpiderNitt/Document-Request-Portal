@@ -93,3 +93,7 @@ div > div > a {
 .cmpl {
   color: red;
 }
+
+.error {
+  color: #FF0000;
+}

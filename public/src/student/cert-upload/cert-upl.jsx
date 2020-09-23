@@ -50,10 +50,10 @@ function Upload(props) {
       var allowedExtensions = /(\.docx|\.DOCX|\.doc|\.DOC|\.pdf|\.PDF)$/;
       if (!allowedExtensions.exec(filePath)) {
         e.target.value = "";
-        document.getElementById("file-extension-check").innerHTML =
+        document.getElementById("file-error-message").innerHTML =
           "File extension must be .doc, .docx or .pdf";
       } else {
-        document.getElementById("file-extension-check").innerHTML = "";
+        document.getElementById("file-error-message").innerHTML = "";
         setPdf(URL.createObjectURL(e.target.files[0]));
         setFileButton(true);
         setFileName(true);
@@ -114,12 +114,10 @@ function Upload(props) {
         document.getElementById("college-id").value = "";
         document.getElementById("certType").value = "bonafide";
         setFile("bonafide");
-        console.log("reset successfull");
       })
       .catch((err) => {
         console.log(err);
       });
-    // }
   };
   const calculate_source = () => {
     let anch = document.getElementById("anchorClick");
@@ -180,9 +178,15 @@ function Upload(props) {
                     if (certType === "transcript") {
                       setCount(emailCount + 1);
                       setEmails(["transcript@nitt.edu"]);
+                      document.getElementById("contact-error-message").innerHTML = "";
+                      document.getElementById("purpose-error-message").innerHTML = "";
+                      document.getElementById("file-error-message").innerHTML = "";
                     } else {
                       setCount(0);
                       setEmails([]);
+                      document.getElementById("contact-error-message").innerHTML = "";
+                      document.getElementById("purpose-error-message").innerHTML = "";
+                      document.getElementById("file-error-message").innerHTML = "";
                     }
                   }}
                 >
@@ -236,21 +240,18 @@ function Upload(props) {
                           name="email-del"
                           id="emaildel"
                           aria-describedby="emailHelp"
+                          placeholder="Enter your email id"
                           onChange={(e) => {
                             e.preventDefault();
-                            let emailValues = document.getElementById(
-                              "emaildel"
-                            );
-                            if (emailValues.value !== "") {
+                            let emailValues = document.getElementById("emaildel");
+                            // if (emailValues.value !== "") {
                               setEmailDel(emailValues.value);
                               console.log(emailDel, emailValues.value);
-                            }
+                            // }
                           }}
                           required
                         />
-                        <small id="emailHelp" className="form-text text-muted">
-                          Enter your email
-                        </small>
+                        <small id="your-email-error-message" className="error"></small>
                       </div>
                     </div>
                     <div className="form-check">
@@ -277,6 +278,7 @@ function Upload(props) {
                         Postal delivery
                       </label>
                     </div>
+                    <small id="select-delivery-type-error-message" className="error"></small>
                   </div>
 
                   {/* Postal information */}
@@ -349,6 +351,8 @@ function Upload(props) {
                         >
                           Add New Address
                         </button>
+                        <br />
+                        <small id="your-postal-error-message" className="error"></small>
                       </div>
                       <br />
                       <Modal
@@ -459,19 +463,13 @@ function Upload(props) {
                   className="form-control"
                   name="contact"
                   id="contact-number"
+                  placeholder="Enter contact number"
                   required
                   onChange={(e) => {
-                    const re = /^\s*(?:\+?(\d{1,3}))?[- (]*(\d{3})[- )]*(\d{3})[- ]*(\d{4})(?: *[x/#]{1}(\d+))?\s*$/;
-
-                    if (re.test(e.target.value) === true) {
-                      setContact(e.target.value);
-                      console.log(e.target.value);
-                    }
+                    setContact(e.target.value);
                   }}
                 />
-                <small className="form-text text-muted">
-                  Enter contact number.
-                </small>
+                <small id="contact-error-message" className="error"></small>
               </div>
               {/* Fee Receipt */}
               {file === "transcript" ? (
@@ -486,11 +484,13 @@ function Upload(props) {
                       name="feer"
                       id="feer"
                       required
+                      placeholder="Enter Fee Reference Number"
                       onChange={(e) => {
                         setFee(e.target.value);
                         console.log(feeReceipt);
                       }}
                     />
+                    <small id="fee-error-message" className="error"></small>
                   </div>
                 </div>
               ) : (
@@ -514,11 +514,10 @@ function Upload(props) {
                       name="emailaddr"
                       id="emailaddr"
                       aria-describedby="emailHelp"
+                      placeholder="Enter email addresses in the order of processing"
                       required
                     />
-                    <small id="emailHelp" className="form-text text-muted">
-                      Enter email addresses in the order of processing.
-                    </small>
+                    <small id="email-error-message" className="error"></small>
                   </div>
                   <div className="text-center">
                     <button
@@ -564,14 +563,13 @@ function Upload(props) {
                   className="form-control"
                   name="purpose"
                   id="purpose"
+                  placeholder="Enter purpose for requesting certificate"
                   required
                   onChange={(e) => {
                     setPurpose(e.target.value);
                   }}
                 />
-                <small className="form-text text-muted">
-                  Enter purpose for requesting certificate.
-                </small>
+                <small id="purpose-error-message" className="error"></small>
               </div>
 
               {/* Certificate Addition */}
@@ -602,11 +600,10 @@ function Upload(props) {
                     display: "flex",
                     justifyContent: "center",
                     fontSize: "1em",
-                    color: "#FF0000",
                     margin: "1em",
                   }}
                 >
-                  <small id="file-extension-check"></small>
+                  <small id="file-error-message" class="error"></small>
                 </div>
               </div>
               <br />
@@ -629,20 +626,82 @@ function Upload(props) {
                   onClick={(e) => {
                     e.preventDefault();
                     let fileUpload = document.getElementById("cert").files[0];
-                    let college_id = document.getElementById("college-id")
-                      .files[0];
-                    if (
-                      file &&
-                      emailCount &&
-                      fileName &&
-                      contact &&
-                      purpose &&
-                      fileUpload &&
-                      college_id
-                    ) {
-                      if (file === "transcript" && (emailDel || address)) {
-                        setModal(true);
+                    let college_id = document.getElementById("college-id").files[0];
+                    let certType = document.getElementById("certType").value;
+                    let error = 0;
+                    if(!contact) {
+                      document.getElementById("contact-error-message").innerHTML = "Contact field cannot be blank";
+                      error = 1;
+                    } else {
+                      // const re = /^\s*(?:\+?(\d{1,3}))?[- (]*(\d{3})[- )]*(\d{3})[- ]*(\d{4})(?: *[x/#]{1}(\d+))?\s*$/;
+                      if (contact.length !== 10) {
+                        document.getElementById("contact-error-message").innerHTML = "Enter a valid contact number";
+                        error = 1;
+                      } else {
+                        document.getElementById("contact-error-message").innerHTML = "";
                       }
+                    }
+                    if(!purpose) {
+                      document.getElementById("purpose-error-message").innerHTML = "Purpose field cannot be blank";
+                      error = 1;
+                    } else {
+                      document.getElementById("purpose-error-message").innerHTML = "";
+                    }
+                    if(!fileUpload || !college_id) {
+                      document.getElementById("file-error-message").innerHTML = "Upload both files";
+                      error = 1;
+                    } else {
+                      document.getElementById("file-error-message").innerHTML = "";
+                    }
+                    if(certType === "bonafide") {
+                      if(!emailCount) {
+                        document.getElementById("email-error-message").innerHTML = "Add email addresses";
+                        error = 1;
+                      } else {
+                        document.getElementById("email-error-message").innerHTML = "";
+                      }
+                    } else {
+                      if(!feeReceipt) {
+                        document.getElementById("fee-error-message").innerHTML = "Enter fee reference number";
+                        error = 1;
+                      } else {
+                        document.getElementById("fee-error-message").innerHTML = "";
+                      }
+                      if(!(document.getElementById("email-sel").checked || document.getElementById("postal-del").checked)) {
+                        document.getElementById("select-delivery-type-error-message").innerHTML = "Select a delivery method";
+                        error = 1;
+                      } else {
+                        document.getElementById("select-delivery-type-error-message").innerHTML = "";
+                      }
+                      if(document.getElementById("email-sel").checked) {
+                        if(!emailDel) {
+                          document.getElementById("your-email-error-message").innerHTML = "Enter your email address";
+                          error = 1;
+                        } else {
+                          let regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+                          if(!regex.test(emailDel)) {
+                            document.getElementById("your-email-error-message").innerHTML = "Enter a valid email";
+                            error = 1;
+                          } else {
+                            document.getElementById("your-email-error-message").innerHTML = "";
+                          }
+                        }
+                      } else {
+                        setEmailDel("");
+                      }
+                      if(document.getElementById("postal-del").checked) {
+                        if(!address) {
+                          document.getElementById("your-postal-error-message").innerHTML = "Enter your postal address";
+                          error = 1;
+                        }
+                        else {
+                          document.getElementById("your-postal-error-message").innerHTML = "";
+                        }
+                      } else {
+                        setAddress("");
+                      }
+                    }
+                    if (error === 0) {
                       setModal(true);
                     }
                   }}

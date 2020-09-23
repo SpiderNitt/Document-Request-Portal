@@ -25,6 +25,7 @@ function Admin() {
   const [certReq, setReq] = useState([]);
   const [isLoading, setLoad] = useState(true);
   const [certTypes, setTypes] = useState([]);
+  const [length, setLength] = useState(0);
 
   useEffect(() => {
     spider
@@ -88,6 +89,7 @@ function Admin() {
           merged.push(tempType);
         });
         setReq(Object.assign(certReq, merged));
+        setLength(certReq[0].certificates.length + certReq[1].certificates.length);
         console.log(certReq);
         // console.log(certReq, certReq[0].certificates);
         setLoad(false);
@@ -156,7 +158,7 @@ function Admin() {
             width={100}
             timeout={3000} //3 secs
           />
-        ) : certReq[0].certificates.length + certReq[1].certificates.length ? (
+        ) : length ? (
           <div>
             <div className="download-details">
               <button

@@ -65,7 +65,7 @@ function Upload(props) {
         document.getElementById("file-error-message").innerHTML = "";
         setCertPdf(URL.createObjectURL(e.target.files[0]));
         setCertFileButton(true);
-        setCertFileName(true);
+        setCertFileName(e.target.files[0].name);
       }
     } else {
       setCertFileName(null);
@@ -85,7 +85,7 @@ function Upload(props) {
         document.getElementById("file-error-message").innerHTML = "";
         setIdPdf(URL.createObjectURL(e.target.files[0]));
         setIdFileButton(true);
-        setIdFileName(true);
+        setIdFileName(e.target.files[0].name);
       }
     } else {
       setIdFileName(null);
@@ -646,34 +646,22 @@ function Upload(props) {
                 >
                   <small id="file-error-message" class="error"></small>
                 </div>
-                {cert_fileButton ? (
-                  <button
-                    className="btn btn-primary mr-2"
-                    onClick={() => {
-                      setViewFile(cert_pdf);
-                      handleFileOpen();
-                    }}
-                    style={{margin: '1em'}}
-                  >
-                    Show Uploaded Certificate
-                  </button>
-                ) : (
-                  <></>
-                )}
-                {id_fileButton ? (
-                  <button
-                    className="btn btn-primary mr-2"
-                    onClick={() => {
-                      setViewFile(id_pdf);
-                      handleFileOpen();
-                    }}
-                    style={{margin: '1em'}}
-                  >
-                    Show Uploaded Id
-                  </button>
-                ) : (
-                  <></>
-                )}
+                <span style={{display: 'flex', justifyContent: 'center'}}>
+                  {cert_fileButton && id_fileButton ? (
+                    <button
+                      className="btn btn-primary mr-2"
+                      onClick={() => {
+                        setViewFile(cert_pdf);
+                        handleFileOpen();
+                      }}
+                      style={{margin: '0.5em', width: '50%', minWidth: '2em'}}
+                    >
+                      Show Uploaded Certificate
+                    </button>
+                  ) : (
+                    <></>
+                  )}
+                </span>
               </div>
               <div className="form-group text-center">
                 <br />
@@ -886,12 +874,24 @@ function Upload(props) {
         >
           <Modal.Header closeButton>
             <Modal.Title id="contained-modal-title-vcenter">
-              {fileName}
+              {cert_fileName}
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <embed
-              src={view_file}
+              src={cert_pdf}
+              className="embed-modal"
+              height={document.documentElement.clientHeight * 0.75}
+            />
+          </Modal.Body>
+          <Modal.Header closeButton>
+            <Modal.Title id="contained-modal-title-vcenter">
+              {id_fileName}
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <embed
+              src={id_pdf}
               className="embed-modal"
               height={document.documentElement.clientHeight * 0.75}
             />

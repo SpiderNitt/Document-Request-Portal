@@ -15,11 +15,11 @@ export default function TimelineItem(props) {
   };
   let classNameString = "timeline-badge " + status_map[props.data.status];
   return (
-    <li className="timeline-item">
-      <div className={classNameString}></div>
-      <div className="timeline-panel">
+    <li className="Timeline-item">
+      <span className={classNameString}></span>
+      <div>
         <div className="timeline-heading">
-          <h4 className="timeline-title">{props.data.path_email}</h4>
+          <h6 className="timeline-title">{props.data.path_email}</h6>
           <p>
             {props.data.status}
             <small className="text-muted">

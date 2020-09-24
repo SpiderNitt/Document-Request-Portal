@@ -8,8 +8,9 @@ export default class Timeline extends React.Component {
     return (
       <div className="row">
         <div className="col-md-12">
+          <span className="timebar"></span>
           <div>
-            <ul className="timeline timeline-horizontal pre-className-1">
+            <ul className="Timeline">
               {this.props.data.map((ele, index) => {
                 if (path_len === index + 1) {
                   return (

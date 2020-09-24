@@ -76,4 +76,14 @@ function NavBar(props) {
   );
 }
 
+document.addEventListener('click', function(event) {
+  var isClickInside;
+  if(document.getElementById("sideNav")) {
+    isClickInside = document.getElementById("sideNav").contains(event.target);
+    if (!isClickInside) {
+      document.getElementById("sideNav").style.width = "0";
+    }
+  }
+});
+
 export default NavBar;

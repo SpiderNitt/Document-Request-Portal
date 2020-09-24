@@ -107,8 +107,8 @@ function Upload(props) {
     else cd.set("type", parseInt(2));
     cd.append("certificate", fileUpload);
     cd.append("certificate", college_id);
-    if (emailDel) cd.set("email", emailDel);
-    if (address) cd.set("address", address);
+    if (emailDel && document.getElementById("email-sel").checked) cd.set("email", emailDel);
+    if (address && document.getElementById("postal-del").checked) cd.set("address", address);
     if (feeReceipt) cd.set("receipt", feeReceipt);
     if (contact) cd.set("contact", contact);
     if (purpose) cd.set("purpose", purpose);
@@ -129,16 +129,36 @@ function Upload(props) {
         setFileModal(false);
         setFileName("");
         setAddress("");
-        setPreAddr([]);
         setEmailDel("");
         setFee("");
         setPurpose("");
         setContact("");
+        setCertPdf(null);
+        setIdPdf(null);
+        setCertFileName("");
+        setIdFileName("");
+        setCertFileButton("");
+        setIdFileButton("");
+        setPreAddr([]);
+        spider
+        .get("/api/student/address")
+        .then((res) => {
+          res.data.forEach((add) => {
+            setPreAddr((p) => p.concat(add));
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
         document.getElementById("cert").value = "";
         if (document.getElementById("emaildel"))
           document.getElementById("emaildel").value = "";
         if (document.getElementById("feer"))
           document.getElementById("feer").value = "";
+        if(document.getElementById("emaildel"))
+          document.getElementById("emaildel").value = "";
+        if(document.getElementById("postal-del"))
+          document.getElementById("postal-del").value = "";
         document.getElementById("contact-number").value = "";
         document.getElementById("purpose").value = "";
         document.getElementById("college-id").value = "";
@@ -505,7 +525,7 @@ function Upload(props) {
               {file === "transcript" ? (
                 <div className="fee-receipt">
                   <div className="form-group">
-                    <label htmlFor="emailaddr">
+                    <label htmlFor="feer">
                       Fee Reference Number <span className="cmpl">*</span>
                     </label>
                     <input
@@ -644,16 +664,13 @@ function Upload(props) {
                     margin: "1em",
                   }}
                 >
-                  <small id="file-error-message" class="error"></small>
+                  <small id="file-error-message" className="error"></small>
                 </div>
                 <span style={{display: 'flex', justifyContent: 'center'}}>
                   {cert_fileButton && id_fileButton ? (
                     <button
                       className="btn btn-primary mr-2"
-                      onClick={() => {
-                        setViewFile(cert_pdf);
-                        handleFileOpen();
-                      }}
+                      onClick={handleFileOpen}
                       style={{margin: '0.5em', width: '50%', minWidth: '2em'}}
                     >
                       Show Uploaded Certificate

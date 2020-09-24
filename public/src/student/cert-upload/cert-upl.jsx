@@ -13,11 +13,20 @@ function Upload(props) {
   const user = JSON.parse(localStorage.getItem("bonafideNITT2020user")).user;
   const [emailCount, setCount] = useState(0);
   const [emails, setEmails] = useState([]);
-  const [fileButton, setFileButton] = useState(false);
-  const [pdf, setPdf] = useState(null);
+
+  const [cert_pdf, setCertPdf] = useState(null);
+  const [id_pdf, setIdPdf] = useState(null);
+  const [view_file, setViewFile] = useState(null);
+
   const [file, setFile] = useState("Bonafide");
   const [fileModal, setFileModal] = useState(false);
   const [fileName, setFileName] = useState("");
+
+  const [cert_fileName, setCertFileName] = useState("");
+  const [id_fileName, setIdFileName] = useState("");
+  const [cert_fileButton, setCertFileButton] = useState("");
+  const [id_fileButton, setIdFileButton] = useState("");
+
   const [showModal, setModal] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [feeReceipt, setFee] = useState("");
@@ -44,7 +53,7 @@ function Upload(props) {
   const handleSubmitClose = () => setModal(false);
   const handleAddressClose = () => setAddressModal(false);
 
-  const handleFileUpload = (e) => {
+  const handleCertFileUpload = (e) => {
     if (e.target.files[0]) {
       let filePath = e.target.value;
       var allowedExtensions = /(\.docx|\.DOCX|\.doc|\.DOC|\.pdf|\.PDF)$/;
@@ -54,13 +63,33 @@ function Upload(props) {
           "File extension must be .doc, .docx or .pdf";
       } else {
         document.getElementById("file-error-message").innerHTML = "";
-        setPdf(URL.createObjectURL(e.target.files[0]));
-        setFileButton(true);
-        setFileName(true);
+        setCertPdf(URL.createObjectURL(e.target.files[0]));
+        setCertFileButton(true);
+        setCertFileName(true);
       }
     } else {
-      setFileName(null);
-      setFileButton(true);
+      setCertFileName(null);
+      setCertFileButton(true);
+    }
+  };
+
+  const handleIdFileUpload = (e) => {
+    if (e.target.files[0]) {
+      let filePath = e.target.value;
+      var allowedExtensions = /(\.docx|\.DOCX|\.doc|\.DOC|\.pdf|\.PDF)$/;
+      if (!allowedExtensions.exec(filePath)) {
+        e.target.value = "";
+        document.getElementById("file-error-message").innerHTML =
+          "File extension must be .doc, .docx or .pdf";
+      } else {
+        document.getElementById("file-error-message").innerHTML = "";
+        setIdPdf(URL.createObjectURL(e.target.files[0]));
+        setIdFileButton(true);
+        setIdFileName(true);
+      }
+    } else {
+      setIdFileName(null);
+      setIdFileButton(true);
     }
   };
 
@@ -95,7 +124,8 @@ function Upload(props) {
         setLoading(false);
         setCount(0);
         setEmails([]);
-        setFileButton(false);
+        setCertFileButton(false);
+        setIdFileButton(false);
         setFileModal(false);
         setFileName("");
         setAddress("");
@@ -595,7 +625,7 @@ function Upload(props) {
                 <input
                   type="file"
                   // className="form-control-file"
-                  onChange={handleFileUpload}
+                  onChange={handleCertFileUpload}
                   id="cert"
                   style={{ width: "50%" }}
                 />
@@ -603,7 +633,7 @@ function Upload(props) {
                   type="file"
                   // className="form-control-file"
                   id="college-id"
-                  onChange={handleFileUpload}
+                  onChange={handleIdFileUpload}
                   style={{ width: "50%" }}
                 />
                 <div
@@ -616,21 +646,37 @@ function Upload(props) {
                 >
                   <small id="file-error-message" class="error"></small>
                 </div>
-              </div>
-              <br />
-
-              <div className="form-group text-center">
-                {fileButton ? (
+                {cert_fileButton ? (
                   <button
                     className="btn btn-primary mr-2"
-                    onClick={handleFileOpen}
+                    onClick={() => {
+                      setViewFile(cert_pdf);
+                      handleFileOpen();
+                    }}
+                    style={{margin: '1em'}}
                   >
                     Show Uploaded Certificate
                   </button>
                 ) : (
                   <></>
                 )}
-
+                {id_fileButton ? (
+                  <button
+                    className="btn btn-primary mr-2"
+                    onClick={() => {
+                      setViewFile(id_pdf);
+                      handleFileOpen();
+                    }}
+                    style={{margin: '1em'}}
+                  >
+                    Show Uploaded Id
+                  </button>
+                ) : (
+                  <></>
+                )}
+              </div>
+              <div className="form-group text-center">
+                <br />
                 <button
                   type="submit"
                   className="btn btn-success"
@@ -845,7 +891,7 @@ function Upload(props) {
           </Modal.Header>
           <Modal.Body>
             <embed
-              src={pdf}
+              src={view_file}
               className="embed-modal"
               height={document.documentElement.clientHeight * 0.75}
             />

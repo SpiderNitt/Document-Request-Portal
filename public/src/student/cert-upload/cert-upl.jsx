@@ -669,6 +669,7 @@ function Upload(props) {
                 <span style={{display: 'flex', justifyContent: 'center'}}>
                   {cert_fileButton && id_fileButton ? (
                     <button
+                      type="button"
                       className="btn btn-primary mr-2"
                       onClick={handleFileOpen}
                       style={{margin: '0.5em', width: '50%', minWidth: '2em'}}

@@ -516,6 +516,14 @@ function Upload(props) {
                       aria-describedby="emailHelp"
                       placeholder="Enter email addresses in the order of processing"
                       required
+                      onChange={(e) => {
+                        var format = /[ `!#$%^&*()_+\-=\[\]{};':"\\|,<>\/?~]/;
+                        if(format.test(e.target.value)) {
+                          document.getElementById("email-error-message").innerHTML = "No special characters allowed";
+                        } else {
+                          document.getElementById("email-error-message").innerHTML = "";
+                        }
+                      }}
                     />
                     <small id="email-error-message" className="error"></small>
                   </div>
@@ -528,7 +536,10 @@ function Upload(props) {
                         let emailValues = document.getElementById("emailaddr");
                         if (emailValues.value !== "") {
                           const re = /\S+@nitt\.edu/;
-                          if (re.test(emailValues.value) === true) {
+                          const format = /[`!#$%^&*()_+\-=\[\]{};':"\\|,<>\/?~]/;
+                          if(format.test(emailValues.value) === true) {
+                            alert("No special characters allowed");
+                          } else if (re.test(emailValues.value) === true) {
                             if (!emails.includes(emailValues.value)) {
                               console.log("bomom");
                               setCount(emailCount + 1);

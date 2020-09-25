@@ -67,6 +67,14 @@ div > div > a {
   #anchorClick {
     display: none;
   }
+  .mobl-btn {
+    display: block;
+  }
+}
+@media only screen and (max-width: 800px) {
+  .mobl-btn {
+    display: none;
+  }
 }
 
 .modal-pop {
@@ -95,5 +103,5 @@ div > div > a {
 }
 
 .error {
-  color: #FF0000;
+  color: #ff0000;
 }

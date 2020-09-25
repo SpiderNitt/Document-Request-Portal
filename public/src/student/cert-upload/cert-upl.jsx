@@ -707,7 +707,7 @@ function Upload(props) {
                   {cert_fileButton && id_fileButton ? (
                     <button
                       type="button"
-                      className="btn btn-primary mr-2"
+                      className="btn btn-primary mr-2 mobl-btn"
                       onClick={handleFileOpen}
                       style={{ margin: "0.5em", width: "50%", minWidth: "2em" }}
                     >
@@ -966,7 +966,7 @@ function Upload(props) {
         >
           <Modal.Header closeButton>
             <Modal.Title id="contained-modal-title-vcenter">
-              {cert_fileName}
+              Uploaded files: <br /> Certificate: {cert_fileName}
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
@@ -978,7 +978,7 @@ function Upload(props) {
           </Modal.Body>
           <Modal.Header closeButton>
             <Modal.Title id="contained-modal-title-vcenter">
-              {id_fileName}
+              Uploaded files: <br /> Id file: {id_fileName}
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>

@@ -741,8 +741,8 @@ function Upload(props) {
                           document.getElementById("your-email-error-message").innerHTML = "Enter your email address";
                           error = 1;
                         } else {
-                          let regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-                          if(!regex.test(emailDel)) {
+                          let regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                          if(!regex.test(emailDel.toLowerCase())) {
                             document.getElementById("your-email-error-message").innerHTML = "Enter a valid email";
                             error = 1;
                           } else {

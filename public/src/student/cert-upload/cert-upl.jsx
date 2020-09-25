@@ -586,19 +586,19 @@ function Upload(props) {
                         let emailValues = document.getElementById("emailaddr");
                         if (emailValues.value !== "") {
                           const re = /\S+@nitt\.edu/;
+                          const student_webmail = /\d+@nitt\.edu/;
                           const format = /[`!#$%^&*()_+\-=\[\]{};':"\\|,<>\/?~]/;
                           if(format.test(emailValues.value) === true) {
                             alert("No special characters allowed");
                           } else if (re.test(emailValues.value) === true) {
-                            if (!emails.includes(emailValues.value)) {
-                              console.log("bomom");
+                            if(student_webmail.test(emailValues.value) === true) {
+                              alert("Cannot enter student webmail");
+                            } else if (!emails.includes(emailValues.value)) {
                               setCount(emailCount + 1);
                               setEmails(emails.concat(emailValues.value));
                             } else {
                               alert("Duplicate entry!");
                             }
-                            // console.log(emailCount);
-                            // console.log(emails);
                           } else {
                             alert("Enter valid nitt email.");
                           }

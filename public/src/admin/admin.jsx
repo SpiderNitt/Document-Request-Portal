@@ -109,6 +109,8 @@ function Admin() {
         temp["Roll number"] = cert["applier_roll"];
         temp["Address"] = cert["address"];
         temp["Email"] = cert["email"];
+        temp["Purpose"] = cert["purpose"];
+        temp["Contact"] = cert["contact"];
         temp["Status"] = cert["status"];
         temp["Postal Status"] = cert["postal_status"];
         temp["Email Status"] = cert["email_status"];
@@ -127,6 +129,8 @@ function Admin() {
         temp["Roll number"] = cert["applier_roll"];
         temp["Address"] = cert["address"];
         temp["Email"] = cert["email"];
+        temp["Purpose"] = cert["purpose"];
+        temp["Contact"] = cert["contact"];
         temp["Status"] = cert["status"];
         temp["Postal Status"] = cert["postal_status"];
         temp["Email Status"] = cert["email_status"];
@@ -139,7 +143,7 @@ function Admin() {
     });
     if (excelData.length) {
       const xls = new xlsExport(excelData, "Info");
-      xls.exportToXLS("export.xls");
+      xls.exportToXLS("Document_Request_List.xls");
     }
   };
 

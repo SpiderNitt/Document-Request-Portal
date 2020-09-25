@@ -55,3 +55,6 @@
   left: 1.5em;
   position: absolute;
 }
+.timeline-title::-webkit-scrollbar {
+  background: transparent;
+}

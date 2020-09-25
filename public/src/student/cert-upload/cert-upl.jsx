@@ -107,8 +107,18 @@ function Upload(props) {
     else cd.set("type", parseInt(2));
     cd.append("certificate", fileUpload);
     cd.append("certificate", college_id);
-    if (emailDel && document.getElementById("email-sel").checked) cd.set("email", emailDel);
-    if (address && document.getElementById("postal-del").checked) cd.set("address", address);
+    if (
+      emailDel &&
+      document.getElementById("email-sel").checked &&
+      certType === "transcript"
+    )
+      cd.set("email", emailDel);
+    if (
+      address &&
+      document.getElementById("postal-del").checked &&
+      certType === "transcript"
+    )
+      cd.set("address", address);
     if (feeReceipt) cd.set("receipt", feeReceipt);
     if (contact) cd.set("contact", contact);
     if (purpose) cd.set("purpose", purpose);
@@ -141,23 +151,23 @@ function Upload(props) {
         setIdFileButton("");
         setPreAddr([]);
         spider
-        .get("/api/student/address")
-        .then((res) => {
-          res.data.forEach((add) => {
-            setPreAddr((p) => p.concat(add));
+          .get("/api/student/address")
+          .then((res) => {
+            res.data.forEach((add) => {
+              setPreAddr((p) => p.concat(add));
+            });
+          })
+          .catch((err) => {
+            console.log(err);
           });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
         document.getElementById("cert").value = "";
         if (document.getElementById("emaildel"))
           document.getElementById("emaildel").value = "";
         if (document.getElementById("feer"))
           document.getElementById("feer").value = "";
-        if(document.getElementById("emaildel"))
+        if (document.getElementById("emaildel"))
           document.getElementById("emaildel").value = "";
-        if(document.getElementById("postal-del"))
+        if (document.getElementById("postal-del"))
           document.getElementById("postal-del").value = "";
         document.getElementById("contact-number").value = "";
         document.getElementById("purpose").value = "";
@@ -228,15 +238,25 @@ function Upload(props) {
                     if (certType === "transcript") {
                       setCount(emailCount + 1);
                       setEmails(["transcript@nitt.edu"]);
-                      document.getElementById("contact-error-message").innerHTML = "";
-                      document.getElementById("purpose-error-message").innerHTML = "";
-                      document.getElementById("file-error-message").innerHTML = "";
+                      document.getElementById(
+                        "contact-error-message"
+                      ).innerHTML = "";
+                      document.getElementById(
+                        "purpose-error-message"
+                      ).innerHTML = "";
+                      document.getElementById("file-error-message").innerHTML =
+                        "";
                     } else {
                       setCount(0);
                       setEmails([]);
-                      document.getElementById("contact-error-message").innerHTML = "";
-                      document.getElementById("purpose-error-message").innerHTML = "";
-                      document.getElementById("file-error-message").innerHTML = "";
+                      document.getElementById(
+                        "contact-error-message"
+                      ).innerHTML = "";
+                      document.getElementById(
+                        "purpose-error-message"
+                      ).innerHTML = "";
+                      document.getElementById("file-error-message").innerHTML =
+                        "";
                     }
                   }}
                 >
@@ -293,15 +313,20 @@ function Upload(props) {
                           placeholder="Enter your email id"
                           onChange={(e) => {
                             e.preventDefault();
-                            let emailValues = document.getElementById("emaildel");
+                            let emailValues = document.getElementById(
+                              "emaildel"
+                            );
                             // if (emailValues.value !== "") {
-                              setEmailDel(emailValues.value);
-                              console.log(emailDel, emailValues.value);
+                            setEmailDel(emailValues.value);
+                            console.log(emailDel, emailValues.value);
                             // }
                           }}
                           required
                         />
-                        <small id="your-email-error-message" className="error"></small>
+                        <small
+                          id="your-email-error-message"
+                          className="error"
+                        ></small>
                       </div>
                     </div>
                     <div className="form-check">
@@ -328,7 +353,10 @@ function Upload(props) {
                         Postal delivery
                       </label>
                     </div>
-                    <small id="select-delivery-type-error-message" className="error"></small>
+                    <small
+                      id="select-delivery-type-error-message"
+                      className="error"
+                    ></small>
                   </div>
 
                   {/* Postal information */}
@@ -402,7 +430,10 @@ function Upload(props) {
                           Add New Address
                         </button>
                         <br />
-                        <small id="your-postal-error-message" className="error"></small>
+                        <small
+                          id="your-postal-error-message"
+                          className="error"
+                        ></small>
                       </div>
                       <br />
                       <Modal
@@ -568,10 +599,14 @@ function Upload(props) {
                       required
                       onChange={(e) => {
                         var format = /[ `!#$%^&*()_+\-=\[\]{};':"\\|,<>\/?~]/;
-                        if(format.test(e.target.value)) {
-                          document.getElementById("email-error-message").innerHTML = "No special characters allowed";
+                        if (format.test(e.target.value)) {
+                          document.getElementById(
+                            "email-error-message"
+                          ).innerHTML = "No special characters allowed";
                         } else {
-                          document.getElementById("email-error-message").innerHTML = "";
+                          document.getElementById(
+                            "email-error-message"
+                          ).innerHTML = "";
                         }
                       }}
                     />
@@ -588,10 +623,12 @@ function Upload(props) {
                           const re = /\S+@nitt\.edu/;
                           const student_webmail = /\d+@nitt\.edu/;
                           const format = /[`!#$%^&*()_+\-=\[\]{};':"\\|,<>\/?~]/;
-                          if(format.test(emailValues.value) === true) {
+                          if (format.test(emailValues.value) === true) {
                             alert("No special characters allowed");
                           } else if (re.test(emailValues.value) === true) {
-                            if(student_webmail.test(emailValues.value) === true) {
+                            if (
+                              student_webmail.test(emailValues.value) === true
+                            ) {
                               alert("Cannot enter student webmail");
                             } else if (!emails.includes(emailValues.value)) {
                               setCount(emailCount + 1);
@@ -666,13 +703,13 @@ function Upload(props) {
                 >
                   <small id="file-error-message" className="error"></small>
                 </div>
-                <span style={{display: 'flex', justifyContent: 'center'}}>
+                <span style={{ display: "flex", justifyContent: "center" }}>
                   {cert_fileButton && id_fileButton ? (
                     <button
                       type="button"
                       className="btn btn-primary mr-2"
                       onClick={handleFileOpen}
-                      style={{margin: '0.5em', width: '50%', minWidth: '2em'}}
+                      style={{ margin: "0.5em", width: "50%", minWidth: "2em" }}
                     >
                       Show Uploaded Certificate
                     </button>
@@ -689,76 +726,113 @@ function Upload(props) {
                   onClick={(e) => {
                     e.preventDefault();
                     let fileUpload = document.getElementById("cert").files[0];
-                    let college_id = document.getElementById("college-id").files[0];
+                    let college_id = document.getElementById("college-id")
+                      .files[0];
                     let certType = document.getElementById("certType").value;
                     let error = 0;
-                    if(!contact) {
-                      document.getElementById("contact-error-message").innerHTML = "Contact field cannot be blank";
+                    if (!contact) {
+                      document.getElementById(
+                        "contact-error-message"
+                      ).innerHTML = "Contact field cannot be blank";
                       error = 1;
                     } else {
                       // const re = /^\s*(?:\+?(\d{1,3}))?[- (]*(\d{3})[- )]*(\d{3})[- ]*(\d{4})(?: *[x/#]{1}(\d+))?\s*$/;
                       if (contact.length !== 10) {
-                        document.getElementById("contact-error-message").innerHTML = "Enter a valid contact number";
+                        document.getElementById(
+                          "contact-error-message"
+                        ).innerHTML = "Enter a valid contact number";
                         error = 1;
                       } else {
-                        document.getElementById("contact-error-message").innerHTML = "";
+                        document.getElementById(
+                          "contact-error-message"
+                        ).innerHTML = "";
                       }
                     }
-                    if(!purpose) {
-                      document.getElementById("purpose-error-message").innerHTML = "Purpose field cannot be blank";
+                    if (!purpose) {
+                      document.getElementById(
+                        "purpose-error-message"
+                      ).innerHTML = "Purpose field cannot be blank";
                       error = 1;
                     } else {
-                      document.getElementById("purpose-error-message").innerHTML = "";
+                      document.getElementById(
+                        "purpose-error-message"
+                      ).innerHTML = "";
                     }
-                    if(!fileUpload || !college_id) {
-                      document.getElementById("file-error-message").innerHTML = "Upload both files";
+                    if (!fileUpload || !college_id) {
+                      document.getElementById("file-error-message").innerHTML =
+                        "Upload both files";
                       error = 1;
                     } else {
-                      document.getElementById("file-error-message").innerHTML = "";
+                      document.getElementById("file-error-message").innerHTML =
+                        "";
                     }
-                    if(certType === "bonafide") {
-                      if(!emailCount) {
-                        document.getElementById("email-error-message").innerHTML = "Add email addresses";
+                    if (certType === "bonafide") {
+                      if (!emailCount) {
+                        document.getElementById(
+                          "email-error-message"
+                        ).innerHTML = "Add email addresses";
                         error = 1;
                       } else {
-                        document.getElementById("email-error-message").innerHTML = "";
+                        document.getElementById(
+                          "email-error-message"
+                        ).innerHTML = "";
                       }
                     } else {
-                      if(!feeReceipt) {
-                        document.getElementById("fee-error-message").innerHTML = "Enter fee reference number";
+                      if (!feeReceipt) {
+                        document.getElementById("fee-error-message").innerHTML =
+                          "Enter fee reference number";
                         error = 1;
                       } else {
-                        document.getElementById("fee-error-message").innerHTML = "";
+                        document.getElementById("fee-error-message").innerHTML =
+                          "";
                       }
-                      if(!(document.getElementById("email-sel").checked || document.getElementById("postal-del").checked)) {
-                        document.getElementById("select-delivery-type-error-message").innerHTML = "Select a delivery method";
+                      if (
+                        !(
+                          document.getElementById("email-sel").checked ||
+                          document.getElementById("postal-del").checked
+                        )
+                      ) {
+                        document.getElementById(
+                          "select-delivery-type-error-message"
+                        ).innerHTML = "Select a delivery method";
                         error = 1;
                       } else {
-                        document.getElementById("select-delivery-type-error-message").innerHTML = "";
+                        document.getElementById(
+                          "select-delivery-type-error-message"
+                        ).innerHTML = "";
                       }
-                      if(document.getElementById("email-sel").checked) {
-                        if(!emailDel) {
-                          document.getElementById("your-email-error-message").innerHTML = "Enter your email address";
+                      if (document.getElementById("email-sel").checked) {
+                        if (!emailDel) {
+                          document.getElementById(
+                            "your-email-error-message"
+                          ).innerHTML = "Enter your email address";
                           error = 1;
                         } else {
                           let regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-                          if(!regex.test(emailDel.toLowerCase())) {
-                            document.getElementById("your-email-error-message").innerHTML = "Enter a valid email";
+                          if (!regex.test(emailDel.toLowerCase())) {
+                            document.getElementById(
+                              "your-email-error-message"
+                            ).innerHTML = "Enter a valid email";
                             error = 1;
                           } else {
-                            document.getElementById("your-email-error-message").innerHTML = "";
+                            document.getElementById(
+                              "your-email-error-message"
+                            ).innerHTML = "";
                           }
                         }
                       } else {
                         setEmailDel("");
                       }
-                      if(document.getElementById("postal-del").checked) {
-                        if(!address) {
-                          document.getElementById("your-postal-error-message").innerHTML = "Enter your postal address";
+                      if (document.getElementById("postal-del").checked) {
+                        if (!address) {
+                          document.getElementById(
+                            "your-postal-error-message"
+                          ).innerHTML = "Enter your postal address";
                           error = 1;
-                        }
-                        else {
-                          document.getElementById("your-postal-error-message").innerHTML = "";
+                        } else {
+                          document.getElementById(
+                            "your-postal-error-message"
+                          ).innerHTML = "";
                         }
                       } else {
                         setAddress("");

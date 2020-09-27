@@ -18,9 +18,8 @@ function Upload(props) {
   const [id_pdf, setIdPdf] = useState(null);
   const [view_file, setViewFile] = useState(null);
 
-  const [file, setFile] = useState("Bonafide");
+  const [file, setFile] = useState("bonafide");
   const [fileModal, setFileModal] = useState(false);
-  const [fileName, setFileName] = useState("");
 
   const [cert_fileName, setCertFileName] = useState("");
   const [id_fileName, setIdFileName] = useState("");
@@ -36,6 +35,16 @@ function Upload(props) {
   const [addressModal, setAddressModal] = useState(false);
   const [contact, setContact] = useState("");
   const [purpose, setPurpose] = useState("");
+
+  const [courseCode, setCode] = useState("");
+  const [course, setCourse] = useState("");
+
+  const certMap = {
+    bonafide: 1,
+    transcript: 2,
+    dereg: 3,
+    rereg: 4,
+  };
 
   useEffect(() => {
     spider
@@ -101,22 +110,24 @@ function Upload(props) {
     setLoading(true);
     let fileUpload = document.getElementById("cert").files[0];
     let college_id = document.getElementById("college-id").files[0];
-    let certType = document.getElementById("certType").value;
     let cd = new FormData();
-    if (certType === "bonafide") cd.set("type", parseInt(1));
-    else cd.set("type", parseInt(2));
+    cd.set("type", parseInt(certMap[file]));
     cd.append("certificate", fileUpload);
     cd.append("certificate", college_id);
+    if (file === "dereg" || file === "rereg") {
+      cd.set("course_code", courseCode);
+      cd.set("course_name", course);
+    }
     if (
       emailDel &&
       document.getElementById("email-sel").checked &&
-      certType === "transcript"
+      file === "transcript"
     )
       cd.set("email", emailDel);
     if (
       address &&
       document.getElementById("postal-del").checked &&
-      certType === "transcript"
+      file === "transcript"
     )
       cd.set("address", address);
     if (feeReceipt) cd.set("receipt", feeReceipt);
@@ -137,7 +148,6 @@ function Upload(props) {
         setCertFileButton(false);
         setIdFileButton(false);
         setFileModal(false);
-        setFileName("");
         setAddress("");
         setEmailDel("");
         setFee("");
@@ -150,6 +160,8 @@ function Upload(props) {
         setCertFileButton("");
         setIdFileButton("");
         setPreAddr([]);
+        setCourse("");
+        setCode("");
         spider
           .get("/api/student/address")
           .then((res) => {
@@ -235,6 +247,12 @@ function Upload(props) {
                   onChange={(e) => {
                     let certType = e.target.value;
                     setFile(certType);
+                    if (file === "dereg" || file === "rereg") {
+                      document.getElementById("course-code").value = "";
+                      document.getElementById("course-name").value = "";
+                      setCourse("");
+                      setCode("");
+                    }
                     if (certType === "transcript") {
                       setCount(emailCount + 1);
                       setEmails(["transcript@nitt.edu"]);
@@ -264,6 +282,8 @@ function Upload(props) {
                     Bonafide
                   </option>
                   <option value="transcript">Transcript</option>
+                  <option value="dereg">Course De-registration</option>
+                  <option value="rereg">Course Re-registration</option>
                 </select>
               </div>
 
@@ -532,7 +552,49 @@ function Upload(props) {
               ) : (
                 <></>
               )}
-
+              {/* Course Deregistration/Registration */}
+              {file === "dereg" || file === "rereg" ? (
+                <>
+                  <div className="form-group">
+                    <label htmlFor="course-code">
+                      Course Code <span className="cmpl">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="ccode"
+                      id="course-code"
+                      placeholder="Enter the course code"
+                      required
+                      onChange={(e) => {
+                        setCode(e.target.value);
+                        console.log("courseCode", courseCode);
+                      }}
+                    />
+                    <small id="ccode-error-message" className="error"></small>
+                  </div>
+                  <div className="form-group">
+                    <label htmlFor="course-name">
+                      Course Name <span className="cmpl">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="cname"
+                      id="course-name"
+                      placeholder="Enter the course name"
+                      required
+                      onChange={(e) => {
+                        setCourse(e.target.value);
+                        console.log(course);
+                      }}
+                    />
+                    <small id="cname-error-message" className="error"></small>
+                  </div>
+                </>
+              ) : (
+                <></>
+              )}
               {/* Contact information */}
 
               <div className="form-group">
@@ -552,7 +614,9 @@ function Upload(props) {
                 />
                 <small id="contact-error-message" className="error"></small>
               </div>
+
               {/* Fee Receipt */}
+
               {file === "transcript" ? (
                 <div className="fee-receipt">
                   <div className="form-group">
@@ -703,6 +767,7 @@ function Upload(props) {
                 >
                   <small id="file-error-message" className="error"></small>
                 </div>
+
                 <span style={{ display: "flex", justifyContent: "center" }}>
                   {cert_fileButton && id_fileButton ? (
                     <button
@@ -725,10 +790,10 @@ function Upload(props) {
                   className="btn btn-success"
                   onClick={(e) => {
                     e.preventDefault();
+                    console.log(file);
                     let fileUpload = document.getElementById("cert").files[0];
                     let college_id = document.getElementById("college-id")
                       .files[0];
-                    let certType = document.getElementById("certType").value;
                     let error = 0;
                     if (!contact) {
                       document.getElementById(
@@ -766,7 +831,7 @@ function Upload(props) {
                       document.getElementById("file-error-message").innerHTML =
                         "";
                     }
-                    if (certType === "bonafide") {
+                    if (file === "bonafide") {
                       if (!emailCount) {
                         document.getElementById(
                           "email-error-message"
@@ -777,7 +842,7 @@ function Upload(props) {
                           "email-error-message"
                         ).innerHTML = "";
                       }
-                    } else {
+                    } else if (file === "transcript") {
                       if (!feeReceipt) {
                         document.getElementById("fee-error-message").innerHTML =
                           "Enter fee reference number";
@@ -836,6 +901,17 @@ function Upload(props) {
                         }
                       } else {
                         setAddress("");
+                      }
+                    } else if (file === "rereg" || file === "dereg") {
+                      if (!courseCode) {
+                        document.getElementById(
+                          "ccode-error-message"
+                        ).innerHTML = "Enter your course code";
+                      }
+                      if (!course) {
+                        document.getElementById(
+                          "cname-error-message"
+                        ).innerHTML = "Enter your course name";
                       }
                     }
                     if (error === 0) {

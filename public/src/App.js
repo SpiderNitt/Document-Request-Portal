@@ -4,7 +4,7 @@ import Login from "./login/login";
 import Footer from "./footer/footer";
 import Student from "./student/student";
 import Admin from "./admin/admin.jsx";
-import { Switch, Route, HashRouter } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import { Redirect } from "react-router-dom/cjs/react-router-dom.min";
 
 const PrivateRoutes = () => {
@@ -20,22 +20,19 @@ const PrivateRoutes = () => {
   );
 };
 
-
 function App() {
   return (
     <div className="App">
-      <HashRouter>
-        <Switch>
-          <Route exact strict path="/">
-            <div className="row justify-content-center">
-              <Login />
-            </div>
-          </Route>
-          {/* //<PrivateRoute component={Student} path="/student" exact />
+      <Switch>
+        <Route exact strict path="/">
+          <div className="row justify-content-center">
+            <Login />
+          </div>
+        </Route>
+        {/* //<PrivateRoute component={Student} path="/student" exact />
           //<PrivateRoute component={Admin} path="/admin" exact /> */}
         <PrivateRoutes />
-        </Switch>
-      </HashRouter>
+      </Switch>
       <div className="row">
         <Footer />
       </div>

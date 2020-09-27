@@ -6,11 +6,13 @@ import Timeline from "../timeline/timeline";
 import { Collapse } from "react-bootstrap";
 import Loader from "react-loader-spinner";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
-import TimelineModal from "../timeline/TimelineModal"
+import TimelineModal from "../timeline/TimelineModal";
 
 const cert_mapping = {
   1: "Bonafide",
   2: "Transcript",
+  3: "Course Deregistration",
+  4: "Course Reregistration",
 };
 export default class Status extends React.Component {
   state = {
@@ -18,7 +20,7 @@ export default class Status extends React.Component {
     loading: true,
     certData: [],
     toggled: [],
-    modalViewed: -1
+    modalViewed: -1,
   };
 
   handleToggle = (id) => {
@@ -39,14 +41,14 @@ export default class Status extends React.Component {
   };
   setModalViewed = (id) => {
     this.setState({
-      modalViewed: id
-    })
-  }
-  hideModalViewed = ()=>  {
+      modalViewed: id,
+    });
+  };
+  hideModalViewed = () => {
     this.setState({
-      modalViewed: -1
-    })
-  }
+      modalViewed: -1,
+    });
+  };
 
   componentDidMount = async () => {
     try {
@@ -113,82 +115,80 @@ export default class Status extends React.Component {
             timeout={3000} //3 secs
           />
         ) : (
-            <>
-              <div className="container req-status">
-                {this.state.certData.length === 0 ? (
-                  <>
-                    <p className="nor">
-                      <strong>No Requests sent</strong>
-                    </p>
-                  </>
-                ) : (
-                    <table className="table cert-table status-table timeline-ovf">
-                      <thead className="thead-dark">
-                        <tr>
-                          <th scope="col">S.No</th>
-                          <th scope="col">Certificate Type</th>
-                          <th scope="col">Current Status</th>
-                          <th scope="col">Email Status</th>
-                          <th scope="col">Postal Status</th>
-                          <th scope="col">Actions</th>
-                        </tr>
-                      </thead>
+          <>
+            <div className="container req-status">
+              {this.state.certData.length === 0 ? (
+                <>
+                  <p className="nor">
+                    <strong>No Requests sent</strong>
+                  </p>
+                </>
+              ) : (
+                <table className="table cert-table status-table timeline-ovf">
+                  <thead className="thead-dark">
+                    <tr>
+                      <th scope="col">S.No</th>
+                      <th scope="col">Certificate Type</th>
+                      <th scope="col">Current Status</th>
+                      <th scope="col">Email Status</th>
+                      <th scope="col">Postal Status</th>
+                      <th scope="col">Actions</th>
+                    </tr>
+                  </thead>
 
-                      <tbody>
-                        {this.state.certData.map((data, index) => {
-                          return (
-                            <>
-                              <tr key={index}>
-                                <td>{index + 1}</td>
-                                <td>{cert_mapping[data.type]}</td>
-                                <td>{data.status}</td>
-                                <td>
-                                  {data.email_status ? data.email_status : "-"}
-                                </td>
-                                <td>
-                                  {data.postal_status ? data.postal_status : "-"}
-                                </td>
-                                <td>
-                                  <span className="table-icons">
-                                    <FaDownload
-                                      onClick={() => {
-                                        this.handleDownload(
-                                          data.id,
-                                          cert_mapping[data.type]
-                                        );
-                                      }}
-                                      className="table-icons-item"
-                                    />
-                                    <FaHistory
-                                      className="table-icons-item history"
-                                      onClick={() => {
-                                        // console.log("clicked");
-                                        this.setModalViewed(data.id);
-                                      }}
-                                    />
-                                  </span>
+                  <tbody>
+                    {this.state.certData.map((data, index) => {
+                      return (
+                        <>
+                          <tr key={index}>
+                            <td>{index + 1}</td>
+                            <td>{cert_mapping[data.type]}</td>
+                            <td>{data.status}</td>
+                            <td>
+                              {data.email_status ? data.email_status : "-"}
+                            </td>
+                            <td>
+                              {data.postal_status ? data.postal_status : "-"}
+                            </td>
+                            <td>
+                              <span className="table-icons">
+                                <FaDownload
+                                  onClick={() => {
+                                    this.handleDownload(
+                                      data.id,
+                                      cert_mapping[data.type]
+                                    );
+                                  }}
+                                  className="table-icons-item"
+                                />
+                                <FaHistory
+                                  className="table-icons-item history"
+                                  onClick={() => {
+                                    // console.log("clicked");
+                                    this.setModalViewed(data.id);
+                                  }}
+                                />
+                              </span>
+                            </td>
+                          </tr>
 
-                                </td>
-                              </tr>
-                             
-                              <TimelineModal
-                                id={data.id}
-                                show={this.state.modalViewed === data.id}
-                                hide={this.hideModalViewed}
-                                data={this.state.certHis[data.id]}
-                                email={data.email_status}
-                                postal={data.postal_status}>
-
-                              </TimelineModal>
-                            </>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  )}
-              </div>
-            </>
-          )}
+                          <TimelineModal
+                            id={data.id}
+                            show={this.state.modalViewed === data.id}
+                            hide={this.hideModalViewed}
+                            data={this.state.certHis[data.id]}
+                            email={data.email_status}
+                            postal={data.postal_status}
+                          ></TimelineModal>
+                        </>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          </>
+        )}
       </div>
     );
   }

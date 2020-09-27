@@ -23,7 +23,7 @@ const PrivateRoutes = () => {
 function App() {
   return (
     <div className="App">
-    <Router>
+    <Router basename="/bonafide-system">
       <Switch>
         <Route exact strict path="/">
           <div className="row justify-content-center">

@@ -4,7 +4,7 @@ import Login from "./login/login";
 import Footer from "./footer/footer";
 import Student from "./student/student";
 import Admin from "./admin/admin.jsx";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, BrowserRouter as Router } from "react-router-dom";
 import { Redirect } from "react-router-dom/cjs/react-router-dom.min";
 
 const PrivateRoutes = () => {
@@ -23,6 +23,7 @@ const PrivateRoutes = () => {
 function App() {
   return (
     <div className="App">
+    <Router>
       <Switch>
         <Route exact strict path="/">
           <div className="row justify-content-center">
@@ -33,6 +34,7 @@ function App() {
           //<PrivateRoute component={Admin} path="/admin" exact /> */}
         <PrivateRoutes />
       </Switch>
+    </Router>
       <div className="row">
         <Footer />
       </div>

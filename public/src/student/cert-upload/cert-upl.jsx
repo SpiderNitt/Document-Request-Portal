@@ -206,8 +206,9 @@ function Upload(props) {
     <>
       <div className="container" id="cert-upl">
         <h2 className="text-center cert-upl-head">
-          Request Certificate Verification
+          Document Requisition Portal
         </h2>
+
         <ToastContainer
           position="top-center"
           autoClose={2000}
@@ -227,18 +228,24 @@ function Upload(props) {
             <form id="request-main">
               <div className="form-group">
                 <label htmlFor="certType">
-                  Enter certificate type <span className="cmpl">*</span>
+                  Enter Document type <span className="cmpl">*</span>
                 </label>
-                <a
-                  href="#!"
-                  onClick={calculate_source}
-                  id="anchorClick"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="float-right small-link"
-                >
-                  Download Template
-                </a>
+                {console.log(file)}
+                {file === "bonafide" || file === "transcript" ? (
+                  <a
+                    href="#!"
+                    onClick={calculate_source}
+                    id="anchorClick"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="float-right small-link"
+                  >
+                    Download Template
+                  </a>
+                ) : (
+                  <></>
+                )}
+
                 <select
                   name="certType"
                   id="certType"
@@ -281,8 +288,8 @@ function Upload(props) {
                     Bonafide
                   </option>
                   <option value="transcript">Transcript</option>
-                  <option value="dereg">Course De-registration</option>
-                  <option value="rereg">Course Re-registration</option>
+                  <option value="dereg">Course De-Registration</option>
+                  <option value="rereg">Course Re-Registration</option>
                 </select>
               </div>
 
@@ -292,7 +299,7 @@ function Upload(props) {
                 <>
                   <div className="form-group">
                     <label htmlFor="delivery-sel">
-                      Select certificate delivery method{" "}
+                      Select document delivery method{" "}
                       <span className="cmpl">*</span>
                     </label>
                     <div className="form-check">
@@ -551,7 +558,9 @@ function Upload(props) {
               ) : (
                 <></>
               )}
+
               {/* Course Deregistration/Registration */}
+
               {file === "dereg" || file === "rereg" ? (
                 <>
                   <div className="form-group">
@@ -598,7 +607,7 @@ function Upload(props) {
 
               <div className="form-group">
                 <label htmlFor="contact-number">
-                  Contact Number <span className="cmpl">*</span>
+                  Enter your Contact Number <span className="cmpl">*</span>
                 </label>
                 <input
                   type="number"
@@ -620,7 +629,7 @@ function Upload(props) {
                 <div className="fee-receipt">
                   <div className="form-group">
                     <label htmlFor="feer">
-                      Fee Reference Number <span className="cmpl">*</span>
+                      Enter Fee Reference ID <span className="cmpl">*</span>
                     </label>
                     <input
                       type="text"
@@ -628,7 +637,7 @@ function Upload(props) {
                       name="feer"
                       id="feer"
                       required
-                      placeholder="Enter Fee Reference Number"
+                      placeholder="Enter Fee Reference ID"
                       onChange={(e) => {
                         setFee(e.target.value);
                         console.log(feeReceipt);
@@ -649,7 +658,7 @@ function Upload(props) {
                 <>
                   <div className="form-group">
                     <label htmlFor="emailaddr">
-                      Administrator Email address{" "}
+                      Enter Signatories' Email address{" "}
                       <span className="cmpl">*</span>
                     </label>
                     <input
@@ -717,7 +726,7 @@ function Upload(props) {
 
               <div className="form-group">
                 <label htmlFor="purpose">
-                  Purpose <span className="cmpl">*</span>
+                  Enter Purpose <span className="cmpl">*</span>
                 </label>
                 <input
                   type="text"
@@ -737,7 +746,7 @@ function Upload(props) {
 
               <div className="form-group">
                 <label htmlFor="cert" style={{ width: "50%" }}>
-                  Add certificate <span className="cmpl">*</span>
+                  Upload Document <span className="cmpl">*</span>
                 </label>
                 <label htmlFor="college-id" style={{ width: "50%" }}>
                   Upload Student ID <span className="cmpl">*</span>
@@ -789,7 +798,6 @@ function Upload(props) {
                   className="btn btn-success"
                   onClick={(e) => {
                     e.preventDefault();
-                    console.log(file);
                     let fileUpload = document.getElementById("cert").files[0];
                     let college_id = document.getElementById("college-id")
                       .files[0];
@@ -1064,7 +1072,7 @@ function Upload(props) {
             />
           </Modal.Body>
         </Modal>
-        <CertificateTemplate fileType={file} />
+        {/* <CertificateTemplate fileType={file} /> */}
       </div>
     </>
     // )}

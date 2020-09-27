@@ -2,9 +2,6 @@ import React from "react";
 import "./navbar.css";
 import { Link } from "react-scroll";
 
-// import Status from "../status/status"
-// import Upload from "../cert-upload/cert-upl"
-
 function NavBar(props) {
   const logoutHandler = (e) => {
     localStorage.removeItem("bonafideNITT2020user");
@@ -22,23 +19,10 @@ function NavBar(props) {
         >
           &times;
         </a>
-        {/* {props.screen !== 1 && (
-          <> */}
-        {/* <Link
-              to="certificateTemplate"
-              spy={true}
-              smooth={true}
-              duration={500}
-            >
-              <span id="navEntry">Templates</span>
-            </Link> */}
-        {/* <Link to="cert-upl" spy={true} smooth={true} duration={500}>
-          <span id="navEntry">Request Certificate</span>
-        </Link>
-        <Link to="cert-status" spy={true} smooth={true} duration={500}>
-          <span id="navEntry">View status</span>
-        </Link> */}
-        <br />
+        <div className="row nav-logo justify-content-center ">
+          <img src="nitt-lr.png" alt="logo" />
+        </div>
+        /
         <span className="greetings">
           Welcome{" "}
           {JSON.parse(localStorage.getItem("bonafideNITT2020user")).user}
@@ -76,9 +60,9 @@ function NavBar(props) {
   );
 }
 
-document.addEventListener('click', function(event) {
+document.addEventListener("click", function (event) {
   var isClickInside;
-  if(document.getElementById("sideNav")) {
+  if (document.getElementById("sideNav")) {
     isClickInside = document.getElementById("sideNav").contains(event.target);
     if (!isClickInside) {
       document.getElementById("sideNav").style.width = "0";

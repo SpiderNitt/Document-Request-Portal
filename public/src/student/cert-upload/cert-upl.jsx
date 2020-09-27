@@ -684,7 +684,7 @@ function Upload(props) {
                         let emailValues = document.getElementById("emailaddr");
                         if (emailValues.value !== "") {
                           const re = /\S+@nitt\.edu/;
-                          const student_webmail = /\d+@nitt\.edu/;
+                          const student_webmail = /^\d+@nitt\.edu/;
                           const format = /[`!#$%^&*()_+\-=\[\]{};':"\\|,<>\/?~]/; // eslint-disable-line
                           if (format.test(emailValues.value) === true) {
                             alert("No special characters allowed");
@@ -775,7 +775,7 @@ function Upload(props) {
                       onClick={handleFileOpen}
                       style={{ margin: "0.5em", width: "50%", minWidth: "2em" }}
                     >
-                      Show Uploaded Certificate
+                      Show Uploaded Files
                     </button>
                   ) : (
                     <></>

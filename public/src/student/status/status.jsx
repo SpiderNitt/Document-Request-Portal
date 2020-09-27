@@ -9,8 +9,8 @@ import TimelineModal from "../timeline/TimelineModal";
 const cert_mapping = {
   1: "Bonafide",
   2: "Transcript",
-  3: "Course Deregistration",
-  4: "Course Reregistration",
+  3: "Course De-Registration",
+  4: "Course Re-Registration",
 };
 export default class Status extends React.Component {
   state = {
@@ -101,7 +101,7 @@ export default class Status extends React.Component {
     return (
       <div id="cert-status">
         <div className="page-header row justify-content-center">
-          <h1>Your Certificates</h1>
+          <h1>Your Documents</h1>
         </div>
         {this.state.loading ? (
           <Loader
@@ -118,7 +118,7 @@ export default class Status extends React.Component {
               {this.state.certData.length === 0 ? (
                 <>
                   <p className="nor">
-                    <strong>No Requests sent</strong>
+                    <strong>No Documents</strong>
                   </p>
                 </>
               ) : (
@@ -126,7 +126,7 @@ export default class Status extends React.Component {
                   <thead className="thead-dark">
                     <tr>
                       <th scope="col">S.No</th>
-                      <th scope="col">Certificate Type</th>
+                      <th scope="col">Document Type</th>
                       <th scope="col">Current Status</th>
                       <th scope="col">Email Status</th>
                       <th scope="col">Postal Status</th>

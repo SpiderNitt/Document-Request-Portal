@@ -733,7 +733,7 @@ function Upload(props) {
                   className="form-control"
                   name="purpose"
                   id="purpose"
-                  placeholder="Enter purpose for requesting certificate"
+                  placeholder="Enter purpose for document requisition"
                   required
                   onChange={(e) => {
                     setPurpose(e.target.value);

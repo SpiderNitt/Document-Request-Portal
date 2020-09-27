@@ -55,7 +55,7 @@ function Login(props) {
         <div className="row lmain-rno justify-content-center">
           <div className="col-12">
             <label htmlFor="rno">
-              <b>Roll Number</b>
+              <b>Roll Number / Username</b>
             </label>
           </div>
           <div className="col-12">

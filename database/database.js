@@ -95,6 +95,14 @@ const Certificate = sequelize.define('certificates', {
     id_file : {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    course_code :{
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    course_name: {
+        type: DataTypes.STRING,
+        allowNull: true
     }
 }, {
     freezeTableName: true

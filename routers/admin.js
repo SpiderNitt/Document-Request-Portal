@@ -186,7 +186,7 @@ admin.get("/", async function (req, res) {
             let { path_no, certificate_id, status } = path_object;
             if (status === 'APPROVED') {
                 const ele = await database.Certificate.findOne({
-                    attributes: ['applier_roll', 'type', 'address', 'postal_status', 'email_status', 'receipt', 'email_address', 'contact', 'purpose'],
+                    attributes: ['applier_roll', 'type', 'address', 'postal_status', 'email_status', 'receipt', 'email_address', 'contact', 'purpose', 'course_code', 'course_name'],
                     where: {
                         id: certificate_id
                     }
@@ -202,13 +202,15 @@ admin.get("/", async function (req, res) {
                     receipt: ele.getDataValue('receipt'),
                     email: ele.getDataValue('email_address'),
                     contact: ele.getDataValue('contact'),
-                    purpose: ele.getDataValue('purpose')
+                    purpose: ele.getDataValue('purpose'),
+                    course_code: ele.getDataValue('course_code'),
+                    course_name: ele.getDataValue('course_name')
                 })
 
             }
             else if (path_no == 1 && status === 'PENDING') {
                 const ele = await database.Certificate.findOne({
-                    attributes: ['applier_roll', 'type', 'address', 'postal_status', 'email_status', 'receipt', 'email_address', 'contact', 'purpose'],
+                    attributes: ['applier_roll', 'type', 'address', 'postal_status', 'email_status', 'receipt', 'email_address', 'contact', 'purpose', 'course_code', 'course_name'],
                     where: {
                         id: certificate_id
                     }
@@ -224,7 +226,9 @@ admin.get("/", async function (req, res) {
                     receipt: ele.getDataValue('receipt'),
                     email: ele.getDataValue('email_address'),
                     contact: ele.getDataValue('contact'),
-                    purpose: ele.getDataValue('purpose')
+                    purpose: ele.getDataValue('purpose'),
+                    course_code: ele.getDataValue('course_code'),
+                    course_name: ele.getDataValue('course_name')
                 })
             }
             else if (path_no != 1) {
@@ -237,7 +241,7 @@ admin.get("/", async function (req, res) {
                 });
                 if (row != null) {
                     const ele = await database.Certificate.findOne({
-                        attributes: ['applier_roll', 'type', 'address', 'postal_status', 'email_status', 'receipt', 'email_address', 'contact', 'purpose'],
+                        attributes: ['applier_roll', 'type', 'address', 'postal_status', 'email_status', 'receipt', 'email_address', 'contact', 'purpose', 'course_code', 'course_name'],
                         where: {
                             id: certificate_id
                         }
@@ -253,7 +257,9 @@ admin.get("/", async function (req, res) {
                         receipt: ele.getDataValue('receipt'),
                         email: ele.getDataValue('email_address'),
                         contact: ele.getDataValue('contact'),
-                        purpose: ele.getDataValue('purpose')
+                        purpose: ele.getDataValue('purpose'),
+                        course_code: ele.getDataValue('course_code'),
+                        course_name: ele.getDataValue('course_name')
 
 
                     })
@@ -339,7 +345,7 @@ admin.post('/email', async function (req, res) {
                         from: process.env.EMAIL,
                         to: to_email,
                         subject: 'Transcript',
-                        text: 'Dear ' + applier_roll + '\n. Please find attached the ' + type_name + ' document that you requested.',
+                        text: 'Dear ' + applier_roll + ',\n\tPlease find attached the ' + type_name + ' document that you requested.',
                         attachments: [
                             {
                                 filename: applier_roll + '_' + type_name + '.pdf',

@@ -74,7 +74,7 @@ student.post("/certificate_request", async function (req, res) {
                 return;
             }
              
-            let { type, path, comments, email, address, receipt, purpose, contact } = req.body;
+            let { type, path, comments, email, address, receipt, purpose, contact, course_code, course_name} = req.body;
             path = path.split(',');
 
 
@@ -86,7 +86,7 @@ student.post("/certificate_request", async function (req, res) {
                     fs.unlinkSync(id_final_dest);
                     return;
                 }
-                let response = await database.Certificate.create({ type, applier_roll, file: cert_filename, status, comments, email_address:email, address, receipt, id_file: "ID_"+id_filename, contact, purpose});
+                let response = await database.Certificate.create({ type, applier_roll, file: cert_filename, status, comments, email_address:email, address, receipt, id_file: "ID_"+id_filename, contact, purpose, course_code, course_name});
 
                 let certificate_id = response.getDataValue('id');
                 let time = new Date(Date.now()).toISOString();

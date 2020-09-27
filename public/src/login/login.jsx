@@ -48,7 +48,7 @@ function Login(props) {
       </div>
       <br />
       <div className="row lmain-head justify-content-center">
-        <h1>Certificate Approval Portal</h1>
+        <h1>Document Requisition Portal</h1>
       </div>
       <br />
       <form>

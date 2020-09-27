@@ -89,7 +89,12 @@ function Admin() {
           merged.push(tempType);
         });
         setReq(Object.assign(certReq, merged));
-        setLength(certReq[0].certificates.length + certReq[1].certificates.length);
+        setLength(
+          certReq[0].certificates.length +
+            certReq[1].certificates.length +
+            certReq[2].certificates.length +
+            certReq[3].certificates.length
+        );
         console.log(certReq);
         // console.log(certReq, certReq[0].certificates);
         setLoad(false);
@@ -216,7 +221,13 @@ function Admin() {
                               approved === 0 &&
                               cert.certificate_type === "Transcript") ||
                             (pending === 0 &&
-                              cert.certificate_type === "Bonafide") ? (
+                              cert.certificate_type === "Bonafide") ||
+                            (pending === 0 &&
+                              cert.certificate_type ===
+                                "Course De-Registration") ||
+                            (pending === 0 &&
+                              cert.certificate_type ===
+                                "Course Re-Registration") ? (
                               <p className="placeholder-nil text-center">
                                 <FaListAlt className="mr-2" />
                                 No pending certificates
@@ -240,12 +251,23 @@ function Admin() {
                                             Previous Approvals
                                           </th>
                                           <th scope="col">Certificate file</th>
-                                          <th scope="col">Student Id</th>
+                                          <th scope="col">Student ID</th>
                                           {cert.certificate_type ===
                                           "Bonafide" ? (
                                             <th scope="col">
                                               Upload Certificate
                                             </th>
+                                          ) : (
+                                            <></>
+                                          )}
+                                          {cert.certificate_type ===
+                                            "Course De-Registration" ||
+                                          cert.certificate_type ===
+                                            "Course Re-Registration" ? (
+                                            <>
+                                              <th scope="col">Course ID</th>
+                                              <th scope="col">Course Name</th>
+                                            </>
                                           ) : (
                                             <></>
                                           )}
@@ -298,6 +320,21 @@ function Admin() {
                                                       }
                                                     />
                                                   </td>
+                                                  {cert.certificate_type ===
+                                                    "Course De-Registration" ||
+                                                  cert.certificate_type ===
+                                                    "Course Re-Registration" ? (
+                                                    <>
+                                                      <td>
+                                                        {data.course_code}
+                                                      </td>
+                                                      <td>
+                                                        {data.course_name}
+                                                      </td>
+                                                    </>
+                                                  ) : (
+                                                    <td></td>
+                                                  )}
                                                   {cert.certificate_type ===
                                                   "Bonafide" ? (
                                                     <td>

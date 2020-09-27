@@ -117,12 +117,14 @@ function Admin() {
           temp["Email"] = cert["email"];
           temp["Purpose"] = cert["purpose"];
           temp["Contact"] = cert["contact"];
+          temp["Course Code"] = cert["course_code"];
+          temp["Course Name"] = cert["course_name"];
           temp["Status"] = cert["status"];
           temp["Postal Status"] = cert["postal_status"];
           temp["Email Status"] = cert["email_status"];
           temp["Receipt"] = cert["receipt"];
           temp["Approved"] = cert["approved"];
-          temp["Certificate Type"] = certreq.certificate_type;
+          temp["Document Type"] = certreq.certificate_type;
           excelData.push(temp);
         }
         return 0;
@@ -137,7 +139,7 @@ function Admin() {
   return (
     <>
       <NavBar screen={1} />
-      <h1 className="text-center cert-upl-head">Admin Certificate Portal</h1>
+      <h1 className="text-center cert-upl-head">Admin Document Portal</h1>
       <div className="container-fluid admin">
         <br />
         {isLoading ? (
@@ -203,16 +205,19 @@ function Admin() {
                               approved === 0 &&
                               cert.certificate_type === "Transcript") ||
                             (pending === 0 &&
+                              approved === 0 &&
                               cert.certificate_type === "Bonafide") ||
                             (pending === 0 &&
+                              approved === 0 &&
                               cert.certificate_type ===
                                 "Course De-Registration") ||
                             (pending === 0 &&
+                              approved === 0 &&
                               cert.certificate_type ===
                                 "Course Re-Registration") ? (
                               <p className="placeholder-nil text-center">
                                 <FaListAlt className="mr-2" />
-                                No pending certificates
+                                No document requests
                               </p>
                             ) : (
                               <>
@@ -232,12 +237,12 @@ function Admin() {
                                           <th scope="col">
                                             Previous Approvals
                                           </th>
-                                          <th scope="col">Certificate file</th>
+                                          <th scope="col">Document file</th>
                                           <th scope="col">Student ID</th>
                                           {cert.certificate_type ===
                                           "Bonafide" ? (
                                             <th scope="col">
-                                              Upload Certificate
+                                              Upload Document
                                             </th>
                                           ) : (
                                             <></>
@@ -315,7 +320,7 @@ function Admin() {
                                                       </td>
                                                     </>
                                                   ) : (
-                                                    <td></td>
+                                                    <></>
                                                   )}
                                                   {cert.certificate_type ===
                                                   "Bonafide" ? (
@@ -388,8 +393,7 @@ function Admin() {
                                 ) : (
                                   <></>
                                 )}
-                                {approved &&
-                                cert.certificate_type === "Transcript" ? (
+                                {approved ? (
                                   <div className="table-responsive">
                                     <div style={{ fontWeight: "bold" }}>
                                       Approved
@@ -405,21 +409,41 @@ function Admin() {
                                           <th scope="col">
                                             Previous Approvals
                                           </th>
-                                          <th scope="col">Email Address</th>
-                                          <th scope="col">Postal Address</th>
+                                          {cert.certificate_type ===
+                                            "Course De-Registration" ||
+                                          cert.certificate_type ===
+                                            "Course Re-Registration" ? (
+                                            <>
+                                              <th scope="col">Course ID</th>
+                                              <th scope="col">Course Name</th>
+                                            </>
+                                          ) : (
+                                            <></>
+                                          )}
+                                          { cert.certificate_type === "Transcript"
+                                          ? <>
+                                            <th scope="col">Email Address</th>
+                                            <th scope="col">Postal Address</th>
+                                          </>
+                                          : <></>
+                                          }
                                           <th scope="col">Contact</th>
-                                          <th scope="col">Certificate file</th>
+                                          <th scope="col">Document file</th>
                                           {cert.certificate_type ===
                                           "Bonafide" ? (
                                             <th scope="col">
-                                              Upload Certificate
+                                              Upload Document
                                             </th>
                                           ) : (
                                             <></>
                                           )}
-                                          <th scope="col">Email</th>
-                                          <th scope="col">Postal</th>
-
+                                          {cert.certificate_type === "Transcript"
+                                          ? <>
+                                            <th scope="col">Email</th>
+                                            <th scope="col">Postal</th>
+                                          </>
+                                          : <></>
+                                          }
                                           <th></th>
                                         </tr>
                                       </thead>
@@ -446,18 +470,36 @@ function Admin() {
                                                           }
                                                         )}
                                                   </td>
-
-                                                  <td>
-                                                    {data.email
-                                                      ? data.email
-                                                      : "-"}
-                                                  </td>
-
-                                                  <td>
-                                                    {data.address
-                                                      ? data.address
-                                                      : "-"}
-                                                  </td>
+                                                  {cert.certificate_type ===
+                                                    "Course De-Registration" ||
+                                                  cert.certificate_type ===
+                                                    "Course Re-Registration" ? (
+                                                    <>
+                                                      <td>
+                                                        {data.course_code}
+                                                      </td>
+                                                      <td>
+                                                        {data.course_name}
+                                                      </td>
+                                                    </>
+                                                  ) : (
+                                                    <></>
+                                                  )}
+                                                  {cert.certificate_type === "Transcript"
+                                                  ? <>
+                                                    <td>
+                                                      {data.email
+                                                        ? data.email
+                                                        : "-"}
+                                                    </td>
+                                                    <td>
+                                                      {data.address
+                                                        ? data.address
+                                                        : "-"}
+                                                    </td>
+                                                  </>
+                                                  : <></>
+                                                  }
                                                   <td>
                                                     {data.contact
                                                       ? data.contact
@@ -494,6 +536,8 @@ function Admin() {
                                                   ) : (
                                                     <></>
                                                   )}
+                                                  {cert.certificate_type === "Transcript"
+                                                  ? <>
                                                   <td>
                                                     {data.email ? (
                                                       <AddEmailDetails
@@ -536,7 +580,9 @@ function Admin() {
                                                       <>-</>
                                                     )}
                                                   </td>
-
+                                                  </>
+                                                  : <></>
+                                                  }
                                                   <td>
                                                     <input
                                                       id={data.id}
@@ -577,7 +623,7 @@ function Admin() {
               fontSize: "1.5em",
             }}
           >
-            No certificate requests
+            No document requests
           </div>
         )}
         <ToastContainer

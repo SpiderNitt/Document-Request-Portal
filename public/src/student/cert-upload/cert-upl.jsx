@@ -16,7 +16,6 @@ function Upload(props) {
 
   const [cert_pdf, setCertPdf] = useState(null);
   const [id_pdf, setIdPdf] = useState(null);
-  const [view_file, setViewFile] = useState(null);
 
   const [file, setFile] = useState("bonafide");
   const [fileModal, setFileModal] = useState(false);
@@ -662,7 +661,7 @@ function Upload(props) {
                       placeholder="Enter email addresses in the order of processing"
                       required
                       onChange={(e) => {
-                        var format = /[ `!#$%^&*()_+\-=\[\]{};':"\\|,<>\/?~]/;
+                        var format = /[ `!#$%^&*()_+\-=\[\]{};':"\\|,<>\/?~]/; // eslint-disable-line
                         if (format.test(e.target.value)) {
                           document.getElementById(
                             "email-error-message"
@@ -686,7 +685,7 @@ function Upload(props) {
                         if (emailValues.value !== "") {
                           const re = /\S+@nitt\.edu/;
                           const student_webmail = /\d+@nitt\.edu/;
-                          const format = /[`!#$%^&*()_+\-=\[\]{};':"\\|,<>\/?~]/;
+                          const format = /[`!#$%^&*()_+\-=\[\]{};':"\\|,<>\/?~]/; // eslint-disable-line
                           if (format.test(emailValues.value) === true) {
                             alert("No special characters allowed");
                           } else if (re.test(emailValues.value) === true) {
@@ -873,7 +872,7 @@ function Upload(props) {
                           ).innerHTML = "Enter your email address";
                           error = 1;
                         } else {
-                          let regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                          let regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // eslint-disable-line
                           if (!regex.test(emailDel.toLowerCase())) {
                             document.getElementById(
                               "your-email-error-message"

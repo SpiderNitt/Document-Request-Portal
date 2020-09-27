@@ -2,8 +2,6 @@ import React from "react";
 import spider from "../../utils/API";
 import "./status.css";
 import { FaDownload, FaHistory } from "react-icons/fa";
-import Timeline from "../timeline/timeline";
-import { Collapse } from "react-bootstrap";
 import Loader from "react-loader-spinner";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import TimelineModal from "../timeline/TimelineModal";

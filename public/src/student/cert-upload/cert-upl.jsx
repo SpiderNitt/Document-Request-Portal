@@ -54,7 +54,7 @@ function Upload(props) {
         });
       })
       .catch((err) => {
-        console.log(err);
+
       });
   }, []);
 
@@ -134,12 +134,11 @@ function Upload(props) {
     if (purpose) cd.set("purpose", purpose);
     cd.set("path", emails.toString());
     for (var pair of cd.entries()) {
-      console.log("ccd:", pair[0] + ", " + pair[1]);
+     
     }
     spider
       .post("api/student/certificate_request", cd)
       .then((res) => {
-        console.log(res);
         setModal(false);
         setLoading(false);
         setCount(0);
@@ -169,7 +168,7 @@ function Upload(props) {
             });
           })
           .catch((err) => {
-            console.log(err);
+
           });
         document.getElementById("cert").value = "";
         if (document.getElementById("emaildel"))
@@ -187,7 +186,7 @@ function Upload(props) {
         setFile("bonafide");
       })
       .catch((err) => {
-        console.log(err);
+      
       });
   };
   const calculate_source = () => {
@@ -230,7 +229,6 @@ function Upload(props) {
                 <label htmlFor="certType">
                   Enter Document type <span className="cmpl">*</span>
                 </label>
-                {console.log(file)}
                 {file === "bonafide" || file === "transcript" ? (
                   <a
                     href="#!"
@@ -281,6 +279,21 @@ function Upload(props) {
                       ).innerHTML = "";
                       document.getElementById("file-error-message").innerHTML =
                         "";
+                      if (document.getElementById("ccode-error-message")) {
+                        document.getElementById(
+                          "ccode-error-message"
+                        ).innerHTML = "";
+                      }
+                      if (document.getElementById("cname-error-message")) {
+                        document.getElementById(
+                          "cname-error-message"
+                        ).innerHTML = "";
+                      }
+                      if(document.getElementById("email-error-message")) {
+                        document.getElementById(
+                          "email-error-message"
+                        ).innerHTML = "";
+                      }
                     }
                   }}
                 >
@@ -336,7 +349,7 @@ function Upload(props) {
                           name="email-del"
                           id="emaildel"
                           aria-describedby="emailHelp"
-                          placeholder="Enter your email id"
+                          placeholder="Email id"
                           onChange={(e) => {
                             e.preventDefault();
                             let emailValues = document.getElementById(
@@ -344,7 +357,6 @@ function Upload(props) {
                             );
                             // if (emailValues.value !== "") {
                             setEmailDel(emailValues.value);
-                            console.log(emailDel, emailValues.value);
                             // }
                           }}
                           required
@@ -368,7 +380,6 @@ function Upload(props) {
                               "postal-del-entry"
                             ).style.display = "block";
                           } else {
-                            console.log("Ddf");
                             document.getElementById(
                               "postal-del-entry"
                             ).style.display = "none";
@@ -541,7 +552,6 @@ function Upload(props) {
                                     pin +
                                     (landm ? " ," + landm : "");
                                   setAddress(addressText);
-                                  console.log(address, addressText);
                                   setAddressModal(false);
                                 }
                               }}
@@ -572,11 +582,10 @@ function Upload(props) {
                       className="form-control"
                       name="ccode"
                       id="course-code"
-                      placeholder="Enter the course code"
+                      placeholder="Course code"
                       required
                       onChange={(e) => {
                         setCode(e.target.value);
-                        console.log("courseCode", courseCode);
                       }}
                     />
                     <small id="ccode-error-message" className="error"></small>
@@ -590,11 +599,10 @@ function Upload(props) {
                       className="form-control"
                       name="cname"
                       id="course-name"
-                      placeholder="Enter the course name"
+                      placeholder=" Course name"
                       required
                       onChange={(e) => {
                         setCourse(e.target.value);
-                        console.log(course);
                       }}
                     />
                     <small id="cname-error-message" className="error"></small>
@@ -614,7 +622,7 @@ function Upload(props) {
                   className="form-control"
                   name="contact"
                   id="contact-number"
-                  placeholder="Enter contact number"
+                  placeholder="Contact number"
                   required
                   onChange={(e) => {
                     setContact(e.target.value);
@@ -637,10 +645,9 @@ function Upload(props) {
                       name="feer"
                       id="feer"
                       required
-                      placeholder="Enter Fee Reference ID"
+                      placeholder="Fee Reference ID"
                       onChange={(e) => {
                         setFee(e.target.value);
-                        console.log(feeReceipt);
                       }}
                     />
                     <small id="fee-error-message" className="error"></small>
@@ -667,7 +674,7 @@ function Upload(props) {
                       name="emailaddr"
                       id="emailaddr"
                       aria-describedby="emailHelp"
-                      placeholder="Enter email addresses in the order of processing"
+                      placeholder="Email addresses in the order of processing"
                       required
                       onChange={(e) => {
                         var format = /[ `!#$%^&*()_+\-=\[\]{};':"\\|,<>\/?~]/; // eslint-disable-line
@@ -733,7 +740,7 @@ function Upload(props) {
                   className="form-control"
                   name="purpose"
                   id="purpose"
-                  placeholder="Enter purpose for document requisition"
+                  placeholder="Purpose for document requisition"
                   required
                   onChange={(e) => {
                     setPurpose(e.target.value);
@@ -910,6 +917,16 @@ function Upload(props) {
                         setAddress("");
                       }
                     } else if (file === "rereg" || file === "dereg") {
+                      if (!emailCount) {
+                        document.getElementById(
+                          "email-error-message"
+                        ).innerHTML = "Add email addresses";
+                        error = 1;
+                      } else {
+                        document.getElementById(
+                          "email-error-message"
+                        ).innerHTML = "";
+                      }
                       if (!courseCode) {
                         document.getElementById(
                           "ccode-error-message"

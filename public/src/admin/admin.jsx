@@ -41,7 +41,7 @@ function Admin() {
         setTypes(Object.assign(certTypes, res.data));
       })
       .catch((err) => {
-        console.log(err);
+       
       });
     spider
       .get("/api/admin")
@@ -63,15 +63,12 @@ function Admin() {
           res.data.forEach((t) => {
             if (t.status === "APPROVED") {
               approval_list.push(t.path_email);
-              // console.log(approval_list);
             }
           });
           temp[i].approved = approval_list;
-          // console.log("for:", approval_list[0]);
           temp[i].id = i + 1;
         }
         let merged = [];
-        // console.log("temp;", temp[0].approved[0]);
 
         certTypes.forEach((typ) => {
           let tempType = {
@@ -95,12 +92,9 @@ function Admin() {
             certReq[2].certificates.length +
             certReq[3].certificates.length
         );
-        console.log(certReq);
-        // console.log(certReq, certReq[0].certificates);
         setLoad(false);
-        // console.log("final:", certReq);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {});
   }, []);
 
   const exportToExcel = () => {

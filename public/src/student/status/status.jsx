@@ -54,32 +54,26 @@ export default class Status extends React.Component {
       let certHis = Object.assign({}, this.state.certHis);
       let res = await spider.get("/api/student");
       let certs = res.data;
-      console.log(certs);
       cid = Object.assign([], certs);
       this.setState({ certData: cid });
 
       for (const cc of cid) {
-        // console.log(index);
         // let cc = cid[index];
-        // console.log(cc);
 
         let response = await spider.get("/api/student/certificate_history", {
           params: { id: cc.id },
         });
-        // console.log("response??:", response);
         certHis[cc.id] = response.data;
-        // console.log(certHis);
 
         // res.data.id = cc.id;
         // certHis.push(res.data);
       }
-      // console.log("OUTSIDE IFF");
       this.setState({
         certHis,
         loading: false,
       });
     } catch (err) {
-      console.log(err);
+     
     }
   };
   handleDownload = async (id, type) => {
@@ -162,7 +156,6 @@ export default class Status extends React.Component {
                                 <FaHistory
                                   className="table-icons-item history"
                                   onClick={() => {
-                                    // console.log("clicked");
                                     this.setModalViewed(data.id);
                                   }}
                                 />

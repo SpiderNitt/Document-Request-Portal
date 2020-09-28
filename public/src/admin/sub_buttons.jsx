@@ -30,14 +30,9 @@ export const Approve = (props) => {
     spider
       .post("api/admin/approve", cd)
       .then((res) => {
-        console.log("Approved");
         setModal(false);
-        // updateState({}, []);
-        // window.location.reload();
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   };
 
   return (
@@ -123,12 +118,8 @@ export const AddEmailDetails = (props) => {
         .post("/api/admin/email", data)
         .then((res) => {
           setModal(false);
-          console.log(res, "Added email details");
-          // window.location.reload();
         })
-        .catch((err) => {
-          console.log(err);
-        });
+        .catch((err) => {});
     }
   };
 
@@ -220,13 +211,9 @@ export const AddPostalDetails = (props) => {
           certificate_id: props.certId,
         })
         .then((res) => {
-          console.log("Added postal details", res);
           setModal(false);
-          // window.location.reload();
         })
-        .catch((err) => {
-          console.log(err);
-        });
+        .catch((err) => {});
     }
   };
 
@@ -312,13 +299,10 @@ export const Reject = (props) => {
         comments: comments,
       })
       .then((res) => {
-        console.log("Declined");
         setModal(false);
         window.location.reload();
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   };
 
   // if (props.status !== "PENDING")
@@ -388,7 +372,6 @@ export const Upload = (props) => {
           let cancelbtn = document.getElementById("cancel-btn" + props.ID);
           if (e.target.value) cal = "&#127335;";
           else cal = "";
-          console.log(e.target.value);
           cancelbtn.innerHTML = cal;
           cancelbtn.onclick = () => {
             document.getElementById("myfile" + props.ID).value = "";
@@ -412,7 +395,6 @@ export const Download = (props) => (
           responseType: "blob",
         })
         .then((res) => {
-          console.log(res);
           const url = window.URL.createObjectURL(new Blob([res.data]));
           const link = document.createElement("a");
           link.href = url;
@@ -441,7 +423,6 @@ export const DownloadStudentId = (props) => (
           responseType: "blob",
         })
         .then((res) => {
-          console.log(res);
           const url = window.URL.createObjectURL(new Blob([res.data]));
           const link = document.createElement("a");
           link.href = url;

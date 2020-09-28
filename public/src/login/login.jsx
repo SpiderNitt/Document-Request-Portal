@@ -21,7 +21,6 @@ function Login(props) {
             password: password,
           })
           .then((res, err) => {
-            console.log(res);
             const token = {};
             token.jwt = res.data.token;
             let user = jwtHandler(res.data.token);
@@ -31,7 +30,6 @@ function Login(props) {
             else history.push("/student");
           })
           .catch((err) => {
-            console.log(err);
             document.getElementById("loginForm").reset();
             if (err.status === 401) {
               document.getElementById("login-error-message").innerHTML =
@@ -47,7 +45,6 @@ function Login(props) {
           "Enter username without @nitt suffix";
       }
     } else {
-      console.log("Invalid username or password");
       document.getElementById("login-error-message").innerHTML =
         "Incomplete Username or Password";
     }

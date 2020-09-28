@@ -96,34 +96,55 @@ function Admin() {
       })
       .catch((err) => {});
   }, []);
-
-  const exportToExcel = () => {
+  const createButton = ()=>{
+    var buttons = [];
+    var certs = [];
+    certReq.map((certreq) =>{
+      certreq.certificates.forEach(cert=>{
+        certs.push(certreq);
+      });
+    });
+    certs = [... new Set(certs)];
+    certs.map((item,index)=>{
+      buttons.push(
+        <div key={index}>
+          <label style={{margin:'10px'}}>{item.certificate_type}:</label>
+        <button
+        onClick={()=>{
+          exportToExcel(item)
+        }}
+        >
+        Export to Excel</button>
+        </div>
+        );
+    })
+    return [... new Set(buttons)];
+  }
+  const exportToExcel = (certreq) => {
     var excelData = [];
     let index = 0;
-    certReq.map(certreq => {
-      certreq.certificates.map((cert) => {
-        let temp = {};
-        index = index + 1;
-        if (document.getElementById(cert.id).checked === true) {
-          temp["S.No"] = index;
-          temp["Roll number"] = cert["applier_roll"];
-          temp["Address"] = cert["address"];
-          temp["Email"] = cert["email"];
-          temp["Purpose"] = cert["purpose"];
-          temp["Contact"] = cert["contact"];
-          temp["Course Code"] = cert["course_code"];
-          temp["Course Name"] = cert["course_name"];
-          temp["Status"] = cert["status"];
-          temp["Postal Status"] = cert["postal_status"];
-          temp["Email Status"] = cert["email_status"];
-          temp["Receipt"] = cert["receipt"];
-          temp["Approved"] = cert["approved"];
-          temp["Document Type"] = certreq.certificate_type;
-          excelData.push(temp);
-        }
-        return 0;
-      });
-    })
+    certreq.certificates.map((cert) => {
+      let temp = {};
+      index = index + 1;
+      if (document.getElementById(cert.id).checked === true) {
+        temp["S.No"] = index;
+        temp["Roll number"] = cert["applier_roll"];
+        temp["Address"] = cert["address"];
+        temp["Email"] = cert["email"];
+        temp["Purpose"] = cert["purpose"];
+        temp["Contact"] = cert["contact"];
+        temp["Course Code"] = cert["course_code"];
+        temp["Course Name"] = cert["course_name"];
+        temp["Status"] = cert["status"];
+        temp["Postal Status"] = cert["postal_status"];
+        temp["Email Status"] = cert["email_status"];
+        temp["Receipt"] = cert["receipt"];
+        temp["Approved"] = cert["approved"];
+        temp["Document Type"] = certreq.certificate_type;
+        excelData.push(temp);
+      }
+      return 0;
+    });
     if (excelData.length) {
       const xls = new xlsExport(excelData, "Info");
       xls.exportToXLS("Document_Request_List.xls");
@@ -148,13 +169,7 @@ function Admin() {
         ) : length ? (
           <div>
             <div className="download-details">
-              <button
-                onClick={() => {
-                  exportToExcel();
-                }}
-              >
-                Export to Excel
-              </button>
+              {createButton()}
             </div>
             {certReq.map((cert, index) => {
               let pending = 0,

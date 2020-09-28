@@ -107,7 +107,7 @@ function Admin() {
     certs = [... new Set(certs)];
     certs.map((item,index)=>{
       buttons.push(
-        <div key={index}>
+        <div id={item.certificate_type} key={index}>
           <label style={{margin:'10px'}}>{item.certificate_type}:</label>
         <button
         onClick={()=>{
@@ -118,9 +118,10 @@ function Admin() {
         </div>
         );
     })
-    return [... new Set(buttons)];
+    return buttons;
   }
   const exportToExcel = (certreq) => {
+    
     var excelData = [];
     let index = 0;
     certreq.certificates.map((cert) => {
@@ -143,11 +144,19 @@ function Admin() {
         temp["Document Type"] = certreq.certificate_type;
         excelData.push(temp);
       }
+      excelData.map(obj=>{
+        for (var propName in obj) { 
+          if (obj[propName] === null || obj[propName] === undefined) {
+            delete obj[propName];
+          }
+        }
+        return obj;
+      });
       return 0;
     });
     if (excelData.length) {
       const xls = new xlsExport(excelData, "Info");
-      xls.exportToXLS("Document_Request_List.xls");
+      xls.exportToXLS(`${certreq.certificate_type}_Request_List.xls`);
     }
   };
 
@@ -168,9 +177,6 @@ function Admin() {
           />
         ) : length ? (
           <div>
-            <div className="download-details">
-              {createButton()}
-            </div>
             {certReq.map((cert, index) => {
               let pending = 0,
                 approved = 0;
@@ -210,6 +216,11 @@ function Admin() {
                         </Card.Header>
                         <Accordion.Collapse eventKey="0">
                           <Card.Body>
+                          <div className="download-details">
+                          {createButton().filter(button=>{
+                            if(button.props.id === cert.certificate_type) return button;
+                          })}
+                          </div>
                             {(pending === 0 &&
                               approved === 0 &&
                               cert.certificate_type === "Transcript") ||
@@ -398,6 +409,7 @@ function Admin() {
                                         )}
                                       </tbody>
                                     </table>
+                                    
                                   </div>
                                 ) : (
                                   <></>

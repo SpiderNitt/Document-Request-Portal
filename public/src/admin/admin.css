@@ -60,6 +60,7 @@
   display: flex;
   padding: 10px;
   justify-content: flex-end;
+  font-size: 18px;
 }
 
 /* .pending-approved-number {

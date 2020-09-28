@@ -108,11 +108,11 @@ function Admin() {
     certs.map((item,index)=>{
       buttons.push(
         <div id={item.certificate_type} key={index}>
-          <label style={{margin:'10px'}}>{item.certificate_type}:</label>
         <button
         onClick={()=>{
           exportToExcel(item)
         }}
+        style={{margin:'10px'}}
         >
         Export to Excel</button>
         </div>
@@ -129,6 +129,7 @@ function Admin() {
       index = index + 1;
       if (document.getElementById(cert.id).checked === true) {
         temp["S.No"] = index;
+        temp["Document Type"] = certreq.certificate_type;
         temp["Roll number"] = cert["applier_roll"];
         temp["Address"] = cert["address"];
         temp["Email"] = cert["email"];
@@ -141,7 +142,6 @@ function Admin() {
         temp["Email Status"] = cert["email_status"];
         temp["Receipt"] = cert["receipt"];
         temp["Approved"] = cert["approved"];
-        temp["Document Type"] = certreq.certificate_type;
         excelData.push(temp);
       }
       excelData.map(obj=>{

@@ -23,7 +23,7 @@ export default class SignatoriesInstructionsModal extends React.Component {
                 <ol>
                     <li><strong>Bonafide</strong> : Warden -> HOD -> Associate Dean</li>
                     <li><strong>Transcript</strong> : Default Path</li>
-                    <li><strong>Course Dereg / Rereg</strong> : Faculty -> HOD -> UG DEAN Acad -> UG Office</li>
+                    <li><strong>Course De-Reg / Re-Reg</strong> : Faculty -> HOD -> Ugdean@nitt.edu -> Ugoffice@nitt.edu</li>
                 </ol>
                 <br />
                 <div>

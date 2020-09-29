@@ -26,7 +26,7 @@ export default class InstructionsModal extends React.Component {
                         <ul>
                             <li><strong>Bonafide</strong> : Warden -> HOD -> Associate Dean</li>
                             <li><strong>Transcript</strong> : Default Path</li>
-                            <li><strong>Course Dereg / Rereg</strong> : Faculty -> HOD -> UG DEAN Acad -> UG Office</li>
+                            <li><strong>Course De-Reg / Re-Reg</strong> : Faculty -> HOD -> Ugdean@nitt.edu -> Ugoffice@nitt.edu</li>
                         </ul>
                         <br />
                         <strong>NOTE :</strong> Get the webmails of faculties from <a target="_blank" href="https://www.nitt.edu/">here</a><br />

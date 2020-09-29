@@ -118,25 +118,14 @@ function Upload(props) {
     let cd = new FormData();
     for(var i=0;i<docId.length;i++)
     {
-      if(docId[i])
+      if(docId[i] && (docId[i].type.toLowerCase() == file.toLowerCase()))
       {
-        if(docId[i].type.toLowerCase() == file.toLowerCase())
-        {
-          cd.set("type", parseInt(docId[i].id));
-        }
-        if(docId[i].type === 'Course De-Registration' && file === 'dereg')
-        {
-          cd.set("type", parseInt(docId[i].id));
-        }
-        if(docId[i].type === 'Course Re-registration' && file === 'rereg')
-        {
-          cd.set("type", parseInt(docId[i].id));
-        }
+        cd.set("type", parseInt(docId[i].id));
       }
     }
     cd.append("certificate", fileUpload);
     cd.append("certificate", college_id);
-    if (file === "dereg" || file === "rereg") {
+    if (file === "course de-registration" || file === "course re-registration") {
       cd.set("course_code", courseCode);
       cd.set("course_name", course);
     }
@@ -274,7 +263,7 @@ function Upload(props) {
                   onChange={(e) => {
                     let certType = e.target.value;
                     setFile(certType);
-                    if (file === "dereg" || file === "rereg") {
+                    if (file === "course de-registration" || file === "course re-registration") {
                       document.getElementById("course-code").value = "";
                       document.getElementById("course-name").value = "";
                       setCourse("");
@@ -320,17 +309,7 @@ function Upload(props) {
                     }
                   }}
                 >
-                  {docId.map(id=>{
-                    if(id.type === 'Course Re-registration')
-                    {
-                      return(<option value='rereg'>{id.type}</option>)
-                    }
-                    if(id.type === 'Course De-Registration')
-                    {
-                    return(<option value='dereg'>{id.type}</option>)
-                    }
-                   return(<option value={id.type.toLowerCase()}>{id.type}</option>)
-                  })}
+                  {docId.map(id=>{return(<option value={id.type.toLowerCase()}>{id.type}</option>)})}
                 </select>
               </div>
 
@@ -599,7 +578,7 @@ function Upload(props) {
 
               {/* Course Deregistration/Registration */}
 
-              {file === "dereg" || file === "rereg" ? (
+              {file === "course de-registration" || file === "course re-registration" ? (
                 <>
                   <div className="form-group">
                     <label htmlFor="course-code">
@@ -944,7 +923,7 @@ function Upload(props) {
                       } else {
                         setAddress("");
                       }
-                    } else if (file === "rereg" || file === "dereg") {
+                    } else if (file === "course re-registration" || file === "course de-registration") {
                       if (!emailCount) {
                         document.getElementById(
                           "email-error-message"

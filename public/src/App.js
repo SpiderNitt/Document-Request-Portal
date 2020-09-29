@@ -4,7 +4,7 @@ import Login from "./login/login";
 import Footer from "./footer/footer";
 import Student from "./student/student";
 import Admin from "./admin/admin.jsx";
-import { Switch, Route, HashRouter as Router } from "react-router-dom";
+import { Switch, Route, BrowserRouter as Router } from "react-router-dom";
 import { Redirect } from "react-router-dom/cjs/react-router-dom.min";
 
 const PrivateRoutes = () => {

@@ -30,6 +30,7 @@ function Upload(props) {
   const [id_fileName, setIdFileName] = useState("");
   const [cert_fileButton, setCertFileButton] = useState("");
   const [id_fileButton, setIdFileButton] = useState("");
+  const [docId,setDocId]  = useState([]);
 
   const [showModal, setModal] = useState(false);
   const [isLoading, setLoading] = useState(false);
@@ -50,7 +51,18 @@ function Upload(props) {
     dereg: 3,
     rereg: 4,
   };
+  useEffect(() => {
+    spider
+      .get("/api/student/certificate_types")
+      .then((res) => {
+        res.data.forEach((add) => {
+          setDocId((p) => p.concat(add));
+        });
+      })
+      .catch((err) => {
 
+      });
+  }, []);
   useEffect(() => {
     spider
       .get("/api/student/address")
@@ -122,7 +134,24 @@ function Upload(props) {
     let fileUpload = document.getElementById("cert").files[0];
     let college_id = document.getElementById("college-id").files[0];
     let cd = new FormData();
-    cd.set("type", parseInt(certMap[file]));
+    for(var i=0;i<docId.length;i++)
+    {
+      if(docId[i])
+      {
+        if(docId[i].type.toLowerCase() == file.toLowerCase())
+        {
+          cd.set("type", parseInt(docId[i].id));
+        }
+        if(docId[i].type === 'Course De-Registration' && file === 'dereg')
+        {
+          cd.set("type", parseInt(docId[i].id));
+        }
+        if(docId[i].type === 'Course Re-registration' && file === 'rereg')
+        {
+          cd.set("type", parseInt(docId[i].id));
+        }
+      }
+    }
     cd.append("certificate", fileUpload);
     cd.append("certificate", college_id);
     if (file === "dereg" || file === "rereg") {
@@ -311,12 +340,17 @@ function Upload(props) {
                     }
                   }}
                 >
-                  <option value="bonafide" defaultValue>
-                    Bonafide
-                  </option>
-                  <option value="transcript">Transcript</option>
-                  <option value="dereg">Course De-Registration</option>
-                  <option value="rereg">Course Re-Registration</option>
+                  {docId.map(id=>{
+                    if(id.type === 'Course Re-registration')
+                    {
+                      return(<option value='rereg'>{id.type}</option>)
+                    }
+                    if(id.type === 'Course De-Registration')
+                    {
+                    return(<option value='dereg'>{id.type}</option>)
+                    }
+                   return(<option value={id.type.toLowerCase()}>{id.type}</option>)
+                  })}
                 </select>
               </div>
 

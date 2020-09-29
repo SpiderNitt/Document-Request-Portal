@@ -4,20 +4,25 @@ import Login from "./login/login";
 import Footer from "./footer/footer";
 import Student from "./student/student";
 import Admin from "./admin/admin.jsx";
+import NotFound from "./404/404";
 import { Switch, Route, BrowserRouter as Router } from "react-router-dom";
 import { Redirect } from "react-router-dom/cjs/react-router-dom.min";
 
 const PrivateRoutes = () => {
   let token = JSON.parse(localStorage.getItem("bonafideNITT2020user"));
-  return token ? (
-    isNaN(token.user) ? (
-      <Route component={Admin} path="/admin" exact />
-    ) : (
-      <Route component={Student} path="/student" exact />
-    )
-  ) : (
-    <Redirect to="/" />
-  );
+  if (token) {
+    if (isNaN(token.user)) {
+      if (window.location.pathname === "/student")
+        return <Redirect to="/admin" />;
+      return <Route component={Admin} path="/admin" exact />;
+    } else {
+      if (window.location.pathname === "/admin")
+        return <Redirect to="/student" />;
+      return <Route component={Student} path="/student" exact />;
+    }
+  }
+
+  return <Redirect to="/" />;
 };
 
 function App() {
@@ -25,14 +30,17 @@ function App() {
     <div className="App">
       <Router>
         <Switch>
-          <Route exact strict path="/">
+          <Route exact path="/">
             <div className="row justify-content-center">
               <Login />
             </div>
           </Route>
-          {/* //<PrivateRoute component={Student} path="/student" exact />
-          //<PrivateRoute component={Admin} path="/admin" exact /> */}
-          <PrivateRoutes />
+          {window.location.pathname === "/student" ||
+          window.location.pathname === "/admin" ? (
+            <PrivateRoutes />
+          ) : (
+            <Route component={NotFound} />
+          )}
         </Switch>
       </Router>
       <div className="row">

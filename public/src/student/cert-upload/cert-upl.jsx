@@ -4,6 +4,9 @@ import { ToastContainer } from "react-toastify";
 import { Modal } from "react-bootstrap";
 import CertificateTemplate from "../cert-templates/cert-temp";
 import Loader from "react-loader-spinner";
+import InstructionsModal from "../instructions-modal/instructions";
+import SignatoriesInstructionsModal from "../instructions-modal/signatories-instructions";
+import { MdHelp } from "react-icons/md";
 
 import "./cert-upl.css";
 import "react-toastify/dist/ReactToastify.min.css";
@@ -19,6 +22,9 @@ function Upload(props) {
 
   const [file, setFile] = useState("bonafide");
   const [fileModal, setFileModal] = useState(false);
+
+  const [instructionsModal, setInstructionsModal] = useState(true);
+  const [signatoriesModal, setSignatoriesModal] = useState(false);
 
   const [cert_fileName, setCertFileName] = useState("");
   const [id_fileName, setIdFileName] = useState("");
@@ -103,6 +109,12 @@ function Upload(props) {
 
   const handleClose = () => setFileModal(false);
   const handleFileOpen = () => setFileModal(true);
+
+  const handleInstructionsClose = () => setInstructionsModal(false);
+  const handleInstructionsOpen = () => setInstructionsModal(true);
+
+  const handleSignatoriesClose = () => setSignatoriesModal(false);
+  const handleSignatoriesOpen = () => setSignatoriesModal(true);
 
   const certificateRequest = (e) => {
     e.preventDefault();
@@ -224,12 +236,8 @@ function Upload(props) {
 
         <div className="row">
           <div className="col-md-6 form-left">
-            <form id="request-main">
-              <div className="form-group">
-                <label htmlFor="certType">
-                  Enter Document type <span className="cmpl">*</span>
-                </label>
-                {file === "bonafide" || file === "transcript" ? (
+          <div style={{width: '100%', display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end'}}>
+              {file === "bonafide" || file === "transcript" ? (
                   <a
                     href="#!"
                     onClick={calculate_source}
@@ -243,7 +251,13 @@ function Upload(props) {
                 ) : (
                   <></>
                 )}
-
+              </div>
+            <form id="request-main">
+              <div className="form-group">
+                <label htmlFor="certType">
+                  Enter Document type <span className="cmpl">*</span><MdHelp onClick={handleInstructionsOpen} style={{position: "absolute", right: "1em"}}/>
+                </label>
+                
                 <select
                   name="certType"
                   id="certType"
@@ -666,7 +680,7 @@ function Upload(props) {
                   <div className="form-group">
                     <label htmlFor="emailaddr">
                       Enter Signatories' Email address{" "}
-                      <span className="cmpl">*</span>
+                      <span className="cmpl">*</span><MdHelp onClick={handleSignatoriesOpen} style={{position: "absolute", right: "1em"}}/>
                     </label>
                     <input
                       type="email"
@@ -1090,6 +1104,16 @@ function Upload(props) {
           </Modal.Body>
         </Modal>
         {/* <CertificateTemplate fileType={file} /> */}
+        <InstructionsModal
+          show={instructionsModal}
+          hide={handleInstructionsClose}
+          centered
+        ></InstructionsModal>
+        <SignatoriesInstructionsModal
+          show={signatoriesModal}
+          hide={handleSignatoriesClose}
+          centered
+        ></SignatoriesInstructionsModal>
       </div>
     </>
     // )}

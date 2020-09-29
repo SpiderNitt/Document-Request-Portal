@@ -44,13 +44,7 @@ function Upload(props) {
 
   const [courseCode, setCode] = useState("");
   const [course, setCourse] = useState("");
-
-  const certMap = {
-    bonafide: 1,
-    transcript: 2,
-    dereg: 3,
-    rereg: 4,
-  };
+  
   useEffect(() => {
     spider
       .get("/api/student/certificate_types")

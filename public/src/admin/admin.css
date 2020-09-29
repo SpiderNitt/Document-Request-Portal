@@ -27,13 +27,15 @@
   padding: 10px;
 }
 .req-notif {
-  float: right;
-  border-radius: 50% !important;
-  padding: 3px;
-  text-align: center;
+  display: inline-block;
+
+  border-radius: 50%;
+  padding: 2px;
   width: 30px;
   height: 30px;
   background-color: #107dac;
+  margin-left: 0.5em;
+  margin-right: 0.5em;
 }
 
 .cancel-btn {
@@ -43,4 +45,31 @@
 
 .card-header {
   cursor: pointer;
+}
+
+.placeholder-nil {
+  font-size: 1.5rem;
+}
+
+.acc-title {
+  font-size: 1.5rem;
+}
+
+.download-details {
+  width: 100%;
+  display: flex;
+  padding: 10px;
+  justify-content: flex-end;
+  font-size: 18px;
+}
+
+/* .pending-approved-number {
+  display: inline-flex;
+  position: absolute;
+  right: 0.5em;
+} */
+.pending-approved-number {
+  font-size: 0.8em;
+  position: relative;
+  /* float: right; */
 }

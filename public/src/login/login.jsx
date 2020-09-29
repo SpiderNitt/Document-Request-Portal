@@ -21,7 +21,6 @@ function Login(props) {
             password: password,
           })
           .then((res, err) => {
-            console.log(res);
             const token = {};
             token.jwt = res.data.token;
             let user = jwtHandler(res.data.token);
@@ -31,13 +30,23 @@ function Login(props) {
             else history.push("/student");
           })
           .catch((err) => {
-            console.log(err);
+            document.getElementById("loginForm").reset();
+            if (err.status === 401) {
+              document.getElementById("login-error-message").innerHTML =
+                "Invalid Username or Password";
+            } else if (err.status === 500) {
+              document.getElementById("login-error-message").innerHTML =
+                "Internal Server Error. Please try again later.";
+            }
           });
       } else {
-        alert("Not @nitt");
+        // alert("Not @nitt");
+        document.getElementById("username-error-message").innerHTML =
+          "Enter username without @nitt suffix";
       }
     } else {
-      console.log("Invalid username or password");
+      document.getElementById("login-error-message").innerHTML =
+        "Incomplete Username or Password";
     }
   };
 
@@ -48,19 +57,30 @@ function Login(props) {
       </div>
       <br />
       <div className="row lmain-head justify-content-center">
-        <h1>Certificate Approval Portal</h1>
+        <h1>Document Requisition Portal</h1>
       </div>
       <br />
-      <form>
+      <form id="loginForm">
         <div className="row lmain-rno justify-content-center">
           <div className="col-12">
             <label htmlFor="rno">
-              <b>Roll Number</b>
+              <b>Roll Number / Username</b>
             </label>
           </div>
           <div className="col-12">
-            <input type="text" name="rno" id="rno" required />
+            <input
+              type="text"
+              name="rno"
+              id="rno"
+              required
+              onChange={() => {
+                document.getElementById("login-error-message").innerHTML = "";
+                document.getElementById("username-error-message").innerHTML =
+                  "";
+              }}
+            />
           </div>
+          <small id="username-error-message" className="error"></small>
         </div>
         <br />
         <div className="row lmain-pass justify-content-center">
@@ -73,6 +93,8 @@ function Login(props) {
             <input type="password" name="pass" id="pass" required />
           </div>
         </div>
+        <small id="login-error-message" className="error"></small>
+        <br />
         <br />
         <div className="row lmain-btn justify-content-center">
           <div className="col-md-12">

@@ -4,36 +4,37 @@ import Login from "./login/login";
 import Footer from "./footer/footer";
 import Student from "./student/student";
 import Admin from "./admin/admin.jsx";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, HashRouter as Router } from "react-router-dom";
 import { Redirect } from "react-router-dom/cjs/react-router-dom.min";
 
-const PrivateRoute = ({ component: Component, ...rest }) => {
-  return (
-    <Route
-      {...rest}
-      render={(props) =>
-        localStorage.getItem("bonafideNITT2020user") ? (
-          <Component {...props} />
-        ) : (
-          <Redirect to="/" />
-        )
-      }
-    />
+const PrivateRoutes = () => {
+  let token = JSON.parse(localStorage.getItem("bonafideNITT2020user"));
+  return token ? (
+    isNaN(token.user) ? (
+      <Route component={Admin} path="/admin" exact />
+    ) : (
+      <Route component={Student} path="/student" exact />
+    )
+  ) : (
+    <Redirect to="/" />
   );
 };
 
 function App() {
   return (
     <div className="App">
-      <Switch>
-        <Route exact strict path="/">
-          <div className="row justify-content-center">
-            <Login />
-          </div>
-        </Route>
-        <PrivateRoute component={Student} path="/student" exact />
-        <PrivateRoute component={Admin} path="/admin" exact />
-      </Switch>
+      <Router>
+        <Switch>
+          <Route exact strict path="/">
+            <div className="row justify-content-center">
+              <Login />
+            </div>
+          </Route>
+          {/* //<PrivateRoute component={Student} path="/student" exact />
+          //<PrivateRoute component={Admin} path="/admin" exact /> */}
+          <PrivateRoutes />
+        </Switch>
+      </Router>
       <div className="row">
         <Footer />
       </div>

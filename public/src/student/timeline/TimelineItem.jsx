@@ -2,7 +2,6 @@ import "./timeline.css";
 import React from "react";
 
 export default function TimelineItem(props) {
-  // console.log(props);
   let status_map = {
     PENDING: "warning",
     "INITIATED REQUEST": "primary",
@@ -15,11 +14,11 @@ export default function TimelineItem(props) {
   };
   let classNameString = "timeline-badge " + status_map[props.data.status];
   return (
-    <li className="timeline-item">
-      <div className={classNameString}></div>
-      <div className="timeline-panel">
+    <li className="Timeline-item">
+      <span className={classNameString}></span>
+      <div>
         <div className="timeline-heading">
-          <h4 className="timeline-title">{props.data.path_email}</h4>
+          <h6 className="timeline-title" style={{overflow: 'scroll'}}>{props.data.path_email}</h6>
           <p>
             {props.data.status}
             <small className="text-muted">
@@ -36,6 +35,20 @@ export default function TimelineItem(props) {
             ) : (
               <small></small>
             )}
+            {/* {props.email ? (
+              <small>Email sent to your email address.</small>
+            ) : (
+              <></>
+            )}
+            <br />
+            {props.postal ? (
+              <small>
+                Document sent. <br></br>
+                <i>Postal info: {props.postal}</i>
+              </small>
+            ) : (
+              <></>
+            )} */}
           </p>
         </div>
       </div>

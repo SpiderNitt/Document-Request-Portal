@@ -2,14 +2,15 @@ import React from "react";
 import spider from "../../utils/API";
 import "./status.css";
 import { FaDownload, FaHistory } from "react-icons/fa";
-import Timeline from "../timeline/timeline";
-import { Collapse } from "react-bootstrap";
 import Loader from "react-loader-spinner";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+import TimelineModal from "../timeline/TimelineModal";
 
 const cert_mapping = {
   1: "Bonafide",
   2: "Transcript",
+  3: "Course De-Registration",
+  4: "Course Re-Registration",
 };
 export default class Status extends React.Component {
   state = {
@@ -17,6 +18,7 @@ export default class Status extends React.Component {
     loading: true,
     certData: [],
     toggled: [],
+    modalViewed: -1,
   };
 
   handleToggle = (id) => {
@@ -35,6 +37,16 @@ export default class Status extends React.Component {
       // return true;
     }
   };
+  setModalViewed = (id) => {
+    this.setState({
+      modalViewed: id,
+    });
+  };
+  hideModalViewed = () => {
+    this.setState({
+      modalViewed: -1,
+    });
+  };
 
   componentDidMount = async () => {
     try {
@@ -46,27 +58,22 @@ export default class Status extends React.Component {
       this.setState({ certData: cid });
 
       for (const cc of cid) {
-        // console.log(index);
         // let cc = cid[index];
-        // console.log(cc);
 
         let response = await spider.get("/api/student/certificate_history", {
           params: { id: cc.id },
         });
-        // console.log("response??:", response);
         certHis[cc.id] = response.data;
-        // console.log(certHis);
 
         // res.data.id = cc.id;
         // certHis.push(res.data);
       }
-      // console.log("OUTSIDE IFF");
       this.setState({
         certHis,
         loading: false,
       });
     } catch (err) {
-      console.log(err);
+     
     }
   };
   handleDownload = async (id, type) => {
@@ -87,6 +94,9 @@ export default class Status extends React.Component {
   render() {
     return (
       <div id="cert-status">
+        <div className="page-header row justify-content-center">
+          <h1>Your Documents</h1>
+        </div>
         {this.state.loading ? (
           <Loader
             className="text-center"
@@ -98,75 +108,75 @@ export default class Status extends React.Component {
           />
         ) : (
           <>
-            <div className="page-header row justify-content-center">
-              <h1>Your Certificates</h1>
-            </div>
-            <div className="container-fluid req-status">
-              <table className="table cert-table status-table">
-                <thead className="thead-dark">
-                  <tr>
-                    <th scope="col">S.No</th>
-                    <th scope="col">Certificate Type</th>
-                    <th scope="col">Current Status</th>
-                    <th scope="col">Actions</th>
-                  </tr>
-                </thead>
+            <div className="container req-status">
+              {this.state.certData.length === 0 ? (
+                <>
+                  <p className="nor">
+                    <strong>No Documents</strong>
+                  </p>
+                </>
+              ) : (
+                <table className="table cert-table status-table timeline-ovf">
+                  <thead className="thead-dark">
+                    <tr>
+                      <th scope="col">S.No</th>
+                      <th scope="col">Document Type</th>
+                      <th scope="col">Current Status</th>
+                      <th scope="col">Email Status</th>
+                      <th scope="col">Postal Status</th>
+                      <th scope="col">Actions</th>
+                    </tr>
+                  </thead>
 
-                <tbody>
-                  {this.state.certData.map((data, index) => {
-                    return (
-                      <>
-                        <tr key={index}>
-                          <td>{index + 1}</td>
-                          <td>{cert_mapping[data.type]}</td>
-                          <td>{data.status}</td>
-                          <td>
-                            <span className="table-icons">
-                              <FaDownload
-                                onClick={() => {
-                                  this.handleDownload(
-                                    data.id,
-                                    cert_mapping[data.type]
-                                  );
-                                }}
-                                className="table-icons-item"
-                              />
-                              <FaHistory
-                                className="table-icons-item history"
-                                onClick={() => {
-                                  // console.log("clicked");
-                                  this.handleToggle(data.id);
-                                }}
-                              />
-                            </span>
-                            {/* <Download
-                      certId={data.certificate_id}
-                      roll={data.applier_roll}
-                      certType={data.certificate_type}
-                    /> */}
-                          </td>
-                        </tr>
-                        <Collapse
-                          className="timeline-main"
-                          in={this.state.toggled.includes(data.id)}
-                        >
-                          <tr>
-                            <td colSpan={4}>
-                              {/* {" "}/ */}
-                              <Timeline data={this.state.certHis[data.id]} />
+                  <tbody>
+                    {this.state.certData.map((data, index) => {
+                      return (
+                        <>
+                          <tr key={index}>
+                            <td>{index + 1}</td>
+                            <td>{cert_mapping[data.type]}</td>
+                            <td>{data.status}</td>
+                            <td>
+                              {data.email_status ? data.email_status : "-"}
+                            </td>
+                            <td>
+                              {data.postal_status ? data.postal_status : "-"}
+                            </td>
+                            <td>
+                              <span className="table-icons">
+                                <FaDownload
+                                  onClick={() => {
+                                    this.handleDownload(
+                                      data.id,
+                                      cert_mapping[data.type]
+                                    );
+                                  }}
+                                  className="table-icons-item"
+                                />
+                                <FaHistory
+                                  className="table-icons-item history"
+                                  onClick={() => {
+                                    this.setModalViewed(data.id);
+                                  }}
+                                />
+                              </span>
                             </td>
                           </tr>
-                        </Collapse>
-                      </>
-                    );
-                  })}
-                </tbody>
-              </table>
 
-              {/* {certificateId.map((cert, index) => {
-          return ( */}
-              {/* );
-        })} */}
+                          <TimelineModal
+                            id={data.id}
+                            show={this.state.modalViewed === data.id}
+                            hide={this.hideModalViewed}
+                            data={this.state.certHis[data.id]}
+                            email={data.email_status}
+                            postal={data.postal_status}
+                          ></TimelineModal>
+                        </>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              )}
             </div>
           </>
         )}

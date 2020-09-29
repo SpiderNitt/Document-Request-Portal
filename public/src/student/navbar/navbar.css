@@ -1,6 +1,6 @@
 .sidenav {
   height: 100%;
-  width: 0;
+  width: 0px;
   position: fixed;
   z-index: 110;
   top: 0;
@@ -20,12 +20,26 @@
   margin-left: 50px;
 }
 
-@media screen and (max-height: 450px) {
+.closebtn {
+  color: #818181 !important;
+  cursor: pointer;
+  transition: 0.3s;
+  display: block;
+}
+
+.closebtn:hover {
+  color: #f1f1f1 !important;
+}
+
+@media screen and (max-width: 650px) {
   .sidenav {
     padding-top: 15px;
   }
-  #navEntry {
-    font-size: 18px;
+  .navEntry {
+    font-size: 25px !important;
+  }
+  .greetings {
+    font-size: 35px !important;
   }
 }
 .icon-nav {
@@ -41,7 +55,7 @@
   z-index: 100;
 }
 
-#navEntry {
+.navEntry {
   cursor: pointer;
   padding: 8px 8px 8px 32px;
   text-decoration: none;
@@ -51,6 +65,20 @@
   transition: 0.3s;
 }
 
-#navEntry:hover {
+.navEntry:hover {
   color: #f1f1f1;
+}
+
+.greetings {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 35px;
+  color: #f1f1f1;
+  display: block;
+}
+
+.nav-logo > img {
+  margin: auto;
+  width: 170px;
+  padding-top: 20px;
 }

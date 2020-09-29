@@ -1,21 +1,6 @@
 .req-status {
-  overflow-x: scroll;
   text-align: center;
-}
-
-.req-status::-webkit-scrollbar {
-  width: 12px;
-}
-
-.req-status::-webkit-scrollbar-track {
-  /* -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3); */
-  border-radius: 10px;
-  background: white;
-}
-
-.req-status::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  background-color: black; /* color of the tracking area */
+  overflow-x: scroll;
 }
 
 .table-icons-item {
@@ -28,4 +13,30 @@
 }
 .history {
   z-index: 100 !important;
+}
+
+.timeline-ovf {
+  overflow-x: auto !important;
+}
+
+.timeline-ovf::-webkit-scrollbar {
+  width: 1em; /* width of the entire scrollbar */
+}
+.timeline-ovf::-webkit-scrollbar-track {
+  background: gainsboro; /* color of the tracking area */
+}
+.timeline-ovf::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.5); /* color of the scroll thumb */
+  border-radius: 20px; /* roundness of the scroll thumb */
+  border: 3px solid transparent; /* creates padding around scroll thumb */
+  background-clip: content-box;
+}
+
+.nor {
+  color: white;
+  margin-bottom: 15vh;
+  background-color: #343a40;
+  height: 5vh;
+  vertical-align: middle;
+  padding: 10px;
 }

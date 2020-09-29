@@ -30,6 +30,7 @@ function Upload(props) {
   const [id_fileName, setIdFileName] = useState("");
   const [cert_fileButton, setCertFileButton] = useState("");
   const [id_fileButton, setIdFileButton] = useState("");
+  const [docId,setDocId]  = useState([]);
 
   const [showModal, setModal] = useState(false);
   const [isLoading, setLoading] = useState(false);
@@ -43,14 +44,19 @@ function Upload(props) {
 
   const [courseCode, setCode] = useState("");
   const [course, setCourse] = useState("");
+  
+  useEffect(() => {
+    spider
+      .get("/api/student/certificate_types")
+      .then((res) => {
+        res.data.forEach((add) => {
+          setDocId((p) => p.concat(add));
+        });
+      })
+      .catch((err) => {
 
-  const certMap = {
-    bonafide: 1,
-    transcript: 2,
-    dereg: 3,
-    rereg: 4,
-  };
-
+      });
+  }, []);
   useEffect(() => {
     spider
       .get("/api/student/address")
@@ -122,10 +128,16 @@ function Upload(props) {
     let fileUpload = document.getElementById("cert").files[0];
     let college_id = document.getElementById("college-id").files[0];
     let cd = new FormData();
-    cd.set("type", parseInt(certMap[file]));
+    for(var i=0;i<docId.length;i++)
+    {
+      if(docId[i] && (docId[i].type.toLowerCase() == file.toLowerCase()))
+      {
+        cd.set("type", parseInt(docId[i].id));
+      }
+    }
     cd.append("certificate", fileUpload);
     cd.append("certificate", college_id);
-    if (file === "dereg" || file === "rereg") {
+    if (file === "course de-registration" || file === "course re-registration") {
       cd.set("course_code", courseCode);
       cd.set("course_name", course);
     }
@@ -265,7 +277,7 @@ function Upload(props) {
                   onChange={(e) => {
                     let certType = e.target.value;
                     setFile(certType);
-                    if (file === "dereg" || file === "rereg") {
+                    if (file === "course de-registration" || file === "course re-registration") {
                       document.getElementById("course-code").value = "";
                       document.getElementById("course-name").value = "";
                       setCourse("");
@@ -311,12 +323,7 @@ function Upload(props) {
                     }
                   }}
                 >
-                  <option value="bonafide" defaultValue>
-                    Bonafide
-                  </option>
-                  <option value="transcript">Transcript</option>
-                  <option value="dereg">Course De-Registration</option>
-                  <option value="rereg">Course Re-Registration</option>
+                  {docId.map(id=>{return(<option value={id.type.toLowerCase()}>{id.type}</option>)})}
                 </select>
               </div>
 
@@ -585,7 +592,7 @@ function Upload(props) {
 
               {/* Course Deregistration/Registration */}
 
-              {file === "dereg" || file === "rereg" ? (
+              {file === "course de-registration" || file === "course re-registration" ? (
                 <>
                   <div className="form-group">
                     <label htmlFor="course-code">
@@ -930,7 +937,7 @@ function Upload(props) {
                       } else {
                         setAddress("");
                       }
-                    } else if (file === "rereg" || file === "dereg") {
+                    } else if (file === "course re-registration" || file === "course de-registration") {
                       if (!emailCount) {
                         document.getElementById(
                           "email-error-message"

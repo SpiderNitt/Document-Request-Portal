@@ -106,20 +106,21 @@ export const AddEmailDetails = (props) => {
 
   const approveHandler = (e) => {
     e.preventDefault();
-    let data = new FormData();
-    setLoading(true);
-    if (document.getElementById("upload-cert").value) {
-      data.append(
-        "certificate",
-        document.getElementById("upload-cert").files[0]
-      );
-      data.set("certificate_id", parseInt(props.certId));
-      spider
-        .post("/api/admin/email", data)
-        .then((res) => {
-          setModal(false);
-        })
-        .catch((err) => {});
+    if (document.getElementById("upload-cert").files.length != 0) {
+      let data = new FormData();
+      if(document.getElementById("upload-cert").files[0]) {
+        data.append(
+          "certificate",
+          document.getElementById("upload-cert").files[0]
+        );
+        data.set("certificate_id", parseInt(props.certId));
+        spider
+          .post("/api/admin/email", data)
+          .then((res) => {
+            setModal(false);
+          })
+          .catch((err) => {});
+      }
     }
   };
 

@@ -165,7 +165,6 @@ function Upload(props) {
     spider
       .post("api/student/certificate_request", cd)
       .then((res) => {
-        console.log(res);
         setModal(false);
         setLoading(false);
         setCount(0);
@@ -215,9 +214,7 @@ function Upload(props) {
         document.getElementById("certType").value = "bonafide";
         setFile("bonafide");
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   };
   const calculate_source = () => {
     let anch = document.getElementById("anchorClick");
@@ -790,7 +787,6 @@ function Upload(props) {
                     required
                     onChange={(e) => {
                       setNoOfCopies(e.target.value);
-                      console.log(no_of_copies);
                     }}
                     min="0"
                   />

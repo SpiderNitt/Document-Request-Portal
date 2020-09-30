@@ -86,7 +86,6 @@ function Admin() {
           merged.push(tempType);
         });
         setReq(Object.assign(certReq, merged));
-        console.log("hi", certReq);
         setLength(
           certReq[0].certificates.length +
             certReq[1].certificates.length +
@@ -124,7 +123,6 @@ function Admin() {
   const exportToExcel = (certreq) => {
     var excelData = [];
     let index = 0;
-    console.log(certreq.certificate_type);
     if(certreq.certificate_type === "Bonafide") {
       certreq.certificates.map((cert) => {
       let temp = {};

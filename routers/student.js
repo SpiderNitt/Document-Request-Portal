@@ -19,10 +19,10 @@ student.post("/certificate_request", async function (req, res) {
             res.status(400).json({ 'message': 'Please select files' });
             return;
         }
-        else if(req.files.length == 1){
+        else if (req.files.length == 1) {
             console.log(req.files)
         }
-        else if(req.files.length!=2){
+        else if (req.files.length != 2) {
             res.status(400).json({ 'message': 'Upload both certificate and ID' });
             return;
         }
@@ -67,14 +67,14 @@ student.post("/certificate_request", async function (req, res) {
             //     res.status(400).json({'message': 'No receipt number specified'});
             //     return;
             // }
-            if(!helper.check_compulsory(req.body, ['type', 'path','purpose', 'contact'])){
-                res.status(400).json({'message': 'All compulsory fields are not present'});
+            if (!helper.check_compulsory(req.body, ['type', 'path', 'purpose', 'contact'])) {
+                res.status(400).json({ 'message': 'All compulsory fields are not present' });
                 fs.unlinkSync(cert_final_dest);
                 fs.unlinkSync(id_final_dest);
                 return;
             }
-             
-            let { type, path, comments, email, address, receipt, purpose, contact, course_code, course_name, no_copies} = req.body;
+
+            let { type, path, comments, email, address, receipt, purpose, contact, course_code, course_name, no_copies } = req.body;
             path = path.split(',');
 
 
@@ -86,7 +86,7 @@ student.post("/certificate_request", async function (req, res) {
                     fs.unlinkSync(id_final_dest);
                     return;
                 }
-                let response = await database.Certificate.create({ type, applier_roll, file: cert_filename, status, comments, email_address:email, address, receipt, id_file: "ID_"+id_filename, contact, purpose, course_code, course_name, no_copies});
+                let response = await database.Certificate.create({ type, applier_roll, file: cert_filename, status, comments, email_address: email, address, receipt, id_file: "ID_" + id_filename, contact, purpose, course_code, course_name, no_copies });
 
                 let certificate_id = response.getDataValue('id');
                 let time = new Date(Date.now()).toISOString();
@@ -120,7 +120,12 @@ student.get("/", async function (req, res) {
             'email_status',
             'email_address',
             'contact',
-            'purpose'
+            'purpose',
+            'file',
+            'id_file',
+            'course_code',
+            'course_name',
+            'no_copies'
         ],
         where: {
             applier_roll: rollno
@@ -128,7 +133,23 @@ student.get("/", async function (req, res) {
     });
     let response_json = []
     rows.forEach(function (ele) {
-        response_json.push({ 'id': ele.getDataValue('id'), 'type': ele.getDataValue('type'), 'status': ele.getDataValue('status'), 'postal_status': ele.getDataValue('postal_status'), 'email_status': ele.getDataValue('email_status'), 'email_address': ele.getDataValue('email_address'), 'contact': ele.getDataValue('contact'), 'purpose': ele.getDataValue('purpose') })
+
+        response_json.push({
+            'id': ele.getDataValue('id'),
+            'type': ele.getDataValue('type'),
+            'status': ele.getDataValue('status'),
+            'postal_status': ele.getDataValue('postal_status'),
+            'email_status': ele.getDataValue('email_status'),
+            'email_address': ele.getDataValue('email_address'),
+            'contact': ele.getDataValue('contact'),
+            'purpose': ele.getDataValue('purpose'),
+            'id_extension': ele.getDataValue('id_file').split('.').splice(-1)[0],
+            'certificate_extension': ele.getDataValue('file').split('.').splice(-1)[0],
+            'course_code': ele.getDataValue('course_code'),
+            'course_name': ele.getDataValue('course_name'),
+            'no_copies': ele.getDataValue('no_copies')
+
+        })
     })
 
     res.status(200).json(response_json);
@@ -139,7 +160,7 @@ student.get('/certificate_download', async function (req, res) {
     let id = parseInt(req.query.id);
     let column_name = 'file'
     console.log(req.query)
-    if(req.query.id_cert){
+    if (req.query.id_cert) {
         console.log("hihih")
         column_name = 'id_file'
     }
@@ -295,17 +316,17 @@ student.get('/address', async function (req, res) {
     let response_json = []
     try {
         let rows = await database.Certificate.findAll({
-            attributes: [sequelize.fn('DISTINCT', sequelize.col('address')) ,'address'],
-            where:{
+            attributes: [sequelize.fn('DISTINCT', sequelize.col('address')), 'address'],
+            where: {
                 applier_roll: req.jwt_payload.username
             }
         })
-        if(rows == null){
+        if (rows == null) {
             res.status(200).json([]);
             return;
         }
         else {
-            rows.forEach(function(ele) {
+            rows.forEach(function (ele) {
                 response_json.push(ele.getDataValue('address'))
             })
             res.status(200).json(response_json);

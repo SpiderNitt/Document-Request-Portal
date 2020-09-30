@@ -186,12 +186,16 @@ admin.get("/", async function (req, res) {
             let { path_no, certificate_id, status } = path_object;
             if (status === 'APPROVED') {
                 const ele = await database.Certificate.findOne({
-                    attributes: ['applier_roll', 'type', 'address', 'postal_status', 'email_status', 'receipt', 'email_address', 'contact', 'purpose', 'course_code', 'course_name', 'no_copies'],
+                    attributes: ['applier_roll', 'type', 'address', 'postal_status', 'email_status', 'receipt', 'email_address', 'contact', 'purpose', 'course_code', 'course_name', 'no_copies', 'file', 'id_file'],
                     where: {
                         id: certificate_id
                     }
                 })
+                console.log(ele.getDataValue('id_file').split('.').splice(-1)[0])
+
                 response_json.push({
+                    id_extension : ele.getDataValue('id_file').split('.').splice(-1)[0],
+                    certificate_extension : ele.getDataValue('file').split('.').splice(-1)[0],
                     applier_roll: ele.getDataValue('applier_roll'),
                     certificate_type: ele.getDataValue('type'),
                     certificate_id,
@@ -212,12 +216,16 @@ admin.get("/", async function (req, res) {
             }
             else if (path_no == 1 && status === 'PENDING') {
                 const ele = await database.Certificate.findOne({
-                    attributes: ['applier_roll', 'type', 'address', 'postal_status', 'email_status', 'receipt', 'email_address', 'contact', 'purpose', 'course_code', 'course_name', 'no_copies'],
+                    attributes: ['applier_roll', 'type', 'address', 'postal_status', 'email_status', 'receipt', 'email_address', 'contact', 'purpose', 'course_code', 'course_name', 'no_copies', 'file', 'id_file'],
                     where: {
                         id: certificate_id
                     }
                 })
+                console.log(ele.getDataValue('id_file').split('.').splice(-1)[0])
+
                 response_json.push({
+                    id_extension: ele.getDataValue('id_file').split('.').splice(-1)[0],
+                    certificate_extension: ele.getDataValue('file').split('.').splice(-1)[0],
                     applier_roll: ele.getDataValue('applier_roll'),
                     certificate_type: ele.getDataValue('type'),
                     certificate_id,
@@ -245,12 +253,15 @@ admin.get("/", async function (req, res) {
                 });
                 if (row != null) {
                     const ele = await database.Certificate.findOne({
-                        attributes: ['applier_roll', 'type', 'address', 'postal_status', 'email_status', 'receipt', 'email_address', 'contact', 'purpose', 'course_code', 'course_name', 'no_copies'],
+                        attributes: ['applier_roll', 'type', 'address', 'postal_status', 'email_status', 'receipt', 'email_address', 'contact', 'purpose', 'course_code', 'course_name', 'no_copies', 'file', 'id_file'],
                         where: {
                             id: certificate_id
                         }
                     })
+                    console.log(ele.getDataValue('id_file').split('.').splice(-1)[0])
                     response_json.push({
+                        id_extension: ele.getDataValue('id_file').split('.').splice(-1)[0],
+                        certificate_extension: ele.getDataValue('file').split('.').splice(-1)[0],
                         applier_roll: ele.getDataValue('applier_roll'),
                         certificate_type: ele.getDataValue('type'),
                         certificate_id,

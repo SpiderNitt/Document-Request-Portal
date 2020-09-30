@@ -34,13 +34,9 @@ student.post("/certificate_request", async function (req, res) {
             let id_filepath = req.files[1].path;
             let cert_filename = req.files[0].filename;
             let id_filename = req.files[1].filename;
-            console.log(req.files[1])
-            // let { destination, filename } = req.files[0];
-            // let filepath = req.files[0].path;
             let final_dest = appRoot + '/uploads/' + applier_roll;
             let cert_initial_dest = appRoot + '/' + cert_filepath;
             let id_initial_dest = appRoot + '/' + id_filepath;
-            console.log("paths:: ", cert_initial_dest, id_initial_dest)
             try {
                 fs.mkdirSync(final_dest, { recursive: true })
                 helper.renameFile(cert_initial_dest, final_dest + '/' + cert_filename);
@@ -161,7 +157,6 @@ student.get('/certificate_download', async function (req, res) {
     let column_name = 'file'
     console.log(req.query)
     if (req.query.id_cert) {
-        console.log("hihih")
         column_name = 'id_file'
     }
     let rollno = req.jwt_payload.username;
@@ -327,7 +322,9 @@ student.get('/address', async function (req, res) {
         }
         else {
             rows.forEach(function (ele) {
-                response_json.push(ele.getDataValue('address'))
+                let address = ele.getDataValue('address')
+                if (address != null)
+                    response_json.push(address)
             })
             res.status(200).json(response_json);
             return;

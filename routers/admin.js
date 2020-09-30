@@ -191,7 +191,6 @@ admin.get("/", async function (req, res) {
                         id: certificate_id
                     }
                 })
-                console.log(ele.getDataValue('id_file').split('.').splice(-1)[0])
 
                 response_json.push({
                     id_extension : ele.getDataValue('id_file').split('.').splice(-1)[0],
@@ -221,7 +220,6 @@ admin.get("/", async function (req, res) {
                         id: certificate_id
                     }
                 })
-                console.log(ele.getDataValue('id_file').split('.').splice(-1)[0])
 
                 response_json.push({
                     id_extension: ele.getDataValue('id_file').split('.').splice(-1)[0],
@@ -258,7 +256,6 @@ admin.get("/", async function (req, res) {
                             id: certificate_id
                         }
                     })
-                    console.log(ele.getDataValue('id_file').split('.').splice(-1)[0])
                     response_json.push({
                         id_extension: ele.getDataValue('id_file').split('.').splice(-1)[0],
                         certificate_extension: ele.getDataValue('file').split('.').splice(-1)[0],
@@ -323,7 +320,6 @@ admin.post('/email', async function (req, res) {
             return;
         }
         else {
-            console.log(req.file)
             let { certificate_id } = req.body;
             if (!certificate_id) {
                 res.status(400).json({ "message": "Please provide all required data" })
@@ -348,7 +344,6 @@ admin.post('/email', async function (req, res) {
                 }
 
                 try {
-                    console.log("sending mail")
                     let to_email = id_exists.getDataValue('email_address');
                     let type_name_row = await database.CertificateType.findOne({
                         attributes: ['name'],

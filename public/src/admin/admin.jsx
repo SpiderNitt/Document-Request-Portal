@@ -86,7 +86,6 @@ function Admin() {
           merged.push(tempType);
         });
         setReq(Object.assign(certReq, merged));
-        console.log("hi", certReq);
         setLength(
           certReq[0].certificates.length +
             certReq[1].certificates.length +
@@ -124,7 +123,6 @@ function Admin() {
   const exportToExcel = (certreq) => {
     var excelData = [];
     let index = 0;
-    console.log(certreq.certificate_type);
     if(certreq.certificate_type === "Bonafide") {
       certreq.certificates.map((cert) => {
       let temp = {};
@@ -153,6 +151,7 @@ function Admin() {
       temp["Purpose"] = cert["purpose"];
       temp["Contact"] = cert["contact"];
       temp["Receipt"] = cert["receipt"];
+      temp["Number of copies"] = cert["no_copies"];
       temp["Status"] = cert["status"];
       temp["Postal Status"] = cert["postal_status"];
       temp["Email Status"] = cert["email_status"];
@@ -302,6 +301,11 @@ function Admin() {
                                           ) : (
                                             <></>
                                           )}
+                                          {cert.certificate_type ===
+                                            "Transcript"
+                                          ? <th>Number of copies</th>
+                                          : <></>
+                                          }
                                           <th>Purpose</th>
                                           <th>Contact</th>
                                           <th scope="col">Decision</th>
@@ -340,6 +344,7 @@ function Admin() {
                                                       certType={
                                                         cert.certificate_type
                                                       }
+                                                      ext={data.certificate_extension}
                                                     />
                                                   </td>
                                                   <td>
@@ -349,6 +354,7 @@ function Admin() {
                                                       certType={
                                                         cert.certificate_type
                                                       }
+                                                      ext={data.id_extension}
                                                     />
                                                   </td>
                                                   {cert.certificate_type ===
@@ -386,6 +392,10 @@ function Admin() {
                                                   ) : (
                                                     <></>
                                                   )}
+                                                  {cert.certificate_type === "Transcript"
+                                                  ? <td>{data.no_copies}</td>
+                                                  : <></>
+                                                  }
                                                   <td>
                                                     {data.purpose
                                                       ? data.purpose
@@ -467,6 +477,7 @@ function Admin() {
                                           )}
                                           { cert.certificate_type === "Transcript"
                                           ? <>
+                                            <th scopr="col">Number of copies</th>
                                             <th scope="col">Email Address</th>
                                             <th scope="col">Postal Address</th>
                                           </>
@@ -532,6 +543,7 @@ function Admin() {
                                                   )}
                                                   {cert.certificate_type === "Transcript"
                                                   ? <>
+                                                    <td>{data.no_copies}</td>
                                                     <td>
                                                       {data.email
                                                         ? data.email
@@ -559,6 +571,7 @@ function Admin() {
                                                       certType={
                                                         cert.certificate_type
                                                       }
+                                                      ext={data.certificate_extension}
                                                     />
                                                   </td>
                                                   {cert.certificate_type ===

@@ -106,20 +106,21 @@ export const AddEmailDetails = (props) => {
 
   const approveHandler = (e) => {
     e.preventDefault();
-    let data = new FormData();
-    setLoading(true);
-    if (document.getElementById("upload-cert").value) {
-      data.append(
-        "certificate",
-        document.getElementById("upload-cert").files[0]
-      );
-      data.set("certificate_id", parseInt(props.certId));
-      spider
-        .post("/api/admin/email", data)
-        .then((res) => {
-          setModal(false);
-        })
-        .catch((err) => {});
+    if (document.getElementById("upload-cert").files.length != 0) {
+      let data = new FormData();
+      if(document.getElementById("upload-cert").files[0]) {
+        data.append(
+          "certificate",
+          document.getElementById("upload-cert").files[0]
+        );
+        data.set("certificate_id", parseInt(props.certId));
+        spider
+          .post("/api/admin/email", data)
+          .then((res) => {
+            setModal(false);
+          })
+          .catch((err) => {});
+      }
     }
   };
 
@@ -400,7 +401,7 @@ export const Download = (props) => (
           link.href = url;
           link.setAttribute(
             "download",
-            props.roll + "_" + props.certType + ".pdf"
+            props.roll + "_" + props.certType + "." + props.ext
           );
           document.body.appendChild(link);
           link.click();
@@ -426,7 +427,7 @@ export const DownloadStudentId = (props) => (
           const url = window.URL.createObjectURL(new Blob([res.data]));
           const link = document.createElement("a");
           link.href = url;
-          link.setAttribute("download", props.roll + "_id.pdf");
+          link.setAttribute("download", props.roll + "_id." + props.ext);
           document.body.appendChild(link);
           link.click();
         }),

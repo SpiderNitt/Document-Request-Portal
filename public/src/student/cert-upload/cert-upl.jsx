@@ -41,6 +41,7 @@ function Upload(props) {
   const [addressModal, setAddressModal] = useState(false);
   const [contact, setContact] = useState("");
   const [purpose, setPurpose] = useState("");
+  const [no_of_copies, setNoOfCopies] = useState(null);
 
   const [courseCode, setCode] = useState("");
   const [course, setCourse] = useState("");
@@ -156,6 +157,7 @@ function Upload(props) {
     if (feeReceipt) cd.set("receipt", feeReceipt);
     if (contact) cd.set("contact", contact);
     if (purpose) cd.set("purpose", purpose);
+    if (no_of_copies) cd.set("no_copies", no_of_copies);
     cd.set("path", emails.toString());
     for (var pair of cd.entries()) {
      
@@ -184,6 +186,7 @@ function Upload(props) {
         setPreAddr([]);
         setCourse("");
         setCode("");
+        setNoOfCopies(null);
         spider
           .get("/api/student/address")
           .then((res) => {
@@ -203,15 +206,15 @@ function Upload(props) {
           document.getElementById("emaildel").value = "";
         if (document.getElementById("postal-del"))
           document.getElementById("postal-del").value = "";
+        if(document.getElementById("no_of_copies"))
+          document.getElementById("no_of_copies").value = "";
         document.getElementById("contact-number").value = "";
         document.getElementById("purpose").value = "";
         document.getElementById("college-id").value = "";
         document.getElementById("certType").value = "bonafide";
         setFile("bonafide");
       })
-      .catch((err) => {
-      
-      });
+      .catch((err) => {});
   };
   const calculate_source = () => {
     let anch = document.getElementById("anchorClick");
@@ -753,22 +756,80 @@ function Upload(props) {
               {/* Purpose */}
 
               <div className="form-group">
-                <label htmlFor="purpose">
-                  Enter Purpose <span className="cmpl">*</span>
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="purpose"
-                  id="purpose"
-                  placeholder="Purpose for document requisition"
-                  required
-                  onChange={(e) => {
-                    setPurpose(e.target.value);
-                  }}
-                />
-                <small id="purpose-error-message" className="error"></small>
+                  {file === "bonafide" || file === "transcript"
+                  ? <>
+                      <label htmlFor="purpose">Enter Purpose <span className="cmpl">*</span></label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        name="purpose"
+                        id="purpose"
+                        placeholder="Purpose for document requisition"
+                        required
+                        onChange={(e) => {
+                          setPurpose(e.target.value);
+                        }}
+                      />
+                      <small id="purpose-error-message" className="error"></small>
+                    </>
+                  : <>
+                    {file === "course de-registration"
+                    ? <>
+                    Enter Reason <span className="cmpl">*</span>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="purpose"
+                      id="purpose"
+                      placeholder="Reason for Course De-Registration"
+                      required
+                      onChange={(e) => {
+                        setPurpose(e.target.value);
+                      }}
+                    />
+                    <small id="purpose-error-message" className="error"></small>
+                  </>
+                    : <>
+                    Enter Reason <span className="cmpl">*</span>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="purpose"
+                      id="purpose"
+                      placeholder="Reason for Course Re-Registration"
+                      required
+                      onChange={(e) => {
+                        setPurpose(e.target.value);
+                      }}
+                    />
+                    <small id="purpose-error-message" className="error"></small>
+                  </>
+                    }
+                  </>
+                  }
               </div>
+
+              {file === "transcript"
+              ? <div className="form-group">
+                  <label htmlFor="no_of_copies">
+                    Enter Number of copies (if you opted by post) <span className="cmpl">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    name="no_of_copies"
+                    id="no_of_copies"
+                    placeholder="Number of copies"
+                    required
+                    onChange={(e) => {
+                      setNoOfCopies(e.target.value);
+                    }}
+                    min="0"
+                  />
+                  <small id="no-of-copies-error-message" className="error"></small>
+                </div>
+              : <></>
+              }
 
               {/* Certificate Addition */}
 
@@ -849,9 +910,19 @@ function Upload(props) {
                       }
                     }
                     if (!purpose) {
-                      document.getElementById(
-                        "purpose-error-message"
-                      ).innerHTML = "Purpose field cannot be blank";
+                      if(file === "bonafide" || file === "transcript") {
+                        document.getElementById(
+                          "purpose-error-message"
+                        ).innerHTML = "Purpose field cannot be blank";
+                      } else if(file === "course de-registration") {
+                        document.getElementById(
+                          "purpose-error-message"
+                        ).innerHTML = "Enter reason for course de-registration";
+                      } else {
+                        document.getElementById(
+                          "purpose-error-message"
+                        ).innerHTML = "Enter reason for course re-registration";
+                      }
                       error = 1;
                     } else {
                       document.getElementById(
@@ -878,6 +949,23 @@ function Upload(props) {
                         ).innerHTML = "";
                       }
                     } else if (file === "transcript") {
+                      if(no_of_copies < 0) {
+                        document.getElementById("no-of-copies-error-message").innerHTML = "Number of copies cannot be negative";
+                        error = 1;
+                      } else {
+                        document.getElementById("no-of-copies-error-message").innerHTML = "";
+                      }
+                      if(address) {
+                        if(!no_of_copies) {
+                          document.getElementById("no-of-copies-error-message").innerHTML = "Enter the number of copies required";
+                          error = 1;
+                        } else if(no_of_copies <= 0) {
+                          document.getElementById("no-of-copies-error-message").innerHTML = "Enter the number of copies required";
+                          error = 1;
+                        } else {
+                          document.getElementById("no-of-copies-error-message").innerHTML = "";
+                        }
+                      }
                       if (!feeReceipt) {
                         document.getElementById("fee-error-message").innerHTML =
                           "Enter fee reference number";

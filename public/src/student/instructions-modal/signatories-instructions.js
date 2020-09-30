@@ -21,24 +21,23 @@ export default class SignatoriesInstructionsModal extends React.Component {
                 <Modal.Body>
                     <div className="instructions-body">
 
-                        <ul>
-                            <li><strong>Bonafide</strong> :
-                                <ul>
-                                    <li>
-                                        <strong>Without Residence Proof</strong> : <br />
-                                        HOD → Associate Dean (adsw@nitt.edu)
-                                    </li>
-                                    <li>
-                                        <strong>With Residence Proof: </strong><br />
-                                        Warden → HOD → Associate Dean (adsw@nitt.edu)
-                                    </li>
-                                </ul>
-                            </li>
-                            <li>
-                                <strong>Course De-Reg / Re-Reg</strong> : <br />
-                                Faculty → HOD → ugacad@nitt.edu → ugsection@nitt.edu
-                            </li>
-                        </ul>
+
+
+                        <h6>Bonafide</h6>
+
+                                HOD → Associate Dean (adsw@nitt.edu)<br /><br />
+
+
+
+                        <h6>Bonafide (With Residence Proof)</h6>
+                                        Warden → HOD → Associate Dean (adsw@nitt.edu) <br /><br />
+
+
+
+                        <h6>Course De-Reg / Re-Reg</h6>
+                                Faculty → HOD → ugacad@nitt.edu → ugsection@nitt.edu <br /><br />
+
+
                         <br />
                         <div>
                             <h4>RELEVANT LINKS:</h4>
@@ -49,8 +48,8 @@ export default class SignatoriesInstructionsModal extends React.Component {
                             </ul>
                         </div>
                     </div>
-                </Modal.Body>
-            </Modal>
+                </Modal.Body >
+            </Modal >
         );
     }
 }

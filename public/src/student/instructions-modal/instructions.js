@@ -25,25 +25,28 @@ export default class InstructionsModal extends React.Component {
                             <li>
                                 <strong>Bonafide</strong>
                                 <ul>
+                                    <li>Download the document from <a target='_blank' href='bonafide-new.pdf'><strong>here</strong></a>.</li>
+
                                     <li><strong>Scan and upload</strong> the complete bonafide document.</li>
-                                    <li>
-                                        For <strong>Bonafide without Residence Proof</strong> :
-                                        <ul>
-                                            <li>Download the document from <a target='_blank' href='bonafide-new.pdf'><strong>here</strong></a>.</li>
-                                            <li><strong>Signatories</strong> : HOD → Associate Dean(adsw@nitt.edu).</li>
 
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        For <strong>Bonafide with Residence Proof</strong> :
-                                        <ul>
-                                            <li>Download the document from <a target="_blank" href='https://www.nitt.edu/home/academics/formats/BONAFIDE-CERTIFICATE-2016.pdf'><strong>here </strong></a>.</li>
-                                            <li><strong>Signatories</strong> : Warden → HOD → Associate Dean(adsw@nitt.edu).</li>
 
-                                        </ul>
-                                    </li>
+                                    <li><strong>Signatories</strong> : HOD → Associate Dean(adsw@nitt.edu).</li>
+
                                 </ul>
                             </li>
+
+                            <li>
+                                <strong>Bonafide (with Residence Proof)</strong>
+                                    <ul>
+                                    <li>Download the document from <a target="_blank" href='https://www.nitt.edu/home/academics/formats/BONAFIDE-CERTIFICATE-2016.pdf'><strong>here </strong></a>.</li>
+
+                                    <li><strong>Scan and upload</strong> the complete bonafide document.</li>
+
+                                    <li><strong>Signatories</strong> : Warden → HOD → Associate Dean(adsw@nitt.edu).</li>
+
+                                </ul>
+                            </li>
+
                             <li>
                                 <strong>Transcript</strong>
                                 <ul>
@@ -72,7 +75,7 @@ export default class InstructionsModal extends React.Component {
 
 
                     </div>
-                </Modal.Body>
+                </Modal.Body >
             </Modal >
         );
     }

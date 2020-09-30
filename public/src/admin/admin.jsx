@@ -344,6 +344,7 @@ function Admin() {
                                                       certType={
                                                         cert.certificate_type
                                                       }
+                                                      ext={data.certificate_extension}
                                                     />
                                                   </td>
                                                   <td>
@@ -353,6 +354,7 @@ function Admin() {
                                                       certType={
                                                         cert.certificate_type
                                                       }
+                                                      ext={data.id_extension}
                                                     />
                                                   </td>
                                                   {cert.certificate_type ===
@@ -569,6 +571,7 @@ function Admin() {
                                                       certType={
                                                         cert.certificate_type
                                                       }
+                                                      ext={data.certificate_extension}
                                                     />
                                                   </td>
                                                   {cert.certificate_type ===

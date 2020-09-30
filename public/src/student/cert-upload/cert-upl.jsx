@@ -756,21 +756,57 @@ function Upload(props) {
               {/* Purpose */}
 
               <div className="form-group">
-                <label htmlFor="purpose">
-                  Enter Purpose <span className="cmpl">*</span>
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="purpose"
-                  id="purpose"
-                  placeholder="Purpose for document requisition"
-                  required
-                  onChange={(e) => {
-                    setPurpose(e.target.value);
-                  }}
-                />
-                <small id="purpose-error-message" className="error"></small>
+                  {file === "bonafide" || file === "transcript"
+                  ? <>
+                      <label htmlFor="purpose">Enter Purpose <span className="cmpl">*</span></label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        name="purpose"
+                        id="purpose"
+                        placeholder="Purpose for document requisition"
+                        required
+                        onChange={(e) => {
+                          setPurpose(e.target.value);
+                        }}
+                      />
+                      <small id="purpose-error-message" className="error"></small>
+                    </>
+                  : <>
+                    {file === "course de-registration"
+                    ? <>
+                    Enter Reason <span className="cmpl">*</span>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="purpose"
+                      id="purpose"
+                      placeholder="Reason for Course De-Registration"
+                      required
+                      onChange={(e) => {
+                        setPurpose(e.target.value);
+                      }}
+                    />
+                    <small id="purpose-error-message" className="error"></small>
+                  </>
+                    : <>
+                    Enter Reason <span className="cmpl">*</span>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="purpose"
+                      id="purpose"
+                      placeholder="Reason for Course Re-Registration"
+                      required
+                      onChange={(e) => {
+                        setPurpose(e.target.value);
+                      }}
+                    />
+                    <small id="purpose-error-message" className="error"></small>
+                  </>
+                    }
+                  </>
+                  }
               </div>
 
               {file === "transcript"
@@ -874,9 +910,19 @@ function Upload(props) {
                       }
                     }
                     if (!purpose) {
-                      document.getElementById(
-                        "purpose-error-message"
-                      ).innerHTML = "Purpose field cannot be blank";
+                      if(file === "bonafide" || file === "transcript") {
+                        document.getElementById(
+                          "purpose-error-message"
+                        ).innerHTML = "Purpose field cannot be blank";
+                      } else if(file === "course de-registration") {
+                        document.getElementById(
+                          "purpose-error-message"
+                        ).innerHTML = "Enter reason for course de-registration";
+                      } else {
+                        document.getElementById(
+                          "purpose-error-message"
+                        ).innerHTML = "Enter reason for course re-registration";
+                      }
                       error = 1;
                     } else {
                       document.getElementById(

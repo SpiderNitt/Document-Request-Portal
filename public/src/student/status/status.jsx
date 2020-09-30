@@ -56,17 +56,11 @@ export default class Status extends React.Component {
       let certs = res.data;
       cid = Object.assign([], certs);
       this.setState({ certData: cid });
-
       for (const cc of cid) {
-        // let cc = cid[index];
-
         let response = await spider.get("/api/student/certificate_history", {
           params: { id: cc.id },
         });
         certHis[cc.id] = response.data;
-
-        // res.data.id = cc.id;
-        // certHis.push(res.data);
       }
       this.setState({
         certHis,
@@ -76,7 +70,7 @@ export default class Status extends React.Component {
      
     }
   };
-  handleDownload = async (id, type) => {
+  handleDownload = async (id, type, ext) => {
     const usertoken = JSON.parse(localStorage.getItem("bonafideNITT2020user"));
     const roll = usertoken.user;
     let response = await spider.get("api/student/certificate_download", {
@@ -86,7 +80,7 @@ export default class Status extends React.Component {
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", roll + "_" + type + ".pdf");
+    link.setAttribute("download", roll + "_" + type + "." + ext);
     document.body.appendChild(link);
     link.click();
   };
@@ -134,7 +128,17 @@ export default class Status extends React.Component {
                         <>
                           <tr key={index}>
                             <td>{index + 1}</td>
-                            <td>{cert_mapping[data.type]}</td>
+                            <td>
+                              {cert_mapping[data.type] === "Course Re-Registration" || cert_mapping[data.type] === "Course De-Registration"
+                              ? <>{cert_mapping[data.type]} ({data.course_code})</>
+                              : <>
+                                  {cert_mapping[data.type] === "Transcript"
+                                  ? <>{cert_mapping[data.type]} ({data.no_copies})</>
+                                  : <>{cert_mapping[data.type]}</>
+                                  }
+                              </>
+                              }
+                            </td>
                             <td>{data.status}</td>
                             <td>
                               {data.email_status ? data.email_status : "-"}
@@ -148,7 +152,8 @@ export default class Status extends React.Component {
                                   onClick={() => {
                                     this.handleDownload(
                                       data.id,
-                                      cert_mapping[data.type]
+                                      cert_mapping[data.type],
+                                      data.certificate_extension
                                     );
                                   }}
                                   className="table-icons-item"

@@ -50,6 +50,7 @@ export default class InstructionsModal extends React.Component {
 
                         <h5>RELEVANT LINKS:</h5>
                             <ul>
+                            <li>Get the webmails of wardens <a target="_blank" href="https://www.nitt.edu/home/students/facilitiesnservices/hostelsnmess/administration" >here</a></li>
                                 <li>Get the webmails of faculties <a target="_blank" href="https://www.nitt.edu/home/academics/departments/faculty/">here</a></li>
                                 <li>Get the webmails of HODs <a target="_blank" href="https://www.nitt.edu/home/administration/hods/">here</a></li>
                                

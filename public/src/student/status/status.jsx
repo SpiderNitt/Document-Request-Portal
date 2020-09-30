@@ -56,7 +56,6 @@ export default class Status extends React.Component {
       let certs = res.data;
       cid = Object.assign([], certs);
       this.setState({ certData: cid });
-      console.log(this.state.certData);
       for (const cc of cid) {
         let response = await spider.get("/api/student/certificate_history", {
           params: { id: cc.id },

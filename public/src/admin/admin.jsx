@@ -86,7 +86,6 @@ function Admin() {
           merged.push(tempType);
         });
         setReq(Object.assign(certReq, merged));
-        console.log(certReq);
         setLength(
           certReq[0].certificates.length +
             certReq[1].certificates.length +

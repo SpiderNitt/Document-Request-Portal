@@ -86,6 +86,7 @@ function Admin() {
           merged.push(tempType);
         });
         setReq(Object.assign(certReq, merged));
+        console.log(certReq);
         setLength(
           certReq[0].certificates.length +
             certReq[1].certificates.length +
@@ -344,6 +345,7 @@ function Admin() {
                                                       certType={
                                                         cert.certificate_type
                                                       }
+                                                      ext={data.certificate_extension}
                                                     />
                                                   </td>
                                                   <td>
@@ -353,6 +355,7 @@ function Admin() {
                                                       certType={
                                                         cert.certificate_type
                                                       }
+                                                      ext={data.id_extension}
                                                     />
                                                   </td>
                                                   {cert.certificate_type ===
@@ -569,6 +572,7 @@ function Admin() {
                                                       certType={
                                                         cert.certificate_type
                                                       }
+                                                      ext={data.certificate_extension}
                                                     />
                                                   </td>
                                                   {cert.certificate_type ===

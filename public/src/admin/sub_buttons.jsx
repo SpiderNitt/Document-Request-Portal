@@ -401,7 +401,7 @@ export const Download = (props) => (
           link.href = url;
           link.setAttribute(
             "download",
-            props.roll + "_" + props.certType + ".pdf"
+            props.roll + "_" + props.certType + "." + props.ext
           );
           document.body.appendChild(link);
           link.click();
@@ -427,7 +427,7 @@ export const DownloadStudentId = (props) => (
           const url = window.URL.createObjectURL(new Blob([res.data]));
           const link = document.createElement("a");
           link.href = url;
-          link.setAttribute("download", props.roll + "_id.pdf");
+          link.setAttribute("download", props.roll + "_id." + props.ext);
           document.body.appendChild(link);
           link.click();
         }),

@@ -133,7 +133,14 @@ export default class Status extends React.Component {
                               ? <>{cert_mapping[data.type]} ({data.course_code})</>
                               : <>
                                   {cert_mapping[data.type] === "Transcript"
-                                  ? <>{cert_mapping[data.type]} ({data.no_copies})</>
+                                  ? <>
+                                      {<>
+                                          {data.no_copies
+                                           ? <>{cert_mapping[data.type]} ({data.no_copies})</>
+                                           : cert_mapping[data.type]
+                                          }
+                                      </>}
+                                    </>
                                   : <>{cert_mapping[data.type]}</>
                                   }
                               </>

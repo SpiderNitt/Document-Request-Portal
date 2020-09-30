@@ -86,6 +86,7 @@ function Admin() {
           merged.push(tempType);
         });
         setReq(Object.assign(certReq, merged));
+        console.log("hi", certReq);
         setLength(
           certReq[0].certificates.length +
             certReq[1].certificates.length +
@@ -121,44 +122,67 @@ function Admin() {
     return buttons;
   }
   const exportToExcel = (certreq) => {
-    
     var excelData = [];
     let index = 0;
-    certreq.certificates.map((cert) => {
+    console.log(certreq.certificate_type);
+    if(certreq.certificate_type === "Bonafide") {
+      certreq.certificates.map((cert) => {
       let temp = {};
       index = index + 1;
       if (document.getElementById(cert.id).checked === true) {
         temp["S.No"] = index;
         temp["Document Type"] = certreq.certificate_type;
         temp["Roll number"] = cert["applier_roll"];
-        temp["Address"] = cert["address"];
-        temp["Email"] = cert["email"];
         temp["Purpose"] = cert["purpose"];
         temp["Contact"] = cert["contact"];
-        temp["Course Code"] = cert["course_code"];
-        temp["Course Name"] = cert["course_name"];
         temp["Status"] = cert["status"];
-        temp["Postal Status"] = cert["postal_status"];
-        temp["Email Status"] = cert["email_status"];
-        temp["Receipt"] = cert["receipt"];
         temp["Approved"] = cert["approved"];
         excelData.push(temp);
       }
-      excelData.map(obj=>{
-        for (var propName in obj) { 
-          if (obj[propName] === null || obj[propName] === undefined) {
-            delete obj[propName];
-          }
-        }
-        return obj;
-      });
-      return 0;
     });
-    if (excelData.length) {
-      const xls = new xlsExport(excelData, "Info");
-      xls.exportToXLS(`${certreq.certificate_type}_Request_List.xls`);
+  } else if(certreq.certificate_type === "Transcript") {
+    certreq.certificates.map((cert) => {
+    let temp = {};
+    index = index + 1;
+    if (document.getElementById(cert.id).checked === true) {
+      temp["S.No"] = index;
+      temp["Document Type"] = certreq.certificate_type;
+      temp["Roll number"] = cert["applier_roll"];
+      temp["Address"] = cert["address"];
+      temp["Email"] = cert["email"];
+      temp["Purpose"] = cert["purpose"];
+      temp["Contact"] = cert["contact"];
+      temp["Receipt"] = cert["receipt"];
+      temp["Status"] = cert["status"];
+      temp["Postal Status"] = cert["postal_status"];
+      temp["Email Status"] = cert["email_status"];
+      temp["Approved"] = cert["approved"];
+      excelData.push(temp);
     }
-  };
+  });
+} else {
+  certreq.certificates.map((cert) => {
+  let temp = {};
+  index = index + 1;
+  if (document.getElementById(cert.id).checked === true) {
+    temp["S.No"] = index;
+    temp["Document Type"] = certreq.certificate_type;
+    temp["Roll number"] = cert["applier_roll"];
+    temp["Purpose"] = cert["purpose"];
+    temp["Contact"] = cert["contact"];
+    temp["Course Code"] = cert["course_code"];
+    temp["Course Name"] = cert["course_name"];
+    temp["Status"] = cert["status"];
+    temp["Approved"] = cert["approved"];
+    excelData.push(temp);
+  }
+});
+}
+  if (excelData.length) {
+    const xls = new xlsExport(excelData, "Info");
+    xls.exportToXLS(`${certreq.certificate_type}_Request_List.xls`);
+  }
+}
 
   return (
     <>

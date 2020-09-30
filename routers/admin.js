@@ -186,7 +186,7 @@ admin.get("/", async function (req, res) {
             let { path_no, certificate_id, status } = path_object;
             if (status === 'APPROVED') {
                 const ele = await database.Certificate.findOne({
-                    attributes: ['applier_roll', 'type', 'address', 'postal_status', 'email_status', 'receipt', 'email_address', 'contact', 'purpose', 'course_code', 'course_name'],
+                    attributes: ['applier_roll', 'type', 'address', 'postal_status', 'email_status', 'receipt', 'email_address', 'contact', 'purpose', 'course_code', 'course_name', 'no_copies'],
                     where: {
                         id: certificate_id
                     }
@@ -204,13 +204,15 @@ admin.get("/", async function (req, res) {
                     contact: ele.getDataValue('contact'),
                     purpose: ele.getDataValue('purpose'),
                     course_code: ele.getDataValue('course_code'),
-                    course_name: ele.getDataValue('course_name')
+                    course_name: ele.getDataValue('course_name'),
+                    no_copies: ele.getDataValue('no_copies')
+
                 })
 
             }
             else if (path_no == 1 && status === 'PENDING') {
                 const ele = await database.Certificate.findOne({
-                    attributes: ['applier_roll', 'type', 'address', 'postal_status', 'email_status', 'receipt', 'email_address', 'contact', 'purpose', 'course_code', 'course_name'],
+                    attributes: ['applier_roll', 'type', 'address', 'postal_status', 'email_status', 'receipt', 'email_address', 'contact', 'purpose', 'course_code', 'course_name', 'no_copies'],
                     where: {
                         id: certificate_id
                     }
@@ -228,7 +230,9 @@ admin.get("/", async function (req, res) {
                     contact: ele.getDataValue('contact'),
                     purpose: ele.getDataValue('purpose'),
                     course_code: ele.getDataValue('course_code'),
-                    course_name: ele.getDataValue('course_name')
+                    course_name: ele.getDataValue('course_name'),
+                    no_copies: ele.getDataValue('no_copies')
+
                 })
             }
             else if (path_no != 1) {
@@ -241,7 +245,7 @@ admin.get("/", async function (req, res) {
                 });
                 if (row != null) {
                     const ele = await database.Certificate.findOne({
-                        attributes: ['applier_roll', 'type', 'address', 'postal_status', 'email_status', 'receipt', 'email_address', 'contact', 'purpose', 'course_code', 'course_name'],
+                        attributes: ['applier_roll', 'type', 'address', 'postal_status', 'email_status', 'receipt', 'email_address', 'contact', 'purpose', 'course_code', 'course_name', 'no_copies'],
                         where: {
                             id: certificate_id
                         }
@@ -259,7 +263,8 @@ admin.get("/", async function (req, res) {
                         contact: ele.getDataValue('contact'),
                         purpose: ele.getDataValue('purpose'),
                         course_code: ele.getDataValue('course_code'),
-                        course_name: ele.getDataValue('course_name')
+                        course_name: ele.getDataValue('course_name'),
+                        no_copies: ele.getDataValue('no_copies')
 
 
                     })
@@ -332,6 +337,7 @@ admin.post('/email', async function (req, res) {
                 }
 
                 try {
+                    console.log("sending mail")
                     let to_email = id_exists.getDataValue('email_address');
                     let type_name_row = await database.CertificateType.findOne({
                         attributes: ['name'],

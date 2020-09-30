@@ -103,6 +103,10 @@ const Certificate = sequelize.define('certificates', {
     course_name: {
         type: DataTypes.STRING,
         allowNull: true
+    },
+    no_copies : {
+        type: DataTypes.INTEGER,
+        allowNull: true
     }
 }, {
     freezeTableName: true

@@ -10,7 +10,7 @@ const MulterError = multer.MulterError
 
 
 const mailTransporter = nodemailer.createTransport({ 
-    service: 'gmail', 
+    service: 'gmail',    
     auth: { 
         user: process.env.EMAIL, 
         pass: process.env.EMAIL_PASS

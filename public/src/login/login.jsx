@@ -17,7 +17,7 @@ function Login(props) {
       if (re.test(username) === false) {
         spider
           .post("/login", {
-            username: username,
+            username: username.trim(),
             password: password,
           })
           .then((res, err) => {

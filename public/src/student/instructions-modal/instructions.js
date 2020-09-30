@@ -26,35 +26,49 @@ export default class InstructionsModal extends React.Component {
                                 <strong>Bonafide</strong>
                                 <ul>
                                     <li><strong>Scan and upload</strong> the complete bonafide document.</li>
-                                    <li>Download the document from <a target="_blank" href='https://www.nitt.edu/home/academics/formats/BONAFIDE-CERTIFICATE-2016.pdf'><strong>here </strong></a></li>
-                                    <li><strong>Signatories</strong> : Warden → HOD → Associate Dean(adsw@nitt.edu)</li>
+                                    <li>
+                                        For <strong>Bonafide without Residence Proof</strong> :
+                                        <ul>
+                                            <li>Download the document from <a target='_blank' href='bonafide-new.pdf'><strong>here</strong></a>.</li>
+                                            <li><strong>Signatories</strong> : HOD → Associate Dean(adsw@nitt.edu).</li>
+
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        For <strong>Bonafide with Residence Proof</strong> :
+                                        <ul>
+                                            <li>Download the document from <a target="_blank" href='https://www.nitt.edu/home/academics/formats/BONAFIDE-CERTIFICATE-2016.pdf'><strong>here </strong></a>.</li>
+                                            <li><strong>Signatories</strong> : Warden → HOD → Associate Dean(adsw@nitt.edu).</li>
+
+                                        </ul>
+                                    </li>
                                 </ul>
                             </li>
                             <li>
                                 <strong>Transcript</strong>
                                 <ul>
-                                    <li>Upload the fee receipt after payment</li>
-                                    <li>Refer <a target="_blank" href="https://www.nitt.edu/home/academics/academic_documents/">here</a> for payment information</li>
-                                    <li><strong>Signatories</strong> : transcript@nitt.edu (No need to specify)</li>
-                                    <li>Choose a mode of delivery of document</li>
+                                    <li>Upload the fee receipt after payment.</li>
+                                    <li>Refer <a target="_blank" href="https://www.nitt.edu/home/academics/academic_documents/">here</a> for payment information.</li>
+                                    <li><strong>Signatories</strong> : transcript@nitt.edu (No need to specify).</li>
+                                    <li>Choose a mode of delivery of document.</li>
                                 </ul>
                             </li>
                             <li>
-                                <strong>Course Re-Registraion/De-Registraion</strong>
+                                <strong>Course Re-Registraion/De-Registration</strong>
                                 <ul>
                                     <li>Upload the Course Registration form as obtained from MIS.</li>
-                                    <li><strong>Signatories</strong> : Faculty → HOD → ugacad@nitt.edu → ugsection@nitt.edu</li>
+                                    <li><strong>Signatories</strong> : Faculty → HOD → ugacad@nitt.edu → ugsection@nitt.edu.</li>
                                 </ul>
                             </li>
                         </ol>
 
                         <h5>RELEVANT LINKS:</h5>
-                            <ul>
+                        <ul>
                             <li>Get the webmails of wardens <a target="_blank" href="https://www.nitt.edu/home/students/facilitiesnservices/hostelsnmess/administration" >here</a></li>
-                                <li>Get the webmails of faculties <a target="_blank" href="https://www.nitt.edu/home/academics/departments/faculty/">here</a></li>
-                                <li>Get the webmails of HODs <a target="_blank" href="https://www.nitt.edu/home/administration/hods/">here</a></li>
-                               
-                            </ul>
+                            <li>Get the webmails of faculties <a target="_blank" href="https://www.nitt.edu/home/academics/departments/faculty/">here</a></li>
+                            <li>Get the webmails of HODs <a target="_blank" href="https://www.nitt.edu/home/administration/hods/">here</a></li>
+
+                        </ul>
 
 
                     </div>

@@ -20,10 +20,24 @@ export default class SignatoriesInstructionsModal extends React.Component {
                 </Modal.Header>
                 <Modal.Body>
                     <div className="instructions-body">
-                
+
                         <ul>
-                            <li><strong>Bonafide</strong> : Warden → HOD → Associate Dean (adsw@nitt.edu)</li>
-                            <li><strong>Course De-Reg / Re-Reg</strong> : Faculty → HOD → ugacad@nitt.edu → ugsection@nitt.edu</li>
+                            <li><strong>Bonafide</strong> :
+                                <ul>
+                                    <li>
+                                        <strong>Without Residence Proof</strong> : <br />
+                                        HOD → Associate Dean (adsw@nitt.edu)
+                                    </li>
+                                    <li>
+                                        <strong>With Residence Proof: </strong><br />
+                                        Warden → HOD → Associate Dean (adsw@nitt.edu)
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>Course De-Reg / Re-Reg</strong> : <br />
+                                Faculty → HOD → ugacad@nitt.edu → ugsection@nitt.edu
+                            </li>
                         </ul>
                         <br />
                         <div>

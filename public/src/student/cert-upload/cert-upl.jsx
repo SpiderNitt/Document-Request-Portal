@@ -41,6 +41,7 @@ function Upload(props) {
   const [addressModal, setAddressModal] = useState(false);
   const [contact, setContact] = useState("");
   const [purpose, setPurpose] = useState("");
+  const [no_of_copies, setNoOfCopies] = useState(null);
 
   const [courseCode, setCode] = useState("");
   const [course, setCourse] = useState("");
@@ -156,6 +157,7 @@ function Upload(props) {
     if (feeReceipt) cd.set("receipt", feeReceipt);
     if (contact) cd.set("contact", contact);
     if (purpose) cd.set("purpose", purpose);
+    if (no_of_copies) cd.set("no_copies", no_of_copies);
     cd.set("path", emails.toString());
     for (var pair of cd.entries()) {
      
@@ -163,6 +165,7 @@ function Upload(props) {
     spider
       .post("api/student/certificate_request", cd)
       .then((res) => {
+        console.log(res);
         setModal(false);
         setLoading(false);
         setCount(0);
@@ -184,6 +187,7 @@ function Upload(props) {
         setPreAddr([]);
         setCourse("");
         setCode("");
+        setNoOfCopies(null);
         spider
           .get("/api/student/address")
           .then((res) => {
@@ -203,6 +207,8 @@ function Upload(props) {
           document.getElementById("emaildel").value = "";
         if (document.getElementById("postal-del"))
           document.getElementById("postal-del").value = "";
+        if(document.getElementById("no_of_copies"))
+          document.getElementById("no_of_copies").value = "";
         document.getElementById("contact-number").value = "";
         document.getElementById("purpose").value = "";
         document.getElementById("college-id").value = "";
@@ -210,7 +216,7 @@ function Upload(props) {
         setFile("bonafide");
       })
       .catch((err) => {
-      
+        console.log(err);
       });
   };
   const calculate_source = () => {
@@ -770,6 +776,29 @@ function Upload(props) {
                 <small id="purpose-error-message" className="error"></small>
               </div>
 
+              {file === "transcript"
+              ? <div className="form-group">
+                  <label htmlFor="no_of_copies">
+                    Enter Number of copies (if you opted by post) <span className="cmpl">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    name="no_of_copies"
+                    id="no_of_copies"
+                    placeholder="Number of copies"
+                    required
+                    onChange={(e) => {
+                      setNoOfCopies(e.target.value);
+                      console.log(no_of_copies);
+                    }}
+                    min="0"
+                  />
+                  <small id="no-of-copies-error-message" className="error"></small>
+                </div>
+              : <></>
+              }
+
               {/* Certificate Addition */}
 
               <div className="form-group">
@@ -878,6 +907,23 @@ function Upload(props) {
                         ).innerHTML = "";
                       }
                     } else if (file === "transcript") {
+                      if(no_of_copies < 0) {
+                        document.getElementById("no-of-copies-error-message").innerHTML = "Number of copies cannot be negative";
+                        error = 1;
+                      } else {
+                        document.getElementById("no-of-copies-error-message").innerHTML = "";
+                      }
+                      if(address) {
+                        if(!no_of_copies) {
+                          document.getElementById("no-of-copies-error-message").innerHTML = "Enter the number of copies required";
+                          error = 1;
+                        } else if(no_of_copies <= 0) {
+                          document.getElementById("no-of-copies-error-message").innerHTML = "Enter the number of copies required";
+                          error = 1;
+                        } else {
+                          document.getElementById("no-of-copies-error-message").innerHTML = "";
+                        }
+                      }
                       if (!feeReceipt) {
                         document.getElementById("fee-error-message").innerHTML =
                           "Enter fee reference number";

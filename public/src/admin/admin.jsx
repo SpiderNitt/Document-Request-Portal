@@ -153,6 +153,7 @@ function Admin() {
       temp["Purpose"] = cert["purpose"];
       temp["Contact"] = cert["contact"];
       temp["Receipt"] = cert["receipt"];
+      temp["Number of copies"] = cert["no_copies"];
       temp["Status"] = cert["status"];
       temp["Postal Status"] = cert["postal_status"];
       temp["Email Status"] = cert["email_status"];
@@ -302,6 +303,11 @@ function Admin() {
                                           ) : (
                                             <></>
                                           )}
+                                          {cert.certificate_type ===
+                                            "Transcript"
+                                          ? <th>Number of copies</th>
+                                          : <></>
+                                          }
                                           <th>Purpose</th>
                                           <th>Contact</th>
                                           <th scope="col">Decision</th>
@@ -386,6 +392,10 @@ function Admin() {
                                                   ) : (
                                                     <></>
                                                   )}
+                                                  {cert.certificate_type === "Transcript"
+                                                  ? <td>{data.no_copies}</td>
+                                                  : <></>
+                                                  }
                                                   <td>
                                                     {data.purpose
                                                       ? data.purpose
@@ -467,6 +477,7 @@ function Admin() {
                                           )}
                                           { cert.certificate_type === "Transcript"
                                           ? <>
+                                            <th scopr="col">Number of copies</th>
                                             <th scope="col">Email Address</th>
                                             <th scope="col">Postal Address</th>
                                           </>
@@ -532,6 +543,7 @@ function Admin() {
                                                   )}
                                                   {cert.certificate_type === "Transcript"
                                                   ? <>
+                                                    <td>{data.no_copies}</td>
                                                     <td>
                                                       {data.email
                                                         ? data.email

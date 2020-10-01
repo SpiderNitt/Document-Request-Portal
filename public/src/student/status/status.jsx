@@ -1,5 +1,6 @@
 import React from "react";
 import spider from "../../utils/API";
+import { StatusContext } from '../../contexts/StatusContext'
 import "./status.css";
 import { FaDownload, FaHistory } from "react-icons/fa";
 import Loader from "react-loader-spinner";
@@ -14,9 +15,7 @@ const cert_mapping = {
 };
 export default class Status extends React.Component {
   state = {
-    certHis: {},
     loading: true,
-    certData: [],
     toggled: [],
     modalViewed: -1,
   };
@@ -49,27 +48,10 @@ export default class Status extends React.Component {
   };
 
   componentDidMount = async () => {
-    try {
-      let cid = [];
-      let certHis = Object.assign({}, this.state.certHis);
-      let res = await spider.get("/api/student");
-      let certs = res.data;
-      cid = Object.assign([], certs);
-      this.setState({ certData: cid });
-      for (const cc of cid) {
-        let response = await spider.get("/api/student/certificate_history", {
-          params: { id: cc.id },
-        });
-        certHis[cc.id] = response.data;
-      }
-      this.setState({
-        certHis,
-        loading: false,
-      });
-    } catch (err) {
-     
-    }
+    this.context.refreshCertData();
+    this.setState({ loading: false });
   };
+
   handleDownload = async (id, type, ext) => {
     const usertoken = JSON.parse(localStorage.getItem("bonafideNITT2020user"));
     const roll = usertoken.user;
@@ -103,7 +85,7 @@ export default class Status extends React.Component {
         ) : (
           <>
             <div className="container req-status">
-              {this.state.certData.length === 0 ? (
+              {this.context.state.certData.length === 0 ? (
                 <>
                   <p className="nor">
                     <strong>No Documents</strong>
@@ -123,8 +105,8 @@ export default class Status extends React.Component {
                   </thead>
 
                   <tbody>
-                    {this.state.certData.map((data, index) => {
-                      return (
+                    {this.context.state.certData.map((data, index) => 
+                      (
                         <>
                           <tr key={index}>
                             <td>{index + 1}</td>
@@ -179,13 +161,13 @@ export default class Status extends React.Component {
                             id={data.id}
                             show={this.state.modalViewed === data.id}
                             hide={this.hideModalViewed}
-                            data={this.state.certHis[data.id]}
+                            data={this.context.state.certHis[data.id]}
                             email={data.email_status}
                             postal={data.postal_status}
                           ></TimelineModal>
                         </>
-                      );
-                    })}
+                      )
+                    )}
                   </tbody>
                 </table>
               )}
@@ -196,3 +178,6 @@ export default class Status extends React.Component {
     );
   }
 }
+
+Status.contextType=StatusContext;
+

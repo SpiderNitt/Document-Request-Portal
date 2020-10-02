@@ -5,7 +5,7 @@ const helpers = require('../utils/helper')
 const helper = require('../utils/helper')
 const fs = require('fs')
 const sequelize = require('sequelize')
-
+const errorMessages = require('../utils/errorHandle')
 
 
 student.post("/certificate_request", async function (req, res) {
@@ -13,18 +13,20 @@ student.post("/certificate_request", async function (req, res) {
     upload(req, res, async function (err) {
         if (err) {
             console.log(err)
-            return res.status(400).json({ 'message': req.fileValidationError });
+            //return res.status(400).json({ 'message': req.fileValidationError });
+            return helper.errorHandle(400,errorMessages.VALIDATION_ERROR,res)
         }
         else if (!req.files) {
-            res.status(400).json({ 'message': 'Please select files' });
-            return;
+            //res.status(400).json({ 'message': 'Please select files' });
+            
+            return helper.errorHandle(400,errorMessages.FILE_NOT_FOUND,res);
         }
         else if (req.files.length == 1) {
             console.log(req.files)
         }
         else if (req.files.length != 2) {
-            res.status(400).json({ 'message': 'Upload both certificate and ID' });
-            return;
+            //res.status(400).json({ 'message': 'Upload both certificate and ID' });
+            return helper.errorHandle(400,errorMessages.FILE_NOT_FOUND,res);
         }
         else {
             let applier_roll = req.jwt_payload.username;
@@ -46,8 +48,9 @@ student.post("/certificate_request", async function (req, res) {
                 console.log(err);
                 fs.unlinkSync(cert_initial_dest);
                 fs.unlinkSync(id_initial_dest);
-                res.status(500).json({ 'message': 'Some issue with the server. Try again later.' });
-                return;
+                //res.status(500).json({ 'message': 'Some issue with the server. Try again later.' });
+                
+                return helper.errorHandle(500,errorMessages.DEFAULT_500,res);
             }
             let cert_final_dest = final_dest + '/' + cert_filename;
             let id_final_dest = final_dest + '/' + id_filename;
@@ -64,7 +67,8 @@ student.post("/certificate_request", async function (req, res) {
             //     return;
             // }
             if (!helper.check_compulsory(req.body, ['type', 'path', 'purpose', 'contact'])) {
-                res.status(400).json({ 'message': 'All compulsory fields are not present' });
+                //res.status(400).json({ 'message': 'All compulsory fields are not present' });
+                helper.errorHandle(400,'REQUIRED_FIELD',res)
                 fs.unlinkSync(cert_final_dest);
                 fs.unlinkSync(id_final_dest);
                 return;
@@ -77,7 +81,8 @@ student.post("/certificate_request", async function (req, res) {
             let status = "PENDING VERIFICATION"
             try {
                 if (!helpers.validate_mail(path)) {
-                    res.status(400).json({ 'message': 'All mail IDs must end with nitt.edu' })
+                    //res.status(400).json({ 'message': 'All mail IDs must end with nitt.edu' })
+                    helper.errorHandle(400,errorMessages.INVALID_MAILID,res)
                     fs.unlinkSync(cert_final_dest);
                     fs.unlinkSync(id_final_dest);
                     return;
@@ -98,7 +103,8 @@ student.post("/certificate_request", async function (req, res) {
                 console.log(err)
                 fs.unlinkSync(cert_final_dest);
                 fs.unlinkSync(id_final_dest);
-                res.status(400).json({ 'message': 'Invalid Data' })
+                //res.status(400).json({ 'message': 'Invalid Data' })
+                return helper.errorHandle(400,errorMessages.INVALID_DATA,res)
             }
         }
 
@@ -186,7 +192,8 @@ student.get('/certificate_download', async function (req, res) {
     }
 
     if (row == null)
-        res.status(403).json({ "message": "You do not have appropriate permissions to access this resource." })
+        //res.status(403).json({ "message": "You do not have appropriate permissions to access this resource." })
+        return helper.errorHandle(403,errorMessages.ACCESS_DENIED,res)
     else {
 
         let filename = row.getDataValue(column_name);
@@ -222,8 +229,9 @@ student.get('/certificate_history', async function (req, res) {
             });
         }
         if (id_exists == null) {
-            res.status(403).json({ 'message': "You do not have the appropriate permissions to access the resource." })
-            return;
+            //res.status(403).json({ 'message': "You do not have the appropriate permissions to access the resource." })
+           
+            return helper.errorHandle(403,errorMessages.ACCESS_DENIED,res);
         }
         if (id) {
             let row = await database.History.findOne({
@@ -259,11 +267,13 @@ student.get('/certificate_history', async function (req, res) {
             res.status(200).json(response_json)
         }
         else {
-            res.status(400).json({ 'message': 'ID needed for certificate history' })
+            //res.status(400).json({ 'message': 'ID needed for certificate history' })
+            return helper.errorHandle(400,errorMessages.ID,res);
         }
     } catch (err) {
         console.log(err);
-        res.status(500).json({ 'message': 'Some issue with the server. Please try again later' });
+        //res.status(500).json({ 'message': 'Some issue with the server. Please try again later' });
+        return helper.errorHandle(500,errorMessages.DEFAULT_500,res);
     }
 })
 
@@ -277,8 +287,9 @@ student.post('/add_certificate', async function (req, res) {
         }
     })
     if (type_exists != null) {
-        res.status(400).json({ 'message': 'Certificate type already exists' })
-        return;
+        //res.status(400).json({ 'message': 'Certificate type already exists' })
+        
+        return helper.errorHandle(400,errorMessages.CERTIFICATE_TYPE_EXIST,res);
     }
     else {
         await database.CertificateType.create({ type: cert_type, created_by: username });
@@ -301,7 +312,8 @@ student.get('/certificate_types', async function (req, res) {
     }
     catch (err) {
         console.log(err);
-        res.status(500).json({ 'message': 'Some issue with the server. Please try again later' });
+        //res.status(500).json({ 'message': 'Some issue with the server. Please try again later' });
+        return helper.errorHandle(500,errorMessages.DEFAULT_500,res)
     }
 })
 
@@ -332,7 +344,8 @@ student.get('/address', async function (req, res) {
     }
     catch (err) {
         console.log(err);
-        res.status(500).json({ 'message': 'Some issue with the server. Please try again later' });
+        //res.status(500).json({ 'message': 'Some issue with the server. Please try again later' });
+        return helper.errorHandle(500,errorMessages.DEFAULT_500,res)
     }
 })
 

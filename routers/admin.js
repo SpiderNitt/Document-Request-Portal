@@ -5,6 +5,7 @@ const admin = require('express').Router()
 const multer = require('multer')
 const fs = require('fs')
 const nodemailer = require('nodemailer');
+const errorMessages = require('../utils/errorHandle')
 
 const middlewares = require('../utils/middlewares')
 const database = require("../database/database")
@@ -23,7 +24,8 @@ admin.post('/approve', async function (req, res) {
     upload(req, res, async function (err) {
         if (err) {
             console.log(err)
-            return res.status(400).json({ 'message': req.fileValidationError });
+            //return res.status(400).json({ 'message': req.fileValidationError });
+            return helpers.errorHandle(400,errorMessages.VALIDATION_ERROR,res);
         }
         else {
             let { certificate_id, comments } = req.body;
@@ -57,9 +59,9 @@ admin.post('/approve', async function (req, res) {
                         catch (err) {
                             fs.unlinkSync(initial_dest);
                             console.log(err);
-                            res.json(500).json({ 'message': "Some problem with the file upload" });
+                            //res.json(500).json({ 'message': "Some problem with the file upload" });
                             // fs.unlinkSync(final_dest);
-                            return;
+                            return helpers.errorHandle(500,errorMessages.FILE_UPLOAD,res);
 
                         }
                         await database.Certificate.update({ file: filename, status }, {
@@ -73,8 +75,9 @@ admin.post('/approve', async function (req, res) {
                     catch (err) {
                         console.log(err);
                         fs.unlinkSync(initial_dest);
-                        res.json(500).json({ 'message': "Some problem with the file upload" });
-                        return;
+                        //res.json(500).json({ 'message': "Some problem with the file upload" });
+                        
+                        return helpers.errorHandle(500,errorMessages.FILE_UPLOAD,res);
 
                     }
                 }
@@ -123,8 +126,8 @@ admin.post('/decline', multer().none(), async function (req, res) {
         }
         catch (err) {
             console.log(err);
-            res.status(500).json({ 'message': "There was some error declining the file. Try again later" });
-
+            //res.status(500).json({ 'message': "There was some error declining the file. Try again later" });
+            return helpers.errorHandle(500,errorMessages.FILE_DECLINE,res);
         }
 
     }
@@ -285,7 +288,8 @@ admin.get("/", async function (req, res) {
     }
     catch (err) {
         console.log(err);
-        res.status(500).send({ 'message': 'Some issue with the server. Try again later' })
+        //res.status(500).send({ 'message': 'Some issue with the server. Try again later' })
+        return helpers.errorHandle(500,errorMessages.DEFAULT_500,res);
     }
 
 });
@@ -302,7 +306,8 @@ admin.post('/postal_status', async function (req, res) {
     }
     catch (err) {
         console.log(err);
-        res.status(500).json({ 'message': "There was some error uploading the message. Try again later" });
+        //res.status(500).json({ 'message': "There was some error uploading the message. Try again later" });
+        return helpers.errorHandle(500,errorMessages.POSTAL_STATUS_UPLOAD,res);
     }
 
 });
@@ -313,17 +318,20 @@ admin.post('/email', async function (req, res) {
     upload(req, res, async function (err) {
         if (err) {
             console.log(err)
-            return res.status(400).json({ 'message': req.fileValidationError });
+            //return res.status(400).json({ 'message': req.fileValidationError });
+            return helpers.errorHandle(400,errorMessages.VALIDATION_ERROR,res);
         }
         if (!req.file) {
-            res.status(400).json({ "message": "Please upload a file" })
-            return;
+            //res.status(400).json({ "message": "Please upload a file" })
+            return helpers.errorHandle(500,errorMessages.FILE_NOT_FOUND,res);
+            
         }
         else {
             let { certificate_id } = req.body;
             if (!certificate_id) {
-                res.status(400).json({ "message": "Please provide all required data" })
-                return;
+                //res.status(400).json({ "message": "Please provide all required data" })
+                return helpers.errorHandle(400,errorMessages.REQUIRED_FIELD,res);
+                
             }
             if (req.file) {
                 let { filename } = req.file;
@@ -339,8 +347,9 @@ admin.post('/email', async function (req, res) {
                 });
 
                 if (id_exists == null) {
-                    res.status(403).json({ 'message': "You do not have the appropriate permissions to access the resource." })
-                    return;
+                    //res.status(403).json({ 'message': "You do not have the appropriate permissions to access the resource." })
+                    return helpers.errorHandle(403,errorMessages.ACCESS_DENIED,res);
+                    
                 }
 
                 try {
@@ -370,7 +379,8 @@ admin.post('/email', async function (req, res) {
                     helpers.mailTransporter.sendMail(mailDetails, async function (err, data) {
                         if (err) {
                             console.log(err);
-                            res.status(500).json({ 'message': 'Unable to send mail. Try again later' });
+                            //res.status(500).json({ 'message': 'Unable to send mail. Try again later' });
+                            helpers.errorHandle(500,errorMessages.MAIL_NOT_SENT,res);
                             fs.unlinkSync(initial_dest);
 
                         } else {
@@ -391,13 +401,15 @@ admin.post('/email', async function (req, res) {
                 catch (err) {
                     console.log(err);
                     fs.unlinkSync(initial_dest);
-                    res.json(500).json({ 'message': "Some problem with sending email" });
-                    return;
+                    //res.json(500).json({ 'message': "Some problem with sending email" });
+                    return helpers.errorHandle(500,errorMessages.MAIL_NOT_SENT,res);
+                    
                 }
 
             }
             else {
-                res.status(500).json({ 'message': "Kindly upload the document" });
+                //res.status(500).json({ 'message': "Kindly upload the document" });
+                return helpers.errorHandle(400,errorMessages.FILE_NOT_FOUND,res);
             }
         }
     })

@@ -1,8 +1,8 @@
-# Bonafide NITT
+# Document Requisition NITT 
 
 This branch contains backend overall and front-end in public/ folder
 
-NodeJS and MySQL using Sequelize ORM
+ReactJS + NodeJS and MySQL using Sequelize ORM
 
 ## setup
 
@@ -10,6 +10,13 @@ NodeJS and MySQL using Sequelize ORM
 
 ### db
 
-create .env file from .env.example and update it with your db credentials inside database/env/
-```create db bonafide;```
-```node seed.js``` inside database directory
+* create .env file from .env.example and update it with your db credentials inside database/env/ <br />
+* ```create db bonafide;``` <br />
+* ```node seed.js``` inside database directory
+
+### frontend
+* ```cd public```. <br />
+* Do <code>npm i</code> to install all the dependencies and packages. <br />
+* To run locally, remove the key-value pair ```homepage``` from package.json. <br />
+* ```npm start``` to run the project!
+        

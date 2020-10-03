@@ -6,7 +6,7 @@ const database = require('../database/database')
 const fs = require('fs')
 const nodemailer = require('nodemailer');
 const MulterError = multer.MulterError
-const error_messages = require('./errorHandle')
+
 
 
 const mailTransporter = nodemailer.createTransport({ 
@@ -17,8 +17,9 @@ const mailTransporter = nodemailer.createTransport({
     } 
 }); 
 
-const errorHandle = (status_code,message,res) => {
-    return res.status(status_code).json({success:false,message:message})
+const responseHandle = (status_code,message,res) => {
+    let success = status_code == 200 ? true : false
+    return res.status(status_code).json({success:success,message:message})
 }
 
 
@@ -123,5 +124,5 @@ const storage = multer.diskStorage({
 });
 
 module.exports =  {
-    docFilter, storage, approve_decline_rights, validate_mail, renameFile, mailTransporter, check_compulsory, errorHandle
+    docFilter, storage, approve_decline_rights, validate_mail, renameFile, mailTransporter, check_compulsory, responseHandle
 }

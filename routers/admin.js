@@ -5,7 +5,7 @@ const admin = require('express').Router()
 const multer = require('multer')
 const fs = require('fs')
 const nodemailer = require('nodemailer');
-const errorMessages = require('../utils/errorHandle')
+const responseMessages = require('../utils/responseHandle')
 
 const middlewares = require('../utils/middlewares')
 const database = require("../database/database")
@@ -25,7 +25,7 @@ admin.post('/approve', async function (req, res) {
         if (err) {
             console.log(err)
             //return res.status(400).json({ 'message': req.fileValidationError });
-            return helpers.errorHandle(400,errorMessages.VALIDATION_ERROR,res);
+            return helpers.responseHandle(400,responseMessages.VALIDATION_ERROR,res);
         }
         else {
             let { certificate_id, comments } = req.body;
@@ -61,7 +61,7 @@ admin.post('/approve', async function (req, res) {
                             console.log(err);
                             //res.json(500).json({ 'message': "Some problem with the file upload" });
                             // fs.unlinkSync(final_dest);
-                            return helpers.errorHandle(500,errorMessages.FILE_UPLOAD,res);
+                            return helpers.responseHandle(500,responseMessages.FILE_UPLOAD,res);
 
                         }
                         await database.Certificate.update({ file: filename, status }, {
@@ -77,7 +77,7 @@ admin.post('/approve', async function (req, res) {
                         fs.unlinkSync(initial_dest);
                         //res.json(500).json({ 'message': "Some problem with the file upload" });
                         
-                        return helpers.errorHandle(500,errorMessages.FILE_UPLOAD,res);
+                        return helpers.responseHandle(500,responseMessages.FILE_UPLOAD,res);
 
                     }
                 }
@@ -94,7 +94,8 @@ admin.post('/approve', async function (req, res) {
                 }
             })
             await database.History.create({ certificate_id, status: rollno + "@nitt.edu APPROVED", time: new Date(Date.now()).toISOString() })
-            res.status(200).json({ 'message': "Approved successfully" });
+            // res.status(200).json({ 'message': "Approved successfully" });
+            helpers.responseHandle(200,responseMessages.CERTIFICATE_APPROVE,res)
         }
 
 
@@ -121,13 +122,14 @@ admin.post('/decline', multer().none(), async function (req, res) {
                 }
             })
             await database.History.create({ certificate_id, status, time: new Date(Date.now()).toISOString() })
-            res.status(200).json({ 'message': "Declined successfully" });
+            //res.status(200).json({ 'message': "Declined successfully" });
+            helpers.responseHandle(200,responseMessages.CERTIFICATE_DECLINE,res)
 
         }
         catch (err) {
             console.log(err);
             //res.status(500).json({ 'message': "There was some error declining the file. Try again later" });
-            return helpers.errorHandle(500,errorMessages.FILE_DECLINE,res);
+            return helpers.responseHandle(500,responseMessages.FILE_DECLINE,res);
         }
 
     }
@@ -289,7 +291,7 @@ admin.get("/", async function (req, res) {
     catch (err) {
         console.log(err);
         //res.status(500).send({ 'message': 'Some issue with the server. Try again later' })
-        return helpers.errorHandle(500,errorMessages.DEFAULT_500,res);
+        return helpers.responseHandle(500,responseMessages.DEFAULT_500,res);
     }
 
 });
@@ -302,12 +304,13 @@ admin.post('/postal_status', async function (req, res) {
                 id: certificate_id
             }
         })
-        res.status(200).json({ 'message': "Postal status Updated" });
+        //res.status(200).json({ 'message': "Postal status Updated" });
+        helpers.responseHandle(200,responseMessages.POSTAL_STATUS_UPDATE,res)
     }
     catch (err) {
         console.log(err);
         //res.status(500).json({ 'message': "There was some error uploading the message. Try again later" });
-        return helpers.errorHandle(500,errorMessages.POSTAL_STATUS_UPLOAD,res);
+        return helpers.responseHandle(500,responseMessages.POSTAL_STATUS_UPLOAD,res);
     }
 
 });
@@ -319,18 +322,18 @@ admin.post('/email', async function (req, res) {
         if (err) {
             console.log(err)
             //return res.status(400).json({ 'message': req.fileValidationError });
-            return helpers.errorHandle(400,errorMessages.VALIDATION_ERROR,res);
+            return helpers.responseHandle(400,responseMessages.VALIDATION_ERROR,res);
         }
         if (!req.file) {
             //res.status(400).json({ "message": "Please upload a file" })
-            return helpers.errorHandle(500,errorMessages.FILE_NOT_FOUND,res);
+            return helpers.responseHandle(500,responseMessages.FILE_NOT_FOUND,res);
             
         }
         else {
             let { certificate_id } = req.body;
             if (!certificate_id) {
                 //res.status(400).json({ "message": "Please provide all required data" })
-                return helpers.errorHandle(400,errorMessages.REQUIRED_FIELD,res);
+                return helpers.responseHandle(400,responseMessages.REQUIRED_FIELD,res);
                 
             }
             if (req.file) {
@@ -348,7 +351,7 @@ admin.post('/email', async function (req, res) {
 
                 if (id_exists == null) {
                     //res.status(403).json({ 'message': "You do not have the appropriate permissions to access the resource." })
-                    return helpers.errorHandle(403,errorMessages.ACCESS_DENIED,res);
+                    return helpers.responseHandle(403,responseMessages.ACCESS_DENIED,res);
                     
                 }
 
@@ -380,7 +383,7 @@ admin.post('/email', async function (req, res) {
                         if (err) {
                             console.log(err);
                             //res.status(500).json({ 'message': 'Unable to send mail. Try again later' });
-                            helpers.errorHandle(500,errorMessages.MAIL_NOT_SENT,res);
+                            helpers.responseHandle(500,responseMessages.MAIL_NOT_SENT,res);
                             fs.unlinkSync(initial_dest);
 
                         } else {
@@ -392,7 +395,8 @@ admin.post('/email', async function (req, res) {
                                 }
 
                             })
-                            res.status(200).json({ 'message': 'Email sent successfully' });
+                            //res.status(200).json({ 'message': 'Email sent successfully' });
+                            helpers.responseHandle(200,responseMessages.MAIL_SENT,res)
                             fs.unlinkSync(initial_dest);
 
                         }
@@ -402,14 +406,14 @@ admin.post('/email', async function (req, res) {
                     console.log(err);
                     fs.unlinkSync(initial_dest);
                     //res.json(500).json({ 'message': "Some problem with sending email" });
-                    return helpers.errorHandle(500,errorMessages.MAIL_NOT_SENT,res);
+                    return helpers.responseHandle(500,responseMessages.MAIL_NOT_SENT,res);
                     
                 }
 
             }
             else {
                 //res.status(500).json({ 'message': "Kindly upload the document" });
-                return helpers.errorHandle(400,errorMessages.FILE_NOT_FOUND,res);
+                return helpers.responseHandle(400,responseMessages.FILE_NOT_FOUND,res);
             }
         }
     })

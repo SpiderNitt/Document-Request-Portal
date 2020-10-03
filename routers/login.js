@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken')
 const login = require('express').Router()
 const helper = require('../utils/helper')
 const admin_allowlist = ['abcspider', 'defspider', 'ghispider', 'jklspider', 'mnospider']
-const errorMessages = require('../utils/errorHandle')
+const responseMessages = require('../utils/responseHandle')
 
 login.post('/', async function (req, res) {
     const { username, password } = req.body;
@@ -40,7 +40,7 @@ login.post('/', async function (req, res) {
 
     else {
         // res.status(401).json({ "message": "Invalid username/password Combination" })
-        return helper.errorHandle(401,errorMessages.INVALID_CREDENTIALS,res)
+        return helper.responseHandle(401,responseMessages.INVALID_CREDENTIALS,res)
     }
 })
 

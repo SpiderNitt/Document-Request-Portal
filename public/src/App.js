@@ -4,6 +4,7 @@ import Login from "./login/login";
 import Footer from "./footer/footer";
 import Student from "./student/student";
 import Admin from "./admin/admin.jsx";
+import { StatusProvider} from "./contexts/StatusContext"
 import NotFound from "./404/404";
 import { Switch, Route, BrowserRouter as Router } from "react-router-dom";
 import { Redirect } from "react-router-dom/cjs/react-router-dom.min";
@@ -32,21 +33,23 @@ const MainRoutes = () => {
 
 function App() {
   return (
-    <div className="App">
-      <Router>
-        <Switch>
-          <Route exact path="/">
-            <div className="row justify-content-center">
-              <Login />
-            </div>
-          </Route>
-          <MainRoutes />
-        </Switch>
-      </Router>
-      <div className="row">
-        <Footer />
+    <StatusProvider>
+      <div className="App">
+        <Router>
+          <Switch>
+            <Route exact path="/">
+              <div className="row justify-content-center">
+                <Login />
+              </div>
+            </Route>
+            <MainRoutes />
+          </Switch>
+        </Router>
+        <div className="row">
+          <Footer />
+        </div>
       </div>
-    </div>
+    </StatusProvider>
   );
 }
 

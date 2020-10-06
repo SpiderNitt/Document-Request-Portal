@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import spider from "../../utils/API";
+import { StatusContext } from '../../contexts/StatusContext'
 import { ToastContainer } from "react-toastify";
 import { Modal } from "react-bootstrap";
 import CertificateTemplate from "../cert-templates/cert-temp";
@@ -45,6 +46,8 @@ function Upload(props) {
 
   const [courseCode, setCode] = useState("");
   const [course, setCourse] = useState("");
+
+  const statusCtx = useContext(StatusContext);
   
   useEffect(() => {
     spider
@@ -70,6 +73,10 @@ function Upload(props) {
 
       });
   }, []);
+
+  const refreshStatus=()=>{
+    statusCtx.refreshCertData();
+  }
 
   const handleSubmitClose = () => setModal(false);
   const handleAddressClose = () => setAddressModal(false);
@@ -197,6 +204,9 @@ function Upload(props) {
           .catch((err) => {
 
           });
+
+        refreshStatus();
+
         document.getElementById("cert").value = "";
         if (document.getElementById("emaildel"))
           document.getElementById("emaildel").value = "";

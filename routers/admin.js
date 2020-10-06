@@ -5,11 +5,15 @@ const admin = require('express').Router()
 const multer = require('multer')
 const fs = require('fs')
 const nodemailer = require('nodemailer');
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
 
 const middlewares = require('../utils/middlewares')
 const database = require("../database/database")
 const helpers = require("../utils/helper");
 const { response } = require('express');
+const { type } = require('os');
 
 admin.use('/', middlewares.is_admin);
 
@@ -193,8 +197,8 @@ admin.get("/", async function (req, res) {
                 })
 
                 response_json.push({
-                    id_extension : ele.getDataValue('id_file').split('.').splice(-1)[0],
-                    certificate_extension : ele.getDataValue('file').split('.').splice(-1)[0],
+                    id_extension: ele.getDataValue('id_file').split('.').splice(-1)[0],
+                    certificate_extension: ele.getDataValue('file').split('.').splice(-1)[0],
                     applier_roll: ele.getDataValue('applier_roll'),
                     certificate_type: ele.getDataValue('type'),
                     certificate_id,
@@ -366,15 +370,23 @@ admin.post('/email', async function (req, res) {
                             }
                         ]
                     };
-
-                    helpers.mailTransporter.sendMail(mailDetails, async function (err, data) {
-                        if (err) {
-                            console.log(err);
-                            res.status(500).json({ 'message': 'Unable to send mail. Try again later' });
-                            fs.unlinkSync(initial_dest);
-
-                        } else {
-                            let email_status = "Email Sent";
+                    const msg = {
+                        to: to_email,
+                        from: process.env.EMAIL,
+                        subject: type_name,
+                        text: 'Dear ' + applier_roll + ',\n\tPlease find attached the ' + type_name + ' document that you requested.',
+                        attachments: [
+                            {
+                                content: fs.readFileSync(initial_dest).toString("base64"),
+                                type: "application/pdf",
+                                disposition: "attachment",
+                                filename: applier_roll + '_' + type_name + '.pdf',
+                            }
+                        ]
+                    };
+                    try{
+                        await sgMail.send(msg);
+                        let email_status = "Email Sent";
                             await database.Certificate.update(
                                 { email_status }, {
                                 where: {
@@ -384,9 +396,33 @@ admin.post('/email', async function (req, res) {
                             })
                             res.status(200).json({ 'message': 'Email sent successfully' });
                             fs.unlinkSync(initial_dest);
-
                         }
-                    });
+                        catch(err){
+                            console.log(err);
+                            res.status(500).json({ 'message': 'Unable to send mail. Try again later' });
+                            fs.unlinkSync(initial_dest);
+                        }
+
+                    // helpers.mailTransporter.sendMail(mailDetails, async function (err, data) {
+                    //     if (err) {
+                    //         console.log(err);
+                    //         res.status(500).json({ 'message': 'Unable to send mail. Try again later' });
+                    //         fs.unlinkSync(initial_dest);
+
+                    //     } else {
+                    //         let email_status = "Email Sent";
+                    //         await database.Certificate.update(
+                    //             { email_status }, {
+                    //             where: {
+                    //                 id: certificate_id
+                    //             }
+
+                    //         })
+                    //         res.status(200).json({ 'message': 'Email sent successfully' });
+                    //         fs.unlinkSync(initial_dest);
+
+                    //     }
+                    // });
                 }
                 catch (err) {
                     console.log(err);

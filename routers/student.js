@@ -5,7 +5,7 @@ const helpers = require('../utils/helper')
 const helper = require('../utils/helper')
 const fs = require('fs')
 const sequelize = require('sequelize')
-
+const responseMessages = require('../utils/responseHandle')
 
 
 student.post("/certificate_request", async function (req, res) {
@@ -13,18 +13,20 @@ student.post("/certificate_request", async function (req, res) {
     upload(req, res, async function (err) {
         if (err) {
             console.log(err)
-            return res.status(400).json({ 'message': req.fileValidationError });
+            //return res.status(400).json({ 'message': req.fileValidationError });
+            return helper.responseHandle(400,responseMessages.VALIDATION_ERROR,res)
         }
         else if (!req.files) {
-            res.status(400).json({ 'message': 'Please select files' });
-            return;
+            //res.status(400).json({ 'message': 'Please select files' });
+            
+            return helper.responseHandle(400,responseMessages.FILE_NOT_FOUND,res);
         }
         else if (req.files.length == 1) {
             console.log(req.files)
         }
         else if (req.files.length != 2) {
-            res.status(400).json({ 'message': 'Upload both certificate and ID' });
-            return;
+            //res.status(400).json({ 'message': 'Upload both certificate and ID' });
+            return helper.responseHandle(400,responseMessages.FILE_NOT_FOUND,res);
         }
         else {
             let applier_roll = req.jwt_payload.username;
@@ -46,8 +48,9 @@ student.post("/certificate_request", async function (req, res) {
                 console.log(err);
                 fs.unlinkSync(cert_initial_dest);
                 fs.unlinkSync(id_initial_dest);
-                res.status(500).json({ 'message': 'Some issue with the server. Try again later.' });
-                return;
+                //res.status(500).json({ 'message': 'Some issue with the server. Try again later.' });
+                
+                return helper.responseHandle(500,responseMessages.DEFAULT_500,res);
             }
             let cert_final_dest = final_dest + '/' + cert_filename;
             let id_final_dest = final_dest + '/' + id_filename;
@@ -64,7 +67,8 @@ student.post("/certificate_request", async function (req, res) {
             //     return;
             // }
             if (!helper.check_compulsory(req.body, ['type', 'path', 'purpose', 'contact'])) {
-                res.status(400).json({ 'message': 'All compulsory fields are not present' });
+                //res.status(400).json({ 'message': 'All compulsory fields are not present' });
+                helper.responseHandle(400,responseMessages.REQUIRED_FIELD,res)
                 fs.unlinkSync(cert_final_dest);
                 fs.unlinkSync(id_final_dest);
                 return;
@@ -77,7 +81,8 @@ student.post("/certificate_request", async function (req, res) {
             let status = "PENDING VERIFICATION"
             try {
                 if (!helpers.validate_mail(path)) {
-                    res.status(400).json({ 'message': 'All mail IDs must end with nitt.edu' })
+                    //res.status(400).json({ 'message': 'All mail IDs must end with nitt.edu' })
+                    helper.responseHandle(400,responseMessages.INVALID_MAILID,res)
                     fs.unlinkSync(cert_final_dest);
                     fs.unlinkSync(id_final_dest);
                     return;
@@ -92,13 +97,15 @@ student.post("/certificate_request", async function (req, res) {
                     await database.CertificatePaths.create({ certificate_id, path_no: parseInt(index) + 1, path_email: path[index].trim(), path_name: path[index].trim(), status: 'PENDING' })
                 }
 
-                res.status(200).json({ 'message': 'Requested Successfully' })
+                //res.status(200).json({ 'message': 'Requested Successfully' })
+                helper.responseHandle(200,responseMessages.CERTIFICATE_REQUEST,res)
             }
             catch (err) {
                 console.log(err)
                 fs.unlinkSync(cert_final_dest);
                 fs.unlinkSync(id_final_dest);
-                res.status(400).json({ 'message': 'Invalid Data' })
+                //res.status(400).json({ 'message': 'Invalid Data' })
+                return helper.responseHandle(400,responseMessages.INVALID_DATA,res)
             }
         }
 
@@ -186,7 +193,8 @@ student.get('/certificate_download', async function (req, res) {
     }
 
     if (row == null)
-        res.status(403).json({ "message": "You do not have appropriate permissions to access this resource." })
+        //res.status(403).json({ "message": "You do not have appropriate permissions to access this resource." })
+        return helper.responseHandle(403,responseMessages.ACCESS_DENIED,res)
     else {
 
         let filename = row.getDataValue(column_name);
@@ -222,8 +230,9 @@ student.get('/certificate_history', async function (req, res) {
             });
         }
         if (id_exists == null) {
-            res.status(403).json({ 'message': "You do not have the appropriate permissions to access the resource." })
-            return;
+            //res.status(403).json({ 'message': "You do not have the appropriate permissions to access the resource." })
+           
+            return helper.responseHandle(403,responseMessages.ACCESS_DENIED,res);
         }
         if (id) {
             let row = await database.History.findOne({
@@ -259,11 +268,13 @@ student.get('/certificate_history', async function (req, res) {
             res.status(200).json(response_json)
         }
         else {
-            res.status(400).json({ 'message': 'ID needed for certificate history' })
+            //res.status(400).json({ 'message': 'ID needed for certificate history' })
+            return helper.responseHandle(400,responseMessages.ID,res);
         }
     } catch (err) {
         console.log(err);
-        res.status(500).json({ 'message': 'Some issue with the server. Please try again later' });
+        //res.status(500).json({ 'message': 'Some issue with the server. Please try again later' });
+        return helper.responseHandle(500,responseMessages.DEFAULT_500,res);
     }
 })
 
@@ -277,12 +288,14 @@ student.post('/add_certificate', async function (req, res) {
         }
     })
     if (type_exists != null) {
-        res.status(400).json({ 'message': 'Certificate type already exists' })
-        return;
+        //res.status(400).json({ 'message': 'Certificate type already exists' })
+        
+        return helper.responseHandle(400,responseMessages.CERTIFICATE_TYPE_EXIST,res);
     }
     else {
         await database.CertificateType.create({ type: cert_type, created_by: username });
-        res.status(200).json({ 'message': 'Created successfully' });
+        //res.status(200).json({ 'message': 'Created successfully' });
+        return helper.responseHandle(200,responseMessages.CREATE_CERTIFICATE,res);
     }
 
 })
@@ -301,7 +314,8 @@ student.get('/certificate_types', async function (req, res) {
     }
     catch (err) {
         console.log(err);
-        res.status(500).json({ 'message': 'Some issue with the server. Please try again later' });
+        //res.status(500).json({ 'message': 'Some issue with the server. Please try again later' });
+        return helper.responseHandle(500,responseMessages.DEFAULT_500,res);
     }
 })
 
@@ -317,8 +331,9 @@ student.get('/address', async function (req, res) {
             }
         })
         if (rows == null) {
-            res.status(200).json([]);
-            return;
+            // res.status(200).json([]);
+            // return;
+            return helper.responseHandle(200,[],res);
         }
         else {
             rows.forEach(function (ele) {
@@ -332,7 +347,8 @@ student.get('/address', async function (req, res) {
     }
     catch (err) {
         console.log(err);
-        res.status(500).json({ 'message': 'Some issue with the server. Please try again later' });
+        //res.status(500).json({ 'message': 'Some issue with the server. Please try again later' });
+        return helper.responseHandle(500,responseMessages.DEFAULT_500,res)
     }
 })
 

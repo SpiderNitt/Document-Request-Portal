@@ -3,13 +3,17 @@
   overflow-x: scroll;
 }
 
+.cert-status {
+  margin-bottom: 70px;
+}
+
 .table-icons-item {
   margin-right: 10px;
   cursor: pointer;
 }
 
 .status-table {
-  margin-bottom: 200px;
+  margin-bottom: 10px;
 }
 .history {
   z-index: 100 !important;
@@ -34,7 +38,7 @@
 
 .nor {
   color: white;
-  margin-bottom: 15vh;
+  margin-bottom: 5vh;
   background-color: #343a40;
   height: 5vh;
   vertical-align: middle;

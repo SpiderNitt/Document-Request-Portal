@@ -7,6 +7,10 @@
   margin-bottom: 70px;
 }
 
+.cert-status-head {
+  width: 80%;
+}
+
 .table-icons-item {
   margin-right: 10px;
   cursor: pointer;

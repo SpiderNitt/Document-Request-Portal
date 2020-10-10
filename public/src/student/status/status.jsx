@@ -103,7 +103,7 @@ export default class Status extends React.Component {
           {checkStatus1 ? (
               <div className="cert-status">
                 <div className="page-header row justify-content-center">
-                  <h3 className="text-center">Bonafide/Transcript Status</h3>
+                  <h3 className="text-center cert-status-head">Bonafide / Transcript Status</h3>
                 </div>
                 {this.state.loading ? (
                   <Loader
@@ -194,7 +194,7 @@ export default class Status extends React.Component {
           {checkStatus2 ? (
             <div className="cert-status">
               <div className="page-header row justify-content-center">
-                <h3 className="text-center">Course Re/De-Registeration Status</h3>
+                <h3 className="text-center cert-status-head">Course Re / De-Registeration Status</h3>
               </div>
               {this.state.loading ? (
                 <Loader

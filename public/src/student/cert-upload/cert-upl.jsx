@@ -33,6 +33,8 @@ function Upload(props) {
   const [id_fileButton, setIdFileButton] = useState("");
   const [docId,setDocId]  = useState([]);
 
+  const [semester,setSemester] = useState([{sem: "s1",semName: "sem1",copies: 0},{sem: "s2",semName: "sem2",copies: 0},{sem: "s3",semName: "sem3",copies: 0},{sem: "s4",semName: "sem4",copies: 0},{sem: "s5",semName: "sem5",copies: 0},{sem: "s6",semName: "sem6",copies: 0},{sem: "s7",semName: "sem7",copies: 0},{sem: "s8",semName: "sem8",copies: 0}])
+
   const [showModal, setModal] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [feeReceipt, setFee] = useState("");
@@ -53,9 +55,13 @@ function Upload(props) {
     spider
       .get("/api/student/certificate_types")
       .then((res) => {
+
+        let a={id: 5, type: "Rank Card"},b={id: 6, type: "Grade Card"};
         res.data.forEach((add) => {
-          setDocId((p) => p.concat(add));
+          setDocId((p) => p.concat(add));    
         });
+        setDocId((p) => p.concat(a));
+        setDocId((p) => p.concat(b));
       })
       .catch((err) => {
 
@@ -296,7 +302,7 @@ function Upload(props) {
                       setCourse("");
                       setCode("");
                     }
-                    if (certType === "transcript") {
+                    if (certType === "transcript"||certType==="rank card"||certType==="grade card") {
                       setCount(emailCount + 1);
                       setEmails(["transcript@nitt.edu"]);
                       document.getElementById(
@@ -342,7 +348,7 @@ function Upload(props) {
 
               {/* Certificate Delivery */}
 
-              {file === "transcript" ? (
+              {file === "transcript" || file==="rank card" || file==="grade card" ? (
                 <>
                   <div className="form-group">
                     <label htmlFor="delivery-sel">
@@ -691,9 +697,44 @@ function Upload(props) {
                 <></>
               )}
 
+              {/*Semester and #copies for rank and grade card */}
+              {file==="rank card" || file==="grade card" ? (
+                <div className="semesters">
+                  <div className="form-group">
+                    <p>
+                      Choose required semesters <span className="cmpl">*</span>
+                    </p>
+                    {semester.map(sem=>{
+                        return( 
+                          <> 
+                            <input 
+                              type="checkbox" 
+                              name={sem.sem}
+                              onChange={(e)=>{
+                                if(!document.getElementById(`${sem.sem}box`)){
+                                  let semDiv=document.createElement("div");
+                                  semDiv.id=`${sem.sem}box`;
+                                  semDiv.innerHTML=` ${sem.semName}-No. of copies: <input type="number" name=${sem.semName} />`;
+                                  document.getElementById("semesterCopies").appendChild(semDiv);
+                                }
+                                else{
+                                  document.getElementById(`${sem.sem}box`).remove();
+                                }
+                              }} />
+                            <label for={sem.sem}>{sem.sem}</label> 
+                          </>
+                          )}
+                    )}
+                  </div>
+                  <div id="semesterCopies"></div>
+                </div>
+              ) : (
+                <></>
+              )}
+
               {/* Administrator Email Addition */}
 
-              {file === "transcript" ? (
+              {file === "transcript" || file==="rank card" || file==="grade card" ? (
                 <></>
               ) : (
                 <>

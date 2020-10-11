@@ -33,7 +33,7 @@ function Upload(props) {
   const [id_fileButton, setIdFileButton] = useState("");
   const [docId,setDocId]  = useState([]);
 
-  const [semester,setSemester] = useState([{sem: "s1",semName: "sem1",copies: 0},{sem: "s2",semName: "sem2",copies: 0},{sem: "s3",semName: "sem3",copies: 0},{sem: "s4",semName: "sem4",copies: 0},{sem: "s5",semName: "sem5",copies: 0},{sem: "s6",semName: "sem6",copies: 0},{sem: "s7",semName: "sem7",copies: 0},{sem: "s8",semName: "sem8",copies: 0}])
+  const [semester,setSemester] = useState([{sem: "s1",semName: "Sem 1",copies: 0},{sem: "s2",semName: "Sem 2",copies: 0},{sem: "s3",semName: "Sem 3",copies: 0},{sem: "s4",semName: "Sem 4",copies: 0},{sem: "s5",semName: "Sem 5",copies: 0},{sem: "s6",semName: "Sem 6",copies: 0},{sem: "s7",semName: "Sem 7",copies: 0},{sem: "s8",semName: "Sem 8",copies: 0}])
 
   const [showModal, setModal] = useState(false);
   const [isLoading, setLoading] = useState(false);
@@ -164,7 +164,9 @@ function Upload(props) {
     if (
       address &&
       document.getElementById("postal-del").checked &&
-      file === "transcript"
+      file === "transcript" ||
+      file === "grade card" ||
+      file === "rank card"
     )
       cd.set("address", address);
     if (feeReceipt) cd.set("receipt", feeReceipt);
@@ -302,7 +304,7 @@ function Upload(props) {
                       setCourse("");
                       setCode("");
                     }
-                    if (certType === "transcript"||certType==="rank card"||certType==="grade card") {
+                    if (certType === "transcript") {
                       setCount(emailCount + 1);
                       setEmails(["transcript@nitt.edu"]);
                       document.getElementById(
@@ -608,9 +610,7 @@ function Upload(props) {
               ) : (
                 <></>
               )}
-
               {/* Course Deregistration/Registration */}
-
               {file === "course de-registration" || file === "course re-registration" ? (
                 <>
                   <div className="form-group">
@@ -652,7 +652,6 @@ function Upload(props) {
                 <></>
               )}
               {/* Contact information */}
-
               <div className="form-group">
                 <label htmlFor="contact-number">
                   Enter your Contact Number <span className="cmpl">*</span>
@@ -670,9 +669,7 @@ function Upload(props) {
                 />
                 <small id="contact-error-message" className="error"></small>
               </div>
-
               {/* Fee Receipt */}
-
               {file === "transcript" ? (
                 <div className="fee-receipt">
                   <div className="form-group">
@@ -696,45 +693,68 @@ function Upload(props) {
               ) : (
                 <></>
               )}
-
               {/*Semester and #copies for rank and grade card */}
               {file==="rank card" || file==="grade card" ? (
                 <div className="semesters">
                   <div className="form-group">
-                    <p>
+                    <label htmlFor="semester">
                       Choose required semesters <span className="cmpl">*</span>
-                    </p>
+                    </label>
                     {semester.map(sem=>{
                         return( 
                           <> 
-                            <input 
-                              type="checkbox" 
-                              name={sem.sem}
-                              onChange={(e)=>{
-                                if(!document.getElementById(`${sem.sem}box`)){
-                                  let semDiv=document.createElement("div");
-                                  semDiv.id=`${sem.sem}box`;
-                                  semDiv.innerHTML=` ${sem.semName}-No. of copies: <input type="number" name=${sem.semName} />`;
-                                  document.getElementById("semesterCopies").appendChild(semDiv);
-                                }
-                                else{
-                                  document.getElementById(`${sem.sem}box`).remove();
-                                }
-                              }} />
-                            <label for={sem.sem}>{sem.sem}</label> 
+                            <div className="form-check">
+                              <input 
+                                type="checkbox" 
+                                className="form-check-input"
+                                id={"check_" + sem.sem}
+                                name={sem.sem}
+                                onChange={(e)=>{
+                                  if(!document.getElementById(`${sem.sem}box`)){
+                                    let semDiv=document.createElement("div");
+                                    semDiv.id=`${sem.sem}box`;
+                                    semDiv.classList.add("form-group");
+                                    semDiv.style.background = "#f5f5f5";
+                                    semDiv.style.padding = "1rem";
+                                    semDiv.innerHTML=`<label for="no_of_copies_${sem.sem}"> 
+                                                        ${sem.semName} - Number of Copies
+                                                        <span class="cmpl">*</span>
+                                                      </label> 
+                                                      <input type="number" 
+                                                             class="form-control" 
+                                                             name="no_of_copies_${sem.sem}"
+                                                             id="no_of_copies_${sem.sem}"
+                                                             placeholder="Number of copies for ${sem.semName}" 
+                                                             required
+                                                             onchange="setNoOfCopies(this.value)";
+                                                             min="0"                                                            
+                                                      />
+                                                      <small id="${sem.sem}-no-of-copies-error-message" class="error"></small>`;
+                                    document.getElementById("semesterCopies").appendChild(semDiv);
+                                  }
+                                  else{
+                                    document.getElementById(`${sem.sem}box`).remove();
+                                  }
+                                }} />
+                              <label htmlFor={sem.sem}> {sem.semName} </label> 
+                            </div>
                           </>
                           )}
                     )}
+                    <small
+                      id="select-semester-error-message"
+                      className="error"
+                    ></small>
                   </div>
-                  <div id="semesterCopies"></div>
+                  <div className="form-group">
+                    <div id="semesterCopies"></div>
+                  </div>
                 </div>
               ) : (
                 <></>
               )}
-
               {/* Administrator Email Addition */}
-
-              {file === "transcript" || file==="rank card" || file==="grade card" ? (
+              {file === "transcript" ? (
                 <></>
               ) : (
                 <>
@@ -807,7 +827,7 @@ function Upload(props) {
               {/* Purpose */}
 
               <div className="form-group">
-                  {file === "bonafide" || file === "transcript"
+                  {file === "bonafide" || file === "transcript" || file === "grade card" || file === "rank card"
                   ? <>
                       <label htmlFor="purpose">Enter Purpose <span className="cmpl">*</span></label>
                       <input
@@ -881,9 +901,7 @@ function Upload(props) {
                 </div>
               : <></>
               }
-
               {/* Certificate Addition */}
-
               <div className="form-group">
                 <label htmlFor="cert" style={{ width: "50%" }}>
                   Upload Document <span className="cmpl">*</span>
@@ -961,7 +979,7 @@ function Upload(props) {
                       }
                     }
                     if (!purpose) {
-                      if(file === "bonafide" || file === "transcript") {
+                      if(file === "bonafide" || file === "transcript" || file === "rank card" || file === "grade card") {
                         document.getElementById(
                           "purpose-error-message"
                         ).innerHTML = "Purpose field cannot be blank";
@@ -999,31 +1017,33 @@ function Upload(props) {
                           "email-error-message"
                         ).innerHTML = "";
                       }
-                    } else if (file === "transcript") {
-                      if(no_of_copies < 0) {
-                        document.getElementById("no-of-copies-error-message").innerHTML = "Number of copies cannot be negative";
-                        error = 1;
-                      } else {
-                        document.getElementById("no-of-copies-error-message").innerHTML = "";
-                      }
-                      if(address) {
-                        if(!no_of_copies) {
-                          document.getElementById("no-of-copies-error-message").innerHTML = "Enter the number of copies required";
-                          error = 1;
-                        } else if(no_of_copies <= 0) {
-                          document.getElementById("no-of-copies-error-message").innerHTML = "Enter the number of copies required";
+                    } else if (file === "transcript" || file === "grade card" || file === "rank card") {
+                      if(file === "transcript") {
+                        if(no_of_copies < 0) {
+                          document.getElementById("no-of-copies-error-message").innerHTML = "Number of copies cannot be negative";
                           error = 1;
                         } else {
                           document.getElementById("no-of-copies-error-message").innerHTML = "";
                         }
-                      }
-                      if (!feeReceipt) {
-                        document.getElementById("fee-error-message").innerHTML =
-                          "Enter fee reference number";
-                        error = 1;
-                      } else {
-                        document.getElementById("fee-error-message").innerHTML =
-                          "";
+                        if(address) {
+                          if(!no_of_copies) {
+                            document.getElementById("no-of-copies-error-message").innerHTML = "Enter the number of copies required";
+                            error = 1;
+                          } else if(no_of_copies <= 0) {
+                            document.getElementById("no-of-copies-error-message").innerHTML = "Enter the number of copies required";
+                            error = 1;
+                          } else {
+                            document.getElementById("no-of-copies-error-message").innerHTML = "";
+                          }
+                        }
+                        if (!feeReceipt) {
+                          document.getElementById("fee-error-message").innerHTML =
+                            "Enter fee reference number";
+                          error = 1;
+                        } else {
+                          document.getElementById("fee-error-message").innerHTML =
+                            "";
+                        }
                       }
                       if (
                         !(
@@ -1076,6 +1096,29 @@ function Upload(props) {
                       } else {
                         setAddress("");
                       }
+                      if(file === "rank card" || file === "grade card") {
+                        if (
+                          !(
+                            document.getElementById("check_s1").checked ||
+                            document.getElementById("check_s2").checked ||
+                            document.getElementById("check_s3").checked ||
+                            document.getElementById("check_s4").checked ||
+                            document.getElementById("check_s5").checked ||
+                            document.getElementById("check_s6").checked ||
+                            document.getElementById("check_s7").checked ||
+                            document.getElementById("check_s8").checked 
+                          )
+                        ) {
+                          document.getElementById(
+                            "select-semester-error-message"
+                          ).innerHTML = "Select a semester";
+                          error = 1;
+                        } else {
+                          document.getElementById(
+                            "select-semester-error-message"
+                          ).innerHTML = "";
+                        }
+                      }
                     } else if (file === "course re-registration" || file === "course de-registration") {
                       if (!emailCount) {
                         document.getElementById(
@@ -1108,7 +1151,6 @@ function Upload(props) {
               </div>
             </form>
           </div>
-
           <Modal
             show={showModal}
             onHide={handleSubmitClose}
@@ -1172,7 +1214,6 @@ function Upload(props) {
               )}
             </Modal.Body>
           </Modal>
-
           <div className="col-md-6  cert-right d-flex justify-content-center">
             <ul className="list-group emailList">
               {emails.length > 0 ? (

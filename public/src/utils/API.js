@@ -2,9 +2,9 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const spider = axios.create({
-  //baseURL: "/",
+  baseURL: "/",
   // baseURL: "https://spider.nitt.edu/bonafide/",
-  baseURL: "http://localhost:3001/",
+  // baseURL: "http://localhost:3001/",
 });
 
 spider.interceptors.request.use(

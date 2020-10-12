@@ -5,6 +5,7 @@ const helpers = require('../utils/helper')
 const helper = require('../utils/helper')
 const fs = require('fs')
 const sequelize = require('sequelize')
+const { type } = require('os')
 
 
 
@@ -70,9 +71,8 @@ student.post("/certificate_request", async function (req, res) {
                 return;
             }
 
-            let { type, path, comments, email, address, receipt, purpose, contact, course_code, course_name, no_copies } = req.body;
+            let { type, path, comments, email, address, receipt, purpose, contact, course_code, course_name, no_copies, semester_no} = req.body;
             path = path.split(',');
-
 
             let status = "PENDING VERIFICATION"
             try {
@@ -85,6 +85,10 @@ student.post("/certificate_request", async function (req, res) {
                 let response = await database.Certificate.create({ type, applier_roll, file: cert_filename, status, comments, email_address: email, address, receipt, id_file: "ID_" + id_filename, contact, purpose, course_code, course_name, no_copies });
 
                 let certificate_id = response.getDataValue('id');
+                if(type == '5')
+                {
+                    await database.RankGradeCard.create({certificate_id,applier_roll,certificate_type:type,semester_no,no_copies});
+                }
                 let time = new Date(Date.now()).toISOString();
                 status = "INITIATED REQUEST"
                 await database.History.create({ certificate_id, time, status })
@@ -127,9 +131,21 @@ student.get("/", async function (req, res) {
             applier_roll: rollno
         }
     });
+    let rankGradeRow = await database.RankGradeCard.findAll({
+        attributes: [
+            'id',
+            'certificate_id',
+            'applier_roll',
+            'certificate_type',
+            'semester_no',
+            'no_copies',
+        ],
+        where:{
+            applier_roll: rollno
+        }
+    });
     let response_json = []
     rows.forEach(function (ele) {
-
         response_json.push({
             'id': ele.getDataValue('id'),
             'type': ele.getDataValue('type'),
@@ -143,10 +159,23 @@ student.get("/", async function (req, res) {
             'certificate_extension': ele.getDataValue('file').split('.').splice(-1)[0],
             'course_code': ele.getDataValue('course_code'),
             'course_name': ele.getDataValue('course_name'),
-            'no_copies': ele.getDataValue('no_copies')
-
-        })
+            'no_copies': ele.getDataValue('no_copies'),
+        });
     })
+    rankGradeRow.forEach(function(ele){
+        if(ele.length!==0)
+        {
+            response_json.forEach((res)=>{
+                if(res.type === 5)
+                {
+                    res.rank_grade_card = [{
+                        'semester_no': ele.getDataValue('semester_no'),
+                        'no_copies': ele.getDataValue('no_copies')
+                    }];
+                }
+            })
+        }
+    });
 
     res.status(200).json(response_json);
 })

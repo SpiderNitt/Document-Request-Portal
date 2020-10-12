@@ -139,6 +139,43 @@ const History = sequelize.define('history', {
     freezeTableName: true
 });
 
+const RankGradeCard = sequelize.define('rank_grade_card',{
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        allowNull: false,
+        autoIncrement: true
+    },
+    certificate_id: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: 'certificates',
+            key: 'id'
+        }
+    },
+    applier_roll: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    certificate_type: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: 'certificate_types',
+            key: 'id'
+        }
+    },
+    semester_no: {
+        type: DataTypes.INTEGER,
+        allowNull:false
+    },
+    no_copies: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    }
+},{
+        freezeTableName:true
+});
+
 const CertificatePaths = sequelize.define('certificate_paths', {
     id: {
         type: DataTypes.INTEGER,
@@ -193,5 +230,5 @@ async function test_conn() {
 
 // test_conn();
 module.exports = {
-    Certificate, History, CertificatePaths, CertificateType, test_conn
+    Certificate, History, CertificatePaths, CertificateType, RankGradeCard, test_conn
 }

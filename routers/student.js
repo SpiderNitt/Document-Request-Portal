@@ -5,7 +5,7 @@ const helpers = require('../utils/helper')
 const helper = require('../utils/helper')
 const fs = require('fs')
 const sequelize = require('sequelize')
-const { type } = require('os')
+const Op        = sequelize.Op;
 
 
 
@@ -38,6 +38,7 @@ student.post("/certificate_request", async function (req, res) {
             let final_dest = appRoot + '/uploads/' + applier_roll;
             let cert_initial_dest = appRoot + '/' + cert_filepath;
             let id_initial_dest = appRoot + '/' + id_filepath;
+            let rankGradeFlag = false;
             try {
                 fs.mkdirSync(final_dest, { recursive: true })
                 helper.renameFile(cert_initial_dest, final_dest + '/' + cert_filename);
@@ -71,9 +72,13 @@ student.post("/certificate_request", async function (req, res) {
                 return;
             }
 
-            let { type, path, comments, email, address, receipt, purpose, contact, course_code, course_name, no_copies, semester_no} = req.body;
+            let { type, path, comments, email, address, receipt, purpose, contact, course_code, course_name, no_copies, semester_no,rank_grade_card_copies} = req.body;
+            if(semester_no && rank_grade_card_copies)
+            {
+                var semNo = semester_no.split(',');
+                var card_copies = rank_grade_card_copies.split(',');
+            }
             path = path.split(',');
-
             let status = "PENDING VERIFICATION"
             try {
                 if (!helpers.validate_mail(path)) {
@@ -85,9 +90,27 @@ student.post("/certificate_request", async function (req, res) {
                 let response = await database.Certificate.create({ type, applier_roll, file: cert_filename, status, comments, email_address: email, address, receipt, id_file: "ID_" + id_filename, contact, purpose, course_code, course_name, no_copies });
 
                 let certificate_id = response.getDataValue('id');
-                if(type == '5')
+                const certTypes = await database.CertificateType.findAll({
+                    where:{
+                        [Op.or]:[
+                         {name:'Grade Card'},
+                         {name: 'Rank Card'}
+                        ]
+                    }
+                 });
+               
+                certTypes.forEach(cert=>{
+                    if(cert.getDataValue('id') == type)
+                    {
+                        rankGradeFlag = true;
+                    }
+                });
+                if(rankGradeFlag)
                 {
-                    await database.RankGradeCard.create({certificate_id,applier_roll,certificate_type:type,semester_no,no_copies});
+                    for(let i=0;i<semNo.length;i++)
+                    {
+                        await database.RankGradeCard.create({certificate_id,applier_roll,certificate_type:type,semester_no:semNo[i],no_copies:card_copies[i]});
+                    }
                 }
                 let time = new Date(Date.now()).toISOString();
                 status = "INITIATED REQUEST"
@@ -131,19 +154,17 @@ student.get("/", async function (req, res) {
             applier_roll: rollno
         }
     });
-    let rankGradeRow = await database.RankGradeCard.findAll({
-        attributes: [
-            'id',
-            'certificate_id',
-            'applier_roll',
-            'certificate_type',
-            'semester_no',
-            'no_copies',
-        ],
-        where:{
-            applier_roll: rollno
-        }
+    let rankGradeFlag = false;
+  
+    const certTypes = await database.CertificateType.findAll({
+       where:{
+           [Op.or]:[
+            {name:'Grade Card'},
+            {name: 'Rank Card'}
+           ]
+       }
     });
+    
     let response_json = []
     rows.forEach(function (ele) {
         response_json.push({
@@ -162,20 +183,52 @@ student.get("/", async function (req, res) {
             'no_copies': ele.getDataValue('no_copies'),
         });
     })
-    rankGradeRow.forEach(function(ele){
-        if(ele.length!==0)
+
+    certTypes.forEach(cert=>{
+        if(cert.length!==0)
         {
-            response_json.forEach((res)=>{
-                if(res.type === 5)
+            response_json.forEach(res=>{
+                if(res.type == cert.getDataValue('id'))
                 {
-                    res.rank_grade_card = [{
-                        'semester_no': ele.getDataValue('semester_no'),
-                        'no_copies': ele.getDataValue('no_copies')
-                    }];
+                    rankGradeFlag = true;
                 }
             })
         }
-    });
+    })
+    if(rankGradeFlag)
+    {
+        var rankGradeRow = await database.RankGradeCard.findAll({
+            attributes: [
+                'id',
+                'certificate_id',
+                'applier_roll',
+                'certificate_type',
+                'semester_no',
+                'no_copies',
+            ],
+            where:{
+                applier_roll: rollno
+            }
+        });
+    }
+    if(rankGradeRow && rankGradeRow.length!==0)
+    {
+        response_json.forEach(res=>{
+            res.rank_grade_card = [];
+            rankGradeRow.forEach(ele=>{
+                if(ele.length!==0)
+                {
+                    if(res.type === ele.getDataValue('certificate_type'))
+                    {
+                        res.rank_grade_card.push({
+                            'semester_no': ele.getDataValue('semester_no'),
+                            'no_copies': ele.getDataValue('no_copies')
+                        });
+                    }
+                }
+            })
+        })
+    }
 
     res.status(200).json(response_json);
 })

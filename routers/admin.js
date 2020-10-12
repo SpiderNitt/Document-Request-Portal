@@ -162,7 +162,6 @@ admin.get("/", async function (req, res) {
         let path_objects = []
         path_details.forEach(function (ele) {
             let path_no = ele.getDataValue('path_no');
-            console.log("PATH NO.",path_no);
             let certificate_id = ele.getDataValue('certificate_id');
             let status = ele.getDataValue('status')
             path_objects.push({
@@ -184,7 +183,6 @@ admin.get("/", async function (req, res) {
                 path_no, certificate_id, status
             })
         })
-
         let response_json = []
         for (const index in path_objects) {
             let path_object = path_objects[index];
@@ -196,13 +194,12 @@ admin.get("/", async function (req, res) {
                         id: certificate_id
                     }
                 })
-                const rankGradeCard = await database.RankGradeCard.findOne({
+                const rankGradeCard = await database.RankGradeCard.findAll({
                     attributes: ['id', 'certificate_id', 'applier_roll', 'certificate_type', 'semester_no','no_copies'],
                     where: {
                         certificate_id:certificate_id
                     }
                 });
-                
                 response_json.push({
                     id_extension: ele.getDataValue('id_file').split('.').splice(-1)[0],
                     certificate_extension: ele.getDataValue('file').split('.').splice(-1)[0],
@@ -221,17 +218,21 @@ admin.get("/", async function (req, res) {
                     course_name: ele.getDataValue('course_name'),
                     no_copies: ele.getDataValue('no_copies')
                 })
-                if(rankGradeCard)
+
+                if(rankGradeCard && rankGradeCard.length!==0)
                 {
-                   response_json.forEach(res=>{
-                       if(res.certificate_type === 5)
+                    response_json.forEach(res=>{
+                    res.rank_grade_card = [];
+                    rankGradeCard.forEach(ele=>{
+                    if(res.certificate_type == ele.getDataValue('certificate_type'))
                        {
-                        res.rank_grade_card = [{
-                            'semester_no': rankGradeCard.getDataValue('semester_no'),
-                            'no_copies': rankGradeCard.getDataValue('no_copies')
-                        }];
+                        res.rank_grade_card.push({
+                            'semester_no': ele.getDataValue('semester_no'),
+                            'no_copies': ele.getDataValue('no_copies')
+                        });
                        }
-                   })
+                    })
+                    })
                 }
             }
             else if (path_no == 1 && status === 'PENDING') {
@@ -241,7 +242,7 @@ admin.get("/", async function (req, res) {
                         id: certificate_id
                     }
                 })
-                const rankGradeCard = await database.RankGradeCard.findOne({
+                const rankGradeCard = await database.RankGradeCard.findAll({
                     attributes: ['id', 'certificate_id', 'applier_roll', 'certificate_type', 'semester_no','no_copies'],
                     where: {
                         certificate_id:certificate_id
@@ -267,16 +268,19 @@ admin.get("/", async function (req, res) {
                     no_copies: ele.getDataValue('no_copies')
 
                 })
-                if(rankGradeCard)
+                if(rankGradeCard && rankGradeCard.length!==0)
                 {
                    response_json.forEach(res=>{
-                       if(res.certificate_type === 5)
+                    res.rank_grade_card = [];
+                    rankGradeCard.forEach(ele=>{
+                    if(res.certificate_type == ele.getDataValue('certificate_type'))
                        {
-                        res.rank_grade_card = [{
-                            'semester_no': rankGradeCard.getDataValue('semester_no'),
-                            'no_copies': rankGradeCard.getDataValue('no_copies')
-                        }];
+                        res.rank_grade_card.push({
+                            'semester_no': ele.getDataValue('semester_no'),
+                            'no_copies': ele.getDataValue('no_copies')
+                        });
                        }
+                       })
                    })
                 }
              
@@ -296,7 +300,7 @@ admin.get("/", async function (req, res) {
                             id: certificate_id
                         }
                     })
-                    const rankGradeCard = await database.RankGradeCard.findOne({
+                    const rankGradeCard = await database.RankGradeCard.findAll({
                         attributes: ['id', 'certificate_id', 'applier_roll', 'certificate_type', 'semester_no','no_copies'],
                         where: {
                             certificate_id:certificate_id
@@ -320,17 +324,20 @@ admin.get("/", async function (req, res) {
                         course_name: ele.getDataValue('course_name'),
                         no_copies: ele.getDataValue('no_copies')
                     })
-                    if(rankGradeCard)
+                    if(rankGradeCard && rankGradeCard.length!==0)
                     {
-                   response_json.forEach(res=>{
-                       if(res.certificate_type === 5)
-                       {
-                        res.rank_grade_card = [{
-                            'semester_no': rankGradeCard.getDataValue('semester_no'),
-                            'no_copies': rankGradeCard.getDataValue('no_copies')
-                        }];
-                       }
-                    })
+                        response_json.forEach(res=>{
+                        res.rank_grade_card = [];
+                        rankGradeCard.forEach(ele=>{
+                        if(res.certificate_type == ele.getDataValue('certificate_type'))
+                           {
+                            res.rank_grade_card.push({
+                                'semester_no': ele.getDataValue('semester_no'),
+                                'no_copies': ele.getDataValue('no_copies')
+                            });
+                           }
+                           })
+                       })
                     }
                 }
 

@@ -16,7 +16,11 @@ const mailTransporter = nodemailer.createTransport({
         pass: process.env.EMAIL_PASS
     } 
 }); 
-  
+
+const responseHandle = (status_code,message,res) => {
+    let success = status_code == 200 ? true : false
+    return res.status(status_code).json({success,message})
+}
 
 
 function renameFile(oldPath, newPath){
@@ -120,6 +124,5 @@ const storage = multer.diskStorage({
 });
 
 module.exports =  {
-
-    docFilter, storage, approve_decline_rights, validate_mail, renameFile, mailTransporter, check_compulsory
+    docFilter, storage, approve_decline_rights, validate_mail, renameFile, mailTransporter, check_compulsory, responseHandle
 }

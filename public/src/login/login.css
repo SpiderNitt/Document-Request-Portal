@@ -1,12 +1,11 @@
 .lmain {
-
   padding: 5vh;
   border-radius: 1vh;
   z-index: 0;
   width: 95%;
   max-width: 700px;
   position: absolute;
-  margin-top:5%;
+  margin-top: 5%;
   margin-bottom: 10%;
   text-align: center;
   background-color: white;
@@ -16,14 +15,28 @@
   -moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
     0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
+
 body {
   background-color: #f5f5f5;
-
 }
 
-html, body, #root, #root>div {
+html,
+body,
+#root,
+#root > div {
   height: 100%;
   margin: 0;
+}
+
+.blur {
+  opacity: 0.1;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+#loader {
+  position: fixed;
+  left: 45%;
+  top: 35%;
 }
 
 .lmain-logo > img {
@@ -31,4 +44,3 @@ html, body, #root, #root>div {
   width: 18vh;
   height: 18vh;
 }
-

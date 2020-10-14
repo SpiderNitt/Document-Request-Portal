@@ -1,5 +1,4 @@
 .lmain {
-
   padding: 5vh;
   border-radius: 1vh;
   z-index: 0;
@@ -16,9 +15,9 @@
   -moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
     0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
+
 body {
   background-color: #f5f5f5;
-
 }
 
 html, body, #root, #root>div {
@@ -26,9 +25,19 @@ html, body, #root, #root>div {
   margin: 0;
 }
 
+.blur {
+  opacity: 0.1;
+  background-color: rgba(0,0,0,0.4);
+}
+
+#loader {
+  position: fixed;
+  left: 45%;
+  top: 35%;
+}
+
 .lmain-logo > img {
   margin: auto;
   width: 18vh;
   height: 18vh;
 }
-

@@ -77,10 +77,15 @@ student.post("/certificate_request", async function (req, res) {
                 return;
             }
 
-            let { type, path, comments, email, address, receipt, purpose, contact, course_code, course_name, no_copies } = req.body;
+            let { type, path, comments, email, address, receipt, purpose, contact, course_code, course_name, no_copies, semester_no, rank_grade_card_copies } = req.body;
+            console.log(semester_no)
+            let sem_nos, card_copies;
+            if (semester_no && rank_grade_card_copies) {
+                sem_nos = semester_no.split(',');
+                card_copies = rank_grade_card_copies.split(',');
+            }
+            console.log(sem_nos)
             path = path.split(',');
-
-
             let status = "PENDING VERIFICATION"
             try {
                 if (!helper.validate_mail(path)) {
@@ -93,6 +98,36 @@ student.post("/certificate_request", async function (req, res) {
                 let response = await database.Certificate.create({ type, applier_roll, file: cert_filename, status, comments, email_address: email, address, receipt, id_file: "ID_" + id_filename, contact, purpose, course_code, course_name, no_copies });
 
                 let certificate_id = response.getDataValue('id');
+                const certTypes = await database.CertificateType.findAll({
+                    where: {
+                        semwise_mapping: 1
+                    }
+                });
+                let semwise_types = [];
+                certTypes.forEach(function (ele) {
+                    let { id } = helper.wrapper(ele)
+                    semwise_types.push(id.toString())
+                })
+                console.log("TYPE:", typeof type)
+                console.log("BOOL/? ", semwise_types.includes(type))
+                let rank_grade_flag = semwise_types.includes(type) ? true : false;
+                console.log("thisis rank grade flag?? ", rank_grade_flag, semwise_types)
+                let rank_grade_mapping = []
+                if (rank_grade_flag) {
+                    for (let i = 0; i < sem_nos.length; i++) {
+                        rank_grade_mapping.push(
+                            {
+                                sem_no: sem_nos[i],
+                                no_copies: card_copies[i]
+                            }
+                        )
+                    }
+                }
+                console.log("THIS IS SSSSSS", rank_grade_mapping);
+                for (const sem_mapping of rank_grade_mapping) {
+                    let {sem_no, no_copies} = sem_mapping;
+                    await database.RankGradeCard.create({ certificate_id, applier_roll, certificate_type: type, semester_no: sem_no, no_copies });
+                }
                 let time = new Date(Date.now()).toISOString();
                 status = "INITIATED REQUEST"
                 await database.History.create({ certificate_id, time, status })
@@ -100,14 +135,13 @@ student.post("/certificate_request", async function (req, res) {
                     await database.CertificatePaths.create({ certificate_id, path_no: parseInt(index) + 1, path_email: path[index].trim(), path_name: path[index].trim(), status: 'PENDING' })
                 }
 
-                //res.status(200).json({ 'message': 'Requested Successfully' })
                 helper.responseHandle(200, responseMessages.CERTIFICATE_REQUEST, res)
             }
             catch (err) {
                 console.log(err)
                 fs.unlinkSync(cert_final_dest);
                 fs.unlinkSync(id_final_dest);
-                //res.status(400).json({ 'message': 'Invalid Data' })
+
                 return helper.responseHandle(400, responseMessages.INVALID_DATA, res)
             }
         }
@@ -170,6 +204,18 @@ student.get('/certificate_download', async function (req, res) {
 
 student.get("/", async function (req, res) {
     try {
+        let rank_grade_flag = false;
+        let cert_id_sem_copies_mapping = [] // the set of all certificate_type ids that require a sem x no.of copies mapping
+        const certTypes = await database.CertificateType.findAll({
+            where: {
+                semwise_mapping: 1
+            }
+        });
+        certTypes.forEach(cert => {
+            if (cert.length !== 0) {
+                cert_id_sem_copies_mapping.push(cert.getDataValue('id'));
+            }
+        })
 
         let rollno = req.jwt_payload.username;
         let rows = await database.Certificate.findAll({
@@ -194,7 +240,7 @@ student.get("/", async function (req, res) {
         });
         let response_json = [];
 
-        rows.forEach(function (ele) {
+        for (const ele of rows) {
             const {
                 id,
                 type,
@@ -210,6 +256,26 @@ student.get("/", async function (req, res) {
                 course_name,
                 no_copies
             } = helper.wrapper(ele);
+            let response_rank_grade_rows = [];
+            if (cert_id_sem_copies_mapping.includes(type)) {
+                let rank_grade_rows = await database.RankGradeCard.findAll({
+                    attributes: [
+                        'semester_no',
+                        'no_copies',
+                    ],
+                    where: {
+                        applier_roll: rollno,
+                        certificate_type: type,
+                        certificate_id: id
+                    }
+                });
+                for (const ele of rank_grade_rows) {
+                    let { semester_no, no_copies } = helper.wrapper(ele);
+                    response_rank_grade_rows.push({
+                        semester_no, no_copies
+                    })
+                }
+            }
 
             response_json.push({
                 id,
@@ -223,10 +289,11 @@ student.get("/", async function (req, res) {
                 course_code,
                 course_name,
                 no_copies,
-                id_extension: file.split('.').splice(-1)[0],
+                response_rank_grade_rows,
+                id_extension: id_file.split('.').splice(-1)[0],
                 certificate_extension: file.split('.').splice(-1)[0],
             });
-        });
+        }
 
         res.status(200).json(response_json);
     }
@@ -274,16 +341,15 @@ student.get('/certificate_types', async function (req, res) {
         let rows = await database.CertificateType.findAll();
         let response_json = []
         rows.forEach(function (ele) {
+            let { id, type, semwise_mapping } = helper.wrapper(ele)
             response_json.push({
-                'id': ele.getDataValue('id'),
-                'type': ele.getDataValue('name')
+                id, type, semwise_mapping
             })
         })
         res.status(200).json(response_json);
     }
     catch (err) {
         console.log(err);
-        //res.status(500).json({ 'message': 'Some issue with the server. Please try again later' });
         return helper.responseHandle(500, responseMessages.DEFAULT_500, res);
     }
 });
@@ -291,7 +357,7 @@ student.get('/certificate_types', async function (req, res) {
 student.post("/add_certificate", async function (req, res) {
     try {
         let { cert_type } = req.body;
-        if(!cert_type){
+        if (!cert_type) {
             return helper.responseHandle(400, responseMessages.REQUIRED_FIELD, res);
         }
         let { username } = req.jwt_payload;
@@ -301,12 +367,13 @@ student.post("/add_certificate", async function (req, res) {
                 name: cert_type,
             },
         });
+
         if (type_exists != null) {
 
             return helper.responseHandle(400, responseMessages.CERTIFICATE_TYPE_EXIST, res);
         }
         else {
-            await database.CertificateType.create({ name: cert_type, created_by: username });
+            await database.CertificateType.create({ name: cert_type, created_by: username, semwise_mapping: req.body.semwise_mapping ? 1 : 0 });
             return helper.responseHandle(200, responseMessages.CREATE_CERTIFICATE, res);
         }
     } catch (err) {

@@ -204,7 +204,17 @@ admin.get("/", async function (req, res) {
 
     try {
         let rollno = req.jwt_payload.username;
-
+        let cert_id_sem_copies_mapping = [] // the set of all certificate_type ids that require a sem x no.of copies mapping
+        const certTypes = await database.CertificateType.findAll({
+            where: {
+                semwise_mapping: 1
+            }
+        });
+        certTypes.forEach(cert => {
+            if (cert.length !== 0) {
+                cert_id_sem_copies_mapping.push(cert.getDataValue('id'));
+            }
+        })
         // find all ids for which dude is the admin (all statuses)
         let path_details = await database.CertificatePaths.findAll({
             attributes: ["certificate_id", "path_no", "status"],
@@ -281,6 +291,28 @@ admin.get("/", async function (req, res) {
                     file
                 } = helpers.wrapper(ele);
 
+                let response_rank_grade_rows = [];
+                if (cert_id_sem_copies_mapping.includes(type)) {
+                    let rank_grade_rows = await database.RankGradeCard.findAll({
+                        attributes: [
+                            'semester_no',
+                            'no_copies',
+                        ],
+                        where: {
+                            applier_roll,
+                            certificate_type: type,
+                            certificate_id
+                        }
+                    });
+                    for (const ele of rank_grade_rows) {
+                        let { semester_no, no_copies } = helpers.wrapper(ele);
+                        response_rank_grade_rows.push({
+                            semester_no, no_copies
+                        })
+
+                    }
+                }
+
                 response_json.push({
                     id_extension: id_file.split('.').splice(-1)[0],
                     certificate_extension: file.split('.').splice(-1)[0],
@@ -297,7 +329,8 @@ admin.get("/", async function (req, res) {
                     purpose,
                     course_code,
                     course_name,
-                    no_copies
+                    no_copies,
+                    response_rank_grade_rows
                 });
 
             }

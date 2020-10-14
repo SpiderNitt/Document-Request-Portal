@@ -27,6 +27,11 @@ const CertificateType = sequelize.define('certificate_types', {
     created_by: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    semwise_mapping:{
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: 0
     }
 },
     {
@@ -139,6 +144,45 @@ const History = sequelize.define('history', {
     freezeTableName: true
 });
 
+const RankGradeCard = sequelize.define('rank_grade_card',{
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        allowNull: false,
+        autoIncrement: true
+    },
+    certificate_id: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: 'certificates',
+            key: 'id'
+        },
+        allowNull: false
+    },
+    applier_roll: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    certificate_type: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: 'certificate_types',
+            key: 'id'
+        },
+        allowNull: false
+    },
+    semester_no: {
+        type: DataTypes.INTEGER,
+        allowNull:false
+    },
+    no_copies: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+    }
+},{
+        freezeTableName:true
+});
+
 const CertificatePaths = sequelize.define('certificate_paths', {
     id: {
         type: DataTypes.INTEGER,
@@ -182,7 +226,7 @@ const CertificatePaths = sequelize.define('certificate_paths', {
 async function test_conn() {
 
 
-    await sequelize.sync({ force: true });
+    await sequelize.sync();
     console.log("All models were synchronized successfully.");
 }
 
@@ -193,5 +237,5 @@ async function test_conn() {
 
 // test_conn();
 module.exports = {
-    Certificate, History, CertificatePaths, CertificateType, test_conn
+    Certificate, History, CertificatePaths, CertificateType, RankGradeCard, test_conn
 }

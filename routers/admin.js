@@ -14,12 +14,9 @@ const { response } = require('express');
 
 admin.use('/', middlewares.is_admin);
 
-
-
 admin.post('/approve', async function (req, res) {
 
     const upload = multer({ storage: helpers.storage, fileFilter: helpers.docFilter }).single('certificate')
-
 
     upload(req, res, async function (err) {
         if (err) {
@@ -97,10 +94,7 @@ admin.post('/approve', async function (req, res) {
             // res.status(200).json({ 'message': "Approved successfully" });
             helpers.responseHandle(200,responseMessages.CERTIFICATE_APPROVE,res)
         }
-
-
     })
-
 });
 
 admin.post('/decline', multer().none(), async function (req, res) {
@@ -136,8 +130,7 @@ admin.post('/decline', multer().none(), async function (req, res) {
 })
 
 admin.get("/", async function (req, res) {
-
-    /*
+     /*
     Get details for which given roll has approved.
 
     Get details for which given roll has declined.
@@ -147,10 +140,9 @@ admin.get("/", async function (req, res) {
     else push to response only after path_no -1 has approved
 
     */
-
     try {
         let rollno = req.jwt_payload.username;
-
+        let path_objects = [];
 
         // find all ids for which dude is the admin
         let path_details = await database.CertificatePaths.findAll({
@@ -160,7 +152,7 @@ admin.get("/", async function (req, res) {
                 status: 'PENDING'
             }
         });
-        let path_objects = []
+
         path_details.forEach(function (ele) {
             let path_no = ele.getDataValue('path_no');
             let certificate_id = ele.getDataValue('certificate_id');
@@ -185,10 +177,33 @@ admin.get("/", async function (req, res) {
             })
         })
 
-        let response_json = []
+        let response_json = [];
+
         for (const index in path_objects) {
             let path_object = path_objects[index];
             let { path_no, certificate_id, status } = path_object;
+
+            function sendResponse(e){
+                response_json.push({
+                id_extension : e.getDataValue('id_file').split('.').splice(-1)[0],
+                certificate_extension : e.getDataValue('file').split('.').splice(-1)[0],
+                applier_roll: e.getDataValue('applier_roll'),
+                certificate_type: e.getDataValue('type'),
+                certificate_id,
+                status,
+                postal_status: e.getDataValue('postal_status'),
+                email_status: e.getDataValue('email_status'),
+                address: e.getDataValue('address'),
+                receipt: e.getDataValue('receipt'),
+                email: e.getDataValue('email_address'),
+                contact: e.getDataValue('contact'),
+                purpose: e.getDataValue('purpose'),
+                course_code: e.getDataValue('course_code'),
+                course_name: e.getDataValue('course_name'),
+                no_copies: e.getDataValue('no_copies')
+
+            })}
+
             if (status === 'APPROVED') {
                 const ele = await database.Certificate.findOne({
                     attributes: ['applier_roll', 'type', 'address', 'postal_status', 'email_status', 'receipt', 'email_address', 'contact', 'purpose', 'course_code', 'course_name', 'no_copies', 'file', 'id_file'],
@@ -196,26 +211,7 @@ admin.get("/", async function (req, res) {
                         id: certificate_id
                     }
                 })
-
-                response_json.push({
-                    id_extension : ele.getDataValue('id_file').split('.').splice(-1)[0],
-                    certificate_extension : ele.getDataValue('file').split('.').splice(-1)[0],
-                    applier_roll: ele.getDataValue('applier_roll'),
-                    certificate_type: ele.getDataValue('type'),
-                    certificate_id,
-                    status,
-                    postal_status: ele.getDataValue('postal_status'),
-                    email_status: ele.getDataValue('email_status'),
-                    address: ele.getDataValue('address'),
-                    receipt: ele.getDataValue('receipt'),
-                    email: ele.getDataValue('email_address'),
-                    contact: ele.getDataValue('contact'),
-                    purpose: ele.getDataValue('purpose'),
-                    course_code: ele.getDataValue('course_code'),
-                    course_name: ele.getDataValue('course_name'),
-                    no_copies: ele.getDataValue('no_copies')
-
-                })
+               sendResponse(ele);
 
             }
             else if (path_no == 1 && status === 'PENDING') {
@@ -225,26 +221,7 @@ admin.get("/", async function (req, res) {
                         id: certificate_id
                     }
                 })
-
-                response_json.push({
-                    id_extension: ele.getDataValue('id_file').split('.').splice(-1)[0],
-                    certificate_extension: ele.getDataValue('file').split('.').splice(-1)[0],
-                    applier_roll: ele.getDataValue('applier_roll'),
-                    certificate_type: ele.getDataValue('type'),
-                    certificate_id,
-                    status,
-                    postal_status: ele.getDataValue('postal_status'),
-                    email_status: ele.getDataValue('email_status'),
-                    address: ele.getDataValue('address'),
-                    receipt: ele.getDataValue('receipt'),
-                    email: ele.getDataValue('email_address'),
-                    contact: ele.getDataValue('contact'),
-                    purpose: ele.getDataValue('purpose'),
-                    course_code: ele.getDataValue('course_code'),
-                    course_name: ele.getDataValue('course_name'),
-                    no_copies: ele.getDataValue('no_copies')
-
-                })
+                sendResponse(ele);
             }
             else if (path_no != 1) {
                 const row = await database.CertificatePaths.findOne({
@@ -261,28 +238,8 @@ admin.get("/", async function (req, res) {
                             id: certificate_id
                         }
                     })
-                    response_json.push({
-                        id_extension: ele.getDataValue('id_file').split('.').splice(-1)[0],
-                        certificate_extension: ele.getDataValue('file').split('.').splice(-1)[0],
-                        applier_roll: ele.getDataValue('applier_roll'),
-                        certificate_type: ele.getDataValue('type'),
-                        certificate_id,
-                        status,
-                        postal_status: ele.getDataValue('postal_status'),
-                        email_status: ele.getDataValue('email_status'),
-                        address: ele.getDataValue('address'),
-                        receipt: ele.getDataValue('receipt'),
-                        email: ele.getDataValue('email_address'),
-                        contact: ele.getDataValue('contact'),
-                        purpose: ele.getDataValue('purpose'),
-                        course_code: ele.getDataValue('course_code'),
-                        course_name: ele.getDataValue('course_name'),
-                        no_copies: ele.getDataValue('no_copies')
-
-
-                    })
+                    sendResponse(ele);
                 }
-
             }
 
         }
@@ -398,7 +355,6 @@ admin.post('/email', async function (req, res) {
                             //res.status(200).json({ 'message': 'Email sent successfully' });
                             helpers.responseHandle(200,responseMessages.MAIL_SENT,res)
                             fs.unlinkSync(initial_dest);
-
                         }
                     });
                 }
@@ -406,8 +362,7 @@ admin.post('/email', async function (req, res) {
                     console.log(err);
                     fs.unlinkSync(initial_dest);
                     //res.json(500).json({ 'message': "Some problem with sending email" });
-                    return helpers.responseHandle(500,responseMessages.MAIL_NOT_SENT,res);
-                    
+                      return helpers.responseHandle(500,responseMessages.MAIL_NOT_SENT,res);                
                 }
 
             }

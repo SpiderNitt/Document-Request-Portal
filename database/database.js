@@ -181,15 +181,14 @@ const CertificatePaths = sequelize.define('certificate_paths', {
 
 async function test_conn() {
 
-
     await sequelize.sync({ force: true });
     console.log("All models were synchronized successfully.");
 }
 
 
-// Certificate.hasMany(CertificateType, { foreignKey: 'id' })
-// History.hasMany(Certificate, {foreignKey: 'id'})
-// CertificatePaths.hasMany(Certificate, {foreignKey: 'id'})
+ //Certificate.hasMany(CertificateType, { foreignKey: 'id' })
+ //History.hasMany(Certificate, {foreignKey: 'id'})
+ //CertificatePaths.hasMany(Certificate, {foreignKey: 'id'})
 
 // test_conn();
 module.exports = {

@@ -10,8 +10,10 @@ export class StatusProvider extends Component {
         certData: [],
         checkStatus1: false,
         checkStatus2: false,
+        checkStatus3: false,
         certStatus1: 0,
-        certStatus2: 0
+        certStatus2: 0,
+        certStatus3: 0
     };
 
     refreshCertData = async () => {
@@ -25,8 +27,10 @@ export class StatusProvider extends Component {
         for(let i = 0; i < res.data.length; i++) {
           if(res.data[i].type == 1 || res.data[i].type == 2) {
             this.setState({checkStatus1 : true});
-          } else {
+          } else if(res.data[i].type == 3 || res.data[i].type == 4){
             this.setState({checkStatus2 : true});
+          } else{
+            this.setState({checkStatus3 : true});
           }
         }
         for (const cc of cid) {
@@ -39,7 +43,8 @@ export class StatusProvider extends Component {
           certHis,
           loading: false,
           certStatus1: 0,
-          certStatus2: 0
+          certStatus2: 0,
+          certStatus3: 0
         });
       } catch (err) {
        

@@ -15,6 +15,8 @@ import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 
 function Upload(props) {
   const user = JSON.parse(localStorage.getItem("bonafideNITT2020user")).user;
+  let SemObj=[{id: 1,sem: "s1",semName: "Sem 1",copies: 0},{id: 2,sem: "s2",semName: "Sem 2",copies: 0},{id: 3,sem: "s3",semName: "Sem 3",copies: 0},{id: 4,sem: "s4",semName: "Sem 4",copies: 0},{id: 5,sem: "s5",semName: "Sem 5",copies: 0},{id: 6,sem: "s6",semName: "Sem 6",copies: 0},{id: 7,sem: "s7",semName: "Sem 7",copies: 0},{id: 8,sem: "s8",semName: "Sem 8",copies: 0}]
+
   const [emailCount, setCount] = useState(0);
   const [emails, setEmails] = useState([]);
 
@@ -33,7 +35,7 @@ function Upload(props) {
   const [id_fileButton, setIdFileButton] = useState("");
   const [docId,setDocId]  = useState([]);
 
-  const [semester,setSemester] = useState([{sem: "s1",semName: "Sem 1",copies: 0},{sem: "s2",semName: "Sem 2",copies: 0},{sem: "s3",semName: "Sem 3",copies: 0},{sem: "s4",semName: "Sem 4",copies: 0},{sem: "s5",semName: "Sem 5",copies: 0},{sem: "s6",semName: "Sem 6",copies: 0},{sem: "s7",semName: "Sem 7",copies: 0},{sem: "s8",semName: "Sem 8",copies: 0}])
+  const [semester,setSemester] = useState(SemObj);
 
   const [showModal, setModal] = useState(false);
   const [isLoading, setLoading] = useState(false);
@@ -55,12 +57,9 @@ function Upload(props) {
     spider
       .get("/api/student/certificate_types")
       .then((res) => {
-        
         res.data.forEach((add) => {
           setDocId((p) => p.concat(add));    
         }); 
-        console.log(res.data);
-
       })
       .catch((err) => {
 
@@ -81,6 +80,11 @@ function Upload(props) {
 
   const refreshStatus=()=>{
     statusCtx.refreshCertData();
+  }
+
+  const setCopies=(semNo,noCopies)=>{
+    SemObj[semNo-1].copies=noCopies;
+    setSemester(SemObj);
   }
 
   const handleSubmitClose = () => setModal(false);
@@ -143,7 +147,7 @@ function Upload(props) {
     let cd = new FormData();
     for(var i=0;i<docId.length;i++)
     {
-      if(docId[i] && (docId[i].type.toLowerCase() == file.toLowerCase()))
+      if(docId[i] && (docId[i].name.toLowerCase() == file.toLowerCase()))
       {
         cd.set("type", parseInt(docId[i].id));
       }
@@ -154,6 +158,21 @@ function Upload(props) {
       cd.set("course_code", courseCode);
       cd.set("course_name", course);
     }
+     if (file === "grade card" || file === "rank card") {
+      let sems="",copies="";
+      semester.forEach(entry=>{
+          if(entry.copies!=0){
+            if(sems=="") sems+=''+entry.id;
+            else sems+=","+entry.id;
+
+            if(copies=="") copies+=''+entry.copies;
+            else copies+=","+entry.copies;            
+          }
+      });
+
+      cd.set("semester_no",sems);
+      cd.set("rank_grade_card_copies",copies);
+    } 
     if (
       emailDel &&
       document.getElementById("email-sel").checked &&
@@ -171,7 +190,7 @@ function Upload(props) {
     if (feeReceipt) cd.set("receipt", feeReceipt);
     if (contact) cd.set("contact", contact);
     if (purpose) cd.set("purpose", purpose);
-    if (no_of_copies) cd.set("no_copies", no_of_copies);
+    //if (no_of_copies) cd.set("no_copies", no_of_copies);
     cd.set("path", emails.toString());
     for (var pair of cd.entries()) {
      
@@ -200,6 +219,8 @@ function Upload(props) {
         setPreAddr([]);
         setCourse("");
         setCode("");
+        SemObj.forEach(obj=>{obj.copies=0;});
+        setSemester(SemObj);
         setNoOfCopies(null);
         spider
           .get("/api/student/address")
@@ -228,6 +249,10 @@ function Upload(props) {
         document.getElementById("contact-number").value = "";
         document.getElementById("purpose").value = "";
         document.getElementById("college-id").value = "";
+        let copyInputDivNodes=document.querySelectorAll(".copy-input-div");
+        if(copyInputDivNodes){
+          copyInputDivNodes.forEach(node=>node.remove())
+        }
         document.getElementById("certType").value = "bonafide";
         setFile("bonafide");
       })
@@ -712,7 +737,7 @@ function Upload(props) {
                                   if(!document.getElementById(`${sem.sem}box`)){
                                     let semDiv=document.createElement("div");
                                     semDiv.id=`${sem.sem}box`;
-                                    semDiv.classList.add("form-group");
+                                    semDiv.classList.add("form-group","copy-input-div");
                                     semDiv.style.background = "#f5f5f5";
                                     semDiv.style.padding = "1rem";
                                     semDiv.innerHTML=`<label for="no_of_copies_${sem.sem}"> 
@@ -720,13 +745,13 @@ function Upload(props) {
                                                         <span class="cmpl">*</span>
                                                       </label> 
                                                       <input type="number" 
-                                                             class="form-control" 
+                                                             class="form-control copies-input" 
                                                              name="no_of_copies_${sem.sem}"
                                                              id="no_of_copies_${sem.sem}"
                                                              placeholder="Number of copies for ${sem.semName}" 
-                                                             required
-                                                             onchange="setNoOfCopies(this.value)";
-                                                             min="0"                                                            
+                                                             value=1
+                                                             required                                                         
+                                                             min="1"                                                            
                                                       />
                                                       <small id="${sem.sem}-no-of-copies-error-message" class="error"></small>`;
                                     document.getElementById("semesterCopies").appendChild(semDiv);
@@ -1116,7 +1141,15 @@ function Upload(props) {
                           document.getElementById(
                             "select-semester-error-message"
                           ).innerHTML = "";
-                        }
+                        };
+                        
+                        SemObj.forEach(obj=>{obj.copies=0;});
+                        setSemester(SemObj);
+                        let copyInputNodes = document.querySelectorAll(".copies-input");
+                        copyInputNodes.forEach(node=>{
+                          setCopies(parseInt(node.id.slice(-1)),node.value);
+                        });
+
                       }
                     } else if (file === "course re-registration" || file === "course de-registration") {
                       if (!emailCount) {

@@ -44,7 +44,7 @@ function Upload(props) {
   const [addressModal, setAddressModal] = useState(false);
   const [contact, setContact] = useState("");
   const [purpose, setPurpose] = useState("");
-  const [no_of_copies, setNoOfCopies] = useState(null);
+  const [no_of_copies, setNoOfCopies] = useState(0);
 
   const [courseCode, setCode] = useState("");
   const [course, setCourse] = useState("");
@@ -55,13 +55,12 @@ function Upload(props) {
     spider
       .get("/api/student/certificate_types")
       .then((res) => {
-
-        let a={id: 5, type: "Rank Card"},b={id: 6, type: "Grade Card"};
+        
         res.data.forEach((add) => {
           setDocId((p) => p.concat(add));    
-        });
-        setDocId((p) => p.concat(a));
-        setDocId((p) => p.concat(b));
+        }); 
+        console.log(res.data);
+
       })
       .catch((err) => {
 
@@ -344,7 +343,7 @@ function Upload(props) {
                     }
                   }}
                 >
-                  {docId.map(id=>{return(<option value={id.type.toLowerCase()}>{id.type}</option>)})}
+                  {docId.map(id=>{return(<option value={id.name.toLowerCase()}>{id.name}</option>)})}
                 </select>
               </div>
 

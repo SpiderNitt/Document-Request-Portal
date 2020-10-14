@@ -7,7 +7,6 @@ const fs = require('fs')
 const sequelize = require('sequelize')
 const responseMessages = require('../utils/responseHandle')
 
-
 student.post("/certificate_request", async function (req, res) {
     const upload = multer({ storage: helpers.storage, fileFilter: helpers.docFilter }).array('certificate');
     upload(req, res, async function (err) {
@@ -18,7 +17,6 @@ student.post("/certificate_request", async function (req, res) {
         }
         else if (!req.files) {
             //res.status(400).json({ 'message': 'Please select files' });
-            
             return helper.responseHandle(400,responseMessages.FILE_NOT_FOUND,res);
         }
         else if (req.files.length == 1) {
@@ -49,23 +47,11 @@ student.post("/certificate_request", async function (req, res) {
                 fs.unlinkSync(cert_initial_dest);
                 fs.unlinkSync(id_initial_dest);
                 //res.status(500).json({ 'message': 'Some issue with the server. Try again later.' });
-                
                 return helper.responseHandle(500,responseMessages.DEFAULT_500,res);
             }
             let cert_final_dest = final_dest + '/' + cert_filename;
             let id_final_dest = final_dest + '/' + id_filename;
-            // if(!req.body.email && !req.body.address) 
-            // {
-            //     res.status(400).json({'message': 'At least email or address must be present'});
-            //     fs.unlinkSync(cert_final_dest);
-            //     fs.unlinkSync(id_final_dest);
-            //     return;
-            // }
-            // if(!req.body.receipt){
-
-            //     res.status(400).json({'message': 'No receipt number specified'});
-            //     return;
-            // }
+            
             if (!helper.check_compulsory(req.body, ['type', 'path', 'purpose', 'contact'])) {
                 //res.status(400).json({ 'message': 'All compulsory fields are not present' });
                 helper.responseHandle(400,responseMessages.REQUIRED_FIELD,res)
@@ -76,7 +62,6 @@ student.post("/certificate_request", async function (req, res) {
 
             let { type, path, comments, email, address, receipt, purpose, contact, course_code, course_name, no_copies } = req.body;
             path = path.split(',');
-
 
             let status = "PENDING VERIFICATION"
             try {
@@ -108,7 +93,6 @@ student.post("/certificate_request", async function (req, res) {
                 return helper.responseHandle(400,responseMessages.INVALID_DATA,res)
             }
         }
-
     })
 })
 
@@ -201,8 +185,6 @@ student.get('/certificate_download', async function (req, res) {
         let final_dest = appRoot + '/uploads/' + applier_roll + '/' + filename;
         res.status(200).sendFile(final_dest);
     }
-
-
 })
 
 student.get('/certificate_history', async function (req, res) {
@@ -218,7 +200,6 @@ student.get('/certificate_history', async function (req, res) {
                     id,
                     applier_roll: username
                 }
-
             });
         }
         else {
@@ -230,8 +211,6 @@ student.get('/certificate_history', async function (req, res) {
             });
         }
         if (id_exists == null) {
-            //res.status(403).json({ 'message': "You do not have the appropriate permissions to access the resource." })
-           
             return helper.responseHandle(403,responseMessages.ACCESS_DENIED,res);
         }
         if (id) {
@@ -246,15 +225,12 @@ student.get('/certificate_history', async function (req, res) {
             let response_json = []
             response_json.push({ 'path_email': applier_roll + '@nitt.edu', 'status': 'INITIATED REQUEST', 'time': row.getDataValue('time'), 'comments': id_exists.getDataValue('comments') });
 
-
-
             let rows = await database.CertificatePaths.findAll({
                 attributes: ['path_email', 'updatedAt', 'status', 'comments'],
                 where: {
                     certificate_id: id
                 }
             });
-
 
             rows.forEach(function (ele) {
                 response_json.push({
@@ -297,7 +273,6 @@ student.post('/add_certificate', async function (req, res) {
         //res.status(200).json({ 'message': 'Created successfully' });
         return helper.responseHandle(200,responseMessages.CREATE_CERTIFICATE,res);
     }
-
 })
 
 student.get('/certificate_types', async function (req, res) {
@@ -319,7 +294,6 @@ student.get('/certificate_types', async function (req, res) {
     }
 })
 
-
 student.get('/address', async function (req, res) {
 
     let response_json = []
@@ -331,8 +305,6 @@ student.get('/address', async function (req, res) {
             }
         })
         if (rows == null) {
-            // res.status(200).json([]);
-            // return;
             return helper.responseHandle(200,[],res);
         }
         else {
@@ -352,4 +324,4 @@ student.get('/address', async function (req, res) {
     }
 })
 
-module.exports = student
+module.exports = student;

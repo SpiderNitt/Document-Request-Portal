@@ -21,6 +21,9 @@ login.post('/', async function (req, res) {
     else {
 
         let response = await axios.post(webmail_auth_url, data);
+        if(response.status / 100 != 2){
+            return helper.responseHandle(500,responseMessages.UPSTREAM_FAILURE,res)
+        }
 
         if (response.data == 1) {
             flag = true;
@@ -39,7 +42,6 @@ login.post('/', async function (req, res) {
     }
 
     else {
-        // res.status(401).json({ "message": "Invalid username/password Combination" })
         return helper.responseHandle(401,responseMessages.INVALID_CREDENTIALS,res)
     }
 })

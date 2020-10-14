@@ -1,5 +1,6 @@
 const response_messages = {
     'DEFAULT_400':'Bad Request',
+    'UPLOAD_ONLY_REQUIRED': 'Upload only required number of files',
     'FILE_NOT_FOUND':'Upload both the files',
     'SINGLE_FILE_NOT_FOUND': 'Please upload a file',
     'VALIDATION_ERROR':'Only PDF and DOC/DOCX files are allowed',
@@ -14,12 +15,14 @@ const response_messages = {
 
     'DEFAULT_403':'Forbidden',
     'ACCESS_DENIED':'You do not have rights to this resource',
+    'CANNOT_APPROVE_DECLINE': 'Admin before you have declined (or) Admin after you have approved.',
 
-    'DEFAULT_500':'Server error. Try again later',
+    'DEFAULT_500':'Some problem with the server. Try again later',
     'FILE_UPLOAD':'Error in uploading file.Try again later.',
     'FILE_DECLINE':'There was some error declining the file. Try again later',
     'POSTAL_STATUS_UPLOAD':'There was some error uploading the message. Try again later',
     'MAIL_NOT_SENT':'Unable to send mail. Try again later', 
+    'UPSTREAM_FAILURE': 'The webmail servers are not working. Please try again later',
     
     'CERTIFICATE_REQUEST':'Document requested successfully',
     'CREATE_CERTIFICATE':'Document created successfully',

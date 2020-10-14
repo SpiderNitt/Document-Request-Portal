@@ -1,5 +1,7 @@
-const jwt = require('jsonwebtoken')
-
+const jwt = require('jsonwebtoken');
+const { getLogger } = require('nodemailer/lib/shared');
+const pino = require('pino');
+const logger = pino({ level: process.env.LOG_LEVEL || 'info',  prettyPrint: process.env.ENV === 'DEV' });
 
 
 const jwt_verify = function (req, res, next) {
@@ -10,7 +12,7 @@ const jwt_verify = function (req, res, next) {
         req.jwt_payload = decoded.data;
         next();
     } catch (err) {
-        console.log(err)
+        logger.error(err)
         res.status(403).json({ 'message': 'Invalid Token or nonexistent header' });
         return;
 

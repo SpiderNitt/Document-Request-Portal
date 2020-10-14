@@ -6,6 +6,9 @@ const fs = require('fs')
 const sequelize = require('sequelize')
 const responseMessages = require('../utils/responseHandle')
 
+const pino = require('pino');
+const logger = pino({ level: process.env.LOG_LEVEL || 'info',  prettyPrint: process.env.ENV === 'DEV' });
+
 // Student Document Request
 // Along with string payload, contains 2 files. 
 // 1st file: Necessary document
@@ -17,7 +20,7 @@ student.post("/certificate_request", async function (req, res) {
     upload(req, res, async function (err) {
         if (err) {
             // problem with file upload
-            console.log(err)
+            logger.error(err)
             return helper.responseHandle(400, responseMessages.VALIDATION_ERROR, res)
         }
         else if (!(req.files || req.files.length != 2)) {
@@ -45,7 +48,7 @@ student.post("/certificate_request", async function (req, res) {
                 helper.renameFile(id_initial_dest, final_dest + '/' + "ID_" + id_filename);
             }
             catch (err) {
-                console.log(err);
+                logger.error(err);
                 fs.unlinkSync(cert_initial_dest);
                 fs.unlinkSync(id_initial_dest);
 
@@ -78,13 +81,11 @@ student.post("/certificate_request", async function (req, res) {
             }
 
             let { type, path, comments, email, address, receipt, purpose, contact, course_code, course_name, no_copies, semester_no, rank_grade_card_copies } = req.body;
-            console.log(semester_no)
             let sem_nos, card_copies;
             if (semester_no && rank_grade_card_copies) {
                 sem_nos = semester_no.split(',');
                 card_copies = rank_grade_card_copies.split(',');
             }
-            console.log(sem_nos)
             path = path.split(',');
             let status = "PENDING VERIFICATION"
             try {
@@ -108,10 +109,8 @@ student.post("/certificate_request", async function (req, res) {
                     let { id } = helper.wrapper(ele)
                     semwise_types.push(id.toString())
                 })
-                console.log("TYPE:", typeof type)
-                console.log("BOOL/? ", semwise_types.includes(type))
+               
                 let rank_grade_flag = semwise_types.includes(type) ? true : false;
-                console.log("thisis rank grade flag?? ", rank_grade_flag, semwise_types)
                 let rank_grade_mapping = []
                 if (rank_grade_flag) {
                     for (let i = 0; i < sem_nos.length; i++) {
@@ -123,7 +122,6 @@ student.post("/certificate_request", async function (req, res) {
                         )
                     }
                 }
-                console.log("THIS IS SSSSSS", rank_grade_mapping);
                 for (const sem_mapping of rank_grade_mapping) {
                     let {sem_no, no_copies} = sem_mapping;
                     await database.RankGradeCard.create({ certificate_id, applier_roll, certificate_type: type, semester_no: sem_no, no_copies });
@@ -138,7 +136,7 @@ student.post("/certificate_request", async function (req, res) {
                 helper.responseHandle(200, responseMessages.CERTIFICATE_REQUEST, res)
             }
             catch (err) {
-                console.log(err)
+                logger.error(err)
                 fs.unlinkSync(cert_final_dest);
                 fs.unlinkSync(id_final_dest);
 
@@ -298,7 +296,7 @@ student.get("/", async function (req, res) {
         res.status(200).json(response_json);
     }
     catch (err) {
-        console.log(err);
+        logger.error(err);
         return helper.responseHandle(500, responseMessages.DEFAULT_500, res);
     }
 });
@@ -329,7 +327,7 @@ student.get("/address", async function (req, res) {
         }
     }
     catch (err) {
-        console.log(err);
+        logger.error(err);
         //res.status(500).json({ 'message': 'Some issue with the server. Please try again later' });
         return helper.responseHandle(500, responseMessages.DEFAULT_500, res)
     }
@@ -349,7 +347,7 @@ student.get('/certificate_types', async function (req, res) {
         res.status(200).json(response_json);
     }
     catch (err) {
-        console.log(err);
+        logger.error(err);
         return helper.responseHandle(500, responseMessages.DEFAULT_500, res);
     }
 });
@@ -377,7 +375,7 @@ student.post("/add_certificate", async function (req, res) {
             return helper.responseHandle(200, responseMessages.CREATE_CERTIFICATE, res);
         }
     } catch (err) {
-        console.log(err);
+        logger.error(err);
         return helper.responseHandle(500, responseMessages.DEFAULT_500, res);
     }
 
@@ -453,7 +451,7 @@ student.get("/certificate_history", async function (req, res) {
         }
     }
     catch (err) {
-        console.log(err);
+        logger.error(err);
         return helper.responseHandle(500, responseMessages.DEFAULT_500, res);
 
     }

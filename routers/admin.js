@@ -9,6 +9,8 @@ const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 const responseMessages = require('../utils/responseHandle')
+const pino = require('pino');
+const logger = pino({ level: process.env.LOG_LEVEL || 'info',  prettyPrint: process.env.ENV === 'DEV' });
 
 const middlewares = require('../utils/middlewares')
 const database = require("../database/database")
@@ -27,7 +29,7 @@ admin.post('/approve', async function (req, res) {
     upload(req, res, async function (err) {
         if (err) {
             // If error in file upload
-            console.log(err)
+            logger.error(err)
             return helpers.responseHandle(400, responseMessages.VALIDATION_ERROR, res);
         }
         else {
@@ -79,7 +81,7 @@ admin.post('/approve', async function (req, res) {
                         catch (err) {
                             // if there is any error deleting/moving files, remove the file in temp/ and ask user to try again 
                             fs.unlinkSync(initial_dest);
-                            console.log(err);
+                            logger.error(err);
                             return helpers.responseHandle(500, responseMessages.FILE_UPLOAD, res);
 
                         }
@@ -95,7 +97,7 @@ admin.post('/approve', async function (req, res) {
                     }
                     catch (err) {
                         // If any error, delete temp/ file and ask user to try again.
-                        console.log(err);
+                        logger.error(err);
                         fs.unlinkSync(initial_dest);
                         return helpers.responseHandle(500, responseMessages.FILE_UPLOAD, res);
 
@@ -180,7 +182,7 @@ admin.post('/decline', multer().none(), async function (req, res) {
         }
         catch (err) {
             // if any error, ask user to try again later
-            console.log(err);
+            logger.error(err);
             return helpers.responseHandle(500, responseMessages.FILE_DECLINE, res);
         }
     }
@@ -339,7 +341,7 @@ admin.get("/", async function (req, res) {
 
     }
     catch (err) {
-        console.log(err);
+        logger.error(err);
         return helpers.responseHandle(500, responseMessages.DEFAULT_500, res);
     }
 });
@@ -356,7 +358,7 @@ admin.post('/postal_status', async function (req, res) {
         helpers.responseHandle(200, responseMessages.POSTAL_STATUS_UPDATE, res)
     }
     catch (err) {
-        console.log(err);
+        logger.error(err);
         return helpers.responseHandle(500, responseMessages.POSTAL_STATUS_UPLOAD, res);
     }
 });
@@ -368,7 +370,7 @@ admin.post('/email', async function (req, res) {
     upload(req, res, async function (err) {
         if (err) {
             // problem with file upload
-            console.log(err)
+            logger.error(err)
             return helpers.responseHandle(400, responseMessages.VALIDATION_ERROR, res);
         }
         if (!req.file) {
@@ -456,7 +458,7 @@ admin.post('/email', async function (req, res) {
 
                 // helpers.mailTransporter.sendMail(mailDetails, async function (err, data) {
                 //     if (err) {
-                //         console.log(err);
+                //         logger.error(err);
                 //         res.status(500).json({ 'message': 'Unable to send mail. Try again later' });
                 //         fs.unlinkSync(initial_dest);
 
@@ -477,7 +479,7 @@ admin.post('/email', async function (req, res) {
             }
 
             catch (err) {
-                console.log(err);
+                logger.error(err);
                 fs.unlinkSync(initial_dest);
                 return helpers.responseHandle(500, responseMessages.MAIL_NOT_SENT, res);
 

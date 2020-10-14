@@ -6,6 +6,9 @@ const login = require('express').Router()
 const helper = require('../utils/helper')
 const admin_allowlist = ['abcspider', 'defspider', 'ghispider', 'jklspider', 'mnospider']
 const responseMessages = require('../utils/responseHandle')
+const pino = require('pino');
+const logger = pino({ level: process.env.LOG_LEVEL || 'info',  prettyPrint: process.env.ENV === 'DEV' });
+
 
 login.post('/', async function (req, res) {
     const { username, password } = req.body;

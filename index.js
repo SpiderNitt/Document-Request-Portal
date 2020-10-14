@@ -1,10 +1,13 @@
 require('dotenv').config({ path: './env/.env' })
 
 const express = require('express')
-const morgan = require('morgan')
+// const morgan = require('morgan')
 const cors = require('cors');
 const path = require('path');
 global.appRoot = path.resolve(__dirname);
+
+const pino = require('pino');
+const logger = pino({ level: process.env.LOG_LEVEL || 'info',  prettyPrint: process.env.ENV === 'DEV' });
 
 const app = express()
 const port = process.env.PORT || 3001
@@ -17,7 +20,7 @@ const { exit } = require('process');
 
 app.use(cors())
 app.use(express.json());
-app.use(morgan('dev'));
+// app.use(morgan('dev'));
 app.use(express.static('public/build'))
 
 
@@ -45,7 +48,7 @@ catch (err){
     }
 }
 app.listen(port, function () {
-    console.log("llistening on port " + port)
+    logger.info('Server running on port %d', port);
 })
 
 

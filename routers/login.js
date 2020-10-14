@@ -6,6 +6,9 @@ const login = require('express').Router()
 const helper = require('../utils/helper')
 const admin_allowlist = ['abcspider', 'defspider', 'ghispider', 'jklspider', 'mnospider']
 const responseMessages = require('../utils/responseHandle')
+const pino = require('pino');
+const logger = pino({ level: process.env.LOG_LEVEL || 'info',  prettyPrint: process.env.ENV === 'DEV' });
+
 
 login.post('/', async function (req, res) {
     const { username, password } = req.body;
@@ -21,6 +24,9 @@ login.post('/', async function (req, res) {
     else {
 
         let response = await axios.post(webmail_auth_url, data);
+        if(response.status / 100 != 2){
+            return helper.responseHandle(500,responseMessages.UPSTREAM_FAILURE,res)
+        }
 
         if (response.data == 1) {
             flag = true;
@@ -39,7 +45,6 @@ login.post('/', async function (req, res) {
     }
 
     else {
-        // res.status(401).json({ "message": "Invalid username/password Combination" })
         return helper.responseHandle(401,responseMessages.INVALID_CREDENTIALS,res)
     }
 })

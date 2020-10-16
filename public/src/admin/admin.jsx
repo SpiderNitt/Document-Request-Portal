@@ -178,7 +178,10 @@ function Admin() {
 });
 } else {
   certreq.certificates.map((cert) => {
-    console.log(cert);
+    let semesterCopiesInfo = '';
+    for(let i = 0; i < cert.response_rank_grade_rows.length; i++) {
+      semesterCopiesInfo += 'Sem ' + cert.response_rank_grade_rows[i].semester_no + ': (x' + cert.response_rank_grade_rows[i].no_copies + ') ';
+    }
     let temp = {};
     index = index + 1;
     if (document.getElementById(cert.id).checked === true) {
@@ -187,8 +190,7 @@ function Admin() {
       temp["Roll number"] = cert["applier_roll"];
       temp["Purpose"] = cert["purpose"];
       temp["Contact"] = cert["contact"];
-      temp["Semester"] = cert["response_rank_grade_rows"]; //To be changed
-      temp["Copies"] = cert["response_rank_grade_rows"];  //To be changed
+      temp["Semester Copies"] = semesterCopiesInfo;
       temp["Status"] = cert["status"];
       temp["Approved"] = cert["approved"];
       excelData.push(temp);

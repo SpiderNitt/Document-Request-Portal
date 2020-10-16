@@ -190,7 +190,9 @@ function Upload(props) {
     if (feeReceipt) cd.set("receipt", feeReceipt);
     if (contact) cd.set("contact", contact);
     if (purpose) cd.set("purpose", purpose);
-    //if (no_of_copies) cd.set("no_copies", no_of_copies);
+    if(file === "transcript") {
+      if (no_of_copies) cd.set("no_copies", no_of_copies);
+    }
     cd.set("path", emails.toString());
     for (var pair of cd.entries()) {
      

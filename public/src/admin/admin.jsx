@@ -33,8 +33,8 @@ function Admin() {
       .then((res) => {
         res.data.map((x) => {
           x.certificate_type_id = x.id;
-          x.certificate_type = x.type;
-          delete x.type;
+          x.certificate_type = x.name;
+          delete x.name;
           delete x.id;
           return true;
         });
@@ -159,7 +159,7 @@ function Admin() {
       excelData.push(temp);
     }
   });
-} else {
+} else if(certreq.certificate_type === "Course Re-Registration" || certreq.certificate_type === "Course De-Registration") {
   certreq.certificates.map((cert) => {
   let temp = {};
   index = index + 1;
@@ -176,6 +176,24 @@ function Admin() {
     excelData.push(temp);
   }
 });
+} else {
+  certreq.certificates.map((cert) => {
+    console.log(cert);
+    let temp = {};
+    index = index + 1;
+    if (document.getElementById(cert.id).checked === true) {
+      temp["S.No"] = index;
+      temp["Document Type"] = certreq.certificate_type;
+      temp["Roll number"] = cert["applier_roll"];
+      temp["Purpose"] = cert["purpose"];
+      temp["Contact"] = cert["contact"];
+      temp["Semester"] = cert["response_rank_grade_rows"]; //To be changed
+      temp["Copies"] = cert["response_rank_grade_rows"];  //To be changed
+      temp["Status"] = cert["status"];
+      temp["Approved"] = cert["approved"];
+      excelData.push(temp);
+    }
+  });
 }
   if (excelData.length) {
     const xls = new xlsExport(excelData, "Info");
@@ -204,7 +222,7 @@ function Admin() {
               let pending = 0,
                 approved = 0;
               cert.certificates.forEach((certificate) => {
-                if (certificate.status === "APPROVED") {
+                if (certificate.status.includes("APPROVED")) {
                   approved = approved + 1;
                 } else {
                   pending = pending + 1;
@@ -227,14 +245,14 @@ function Admin() {
                               Pending:
                               <span className="req-notif">{pending}</span>
                             </span>
-                            {cert.certificate_type === "Transcript" ? (
+                            {/* {cert.certificate_type === "Transcript" ? ( */}
                               <span className="pending-approved-number">
                                 Approved:
                                 <span className="req-notif">{approved}</span>
                               </span>
-                            ) : (
+                            {/* ) : (
                               <></>
-                            )}
+                            )} */}
                           </Accordion.Toggle>
                         </Card.Header>
                         <Accordion.Collapse eventKey="0">
@@ -257,7 +275,15 @@ function Admin() {
                             (pending === 0 &&
                               approved === 0 &&
                               cert.certificate_type ===
-                                "Course Re-Registration") ? (
+                                "Course Re-Registration") ||
+                              (pending === 0 &&
+                                approved === 0 &&
+                                cert.certificate_type ===
+                                  "Rank Card") || 
+                              (pending === 0 &&
+                                approved === 0 &&
+                                cert.certificate_type ===
+                                  "Grade Card") ? (
                               <p className="placeholder-nil text-center">
                                 <FaListAlt className="mr-2" />
                                 No document requests
@@ -295,14 +321,15 @@ function Admin() {
                                           cert.certificate_type ===
                                             "Course Re-Registration" ? (
                                             <>
-                                              <th scope="col">Course ID</th>
+                                              <th scope="col">Course Code</th>
                                               <th scope="col">Course Name</th>
                                             </>
                                           ) : (
                                             <></>
                                           )}
-                                          {cert.certificate_type ===
-                                            "Transcript"
+                                          {cert.certificate_type == "Transcript" ||
+                                            cert.certificate_type === "Rank Card" ||
+                                            cert.certificate_type === "Grade Card" 
                                           ? <th>Number of copies</th>
                                           : <></>
                                           }
@@ -316,7 +343,7 @@ function Admin() {
                                       <tbody>
                                         {cert.certificates.map(
                                           (data, index) => {
-                                            if (data.status !== "APPROVED") {
+                                            if (!data.status.includes("APPROVED")) {
                                               return (
                                                 <tr key={index + 1}>
                                                   <th>{index + 1}</th>
@@ -392,7 +419,9 @@ function Admin() {
                                                   ) : (
                                                     <></>
                                                   )}
-                                                  {cert.certificate_type === "Transcript"
+                                                  {cert.certificate_type === "Transcript" ||
+                                                    cert.certificate_type === "Rank Card" ||
+                                                    cert.certificate_type === "Grade Card"
                                                   ? <td>{data.no_copies}</td>
                                                   : <></>
                                                   }
@@ -469,13 +498,15 @@ function Admin() {
                                           cert.certificate_type ===
                                             "Course Re-Registration" ? (
                                             <>
-                                              <th scope="col">Course ID</th>
+                                              <th scope="col">Course Code</th>
                                               <th scope="col">Course Name</th>
                                             </>
                                           ) : (
                                             <></>
                                           )}
-                                          { cert.certificate_type === "Transcript"
+                                          { cert.certificate_type === "Transcript" ||
+                                            cert.certificate_type === "Rank Card" ||
+                                            cert.certificate_type === "Grade Card"
                                           ? <>
                                             <th scopr="col">Number of copies</th>
                                             <th scope="col">Email Address</th>
@@ -493,7 +524,9 @@ function Admin() {
                                           ) : (
                                             <></>
                                           )}
-                                          {cert.certificate_type === "Transcript"
+                                          {cert.certificate_type === "Transcript" ||
+                                            cert.certificate_type === "Rank Card" ||
+                                            cert.certificate_type === "Grade Card"
                                           ? <>
                                             <th scope="col">Email</th>
                                             <th scope="col">Postal</th>
@@ -507,7 +540,7 @@ function Admin() {
                                       <tbody>
                                         {cert.certificates.map(
                                           (data, index) => {
-                                            if (data.status === "APPROVED") {
+                                            if (data.status.includes("APPROVED")) {
                                               return (
                                                 <tr key={index + 1}>
                                                   <th>{index + 1}</th>
@@ -541,7 +574,9 @@ function Admin() {
                                                   ) : (
                                                     <></>
                                                   )}
-                                                  {cert.certificate_type === "Transcript"
+                                                  {cert.certificate_type === "Transcript" ||
+                                                    cert.certificate_type === "Rank Card" ||
+                                                    cert.certificate_type === "Grade Card"
                                                   ? <>
                                                     <td>{data.no_copies}</td>
                                                     <td>
@@ -594,7 +629,9 @@ function Admin() {
                                                   ) : (
                                                     <></>
                                                   )}
-                                                  {cert.certificate_type === "Transcript"
+                                                  {cert.certificate_type === "Transcript" ||
+                                                    cert.certificate_type === "Rank Card" ||
+                                                    cert.certificate_type === "Grade Card"
                                                   ? <>
                                                   <td>
                                                     {data.email ? (

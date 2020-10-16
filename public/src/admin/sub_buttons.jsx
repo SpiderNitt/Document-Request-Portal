@@ -89,7 +89,7 @@ export const Approve = (props) => {
               className="btn btn-success"
               onClick={approveHandler}
             >
-              Verify
+              Approve
             </button>
           </div>
         </Modal.Body>

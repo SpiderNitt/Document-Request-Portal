@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import spider from "../../utils/API";
-import { StatusContext } from '../../contexts/StatusContext'
+import { StatusContext } from "../../contexts/StatusContext";
 import { ToastContainer } from "react-toastify";
 import { Modal } from "react-bootstrap";
 import CertificateTemplate from "../cert-templates/cert-temp";
@@ -15,7 +15,16 @@ import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 
 function Upload(props) {
   const user = JSON.parse(localStorage.getItem("bonafideNITT2020user")).user;
-  let SemObj=[{id: 1,sem: "s1",semName: "Sem 1",copies: 0},{id: 2,sem: "s2",semName: "Sem 2",copies: 0},{id: 3,sem: "s3",semName: "Sem 3",copies: 0},{id: 4,sem: "s4",semName: "Sem 4",copies: 0},{id: 5,sem: "s5",semName: "Sem 5",copies: 0},{id: 6,sem: "s6",semName: "Sem 6",copies: 0},{id: 7,sem: "s7",semName: "Sem 7",copies: 0},{id: 8,sem: "s8",semName: "Sem 8",copies: 0}]
+  let SemObj = [
+    { id: 1, sem: "s1", semName: "Sem 1", copies: 0 },
+    { id: 2, sem: "s2", semName: "Sem 2", copies: 0 },
+    { id: 3, sem: "s3", semName: "Sem 3", copies: 0 },
+    { id: 4, sem: "s4", semName: "Sem 4", copies: 0 },
+    { id: 5, sem: "s5", semName: "Sem 5", copies: 0 },
+    { id: 6, sem: "s6", semName: "Sem 6", copies: 0 },
+    { id: 7, sem: "s7", semName: "Sem 7", copies: 0 },
+    { id: 8, sem: "s8", semName: "Sem 8", copies: 0 },
+  ];
 
   const [emailCount, setCount] = useState(0);
   const [emails, setEmails] = useState([]);
@@ -33,9 +42,9 @@ function Upload(props) {
   const [id_fileName, setIdFileName] = useState("");
   const [cert_fileButton, setCertFileButton] = useState("");
   const [id_fileButton, setIdFileButton] = useState("");
-  const [docId,setDocId]  = useState([]);
+  const [docId, setDocId] = useState([]);
 
-  const [semester,setSemester] = useState(SemObj);
+  const [semester, setSemester] = useState(SemObj);
 
   const [showModal, setModal] = useState(false);
   const [isLoading, setLoading] = useState(false);
@@ -52,18 +61,16 @@ function Upload(props) {
   const [course, setCourse] = useState("");
 
   const statusCtx = useContext(StatusContext);
-  
+
   useEffect(() => {
     spider
       .get("/api/student/certificate_types")
       .then((res) => {
         res.data.forEach((add) => {
-          setDocId((p) => p.concat(add));    
-        }); 
+          setDocId((p) => p.concat(add));
+        });
       })
-      .catch((err) => {
-
-      });
+      .catch((err) => {});
   }, []);
   useEffect(() => {
     spider
@@ -73,19 +80,17 @@ function Upload(props) {
           setPreAddr((p) => p.concat(add));
         });
       })
-      .catch((err) => {
-
-      });
+      .catch((err) => {});
   }, []);
 
-  const refreshStatus=()=>{
+  const refreshStatus = () => {
     statusCtx.refreshCertData();
-  }
+  };
 
-  const setCopies=(semNo,noCopies)=>{
-    SemObj[semNo-1].copies=noCopies;
+  const setCopies = (semNo, noCopies) => {
+    SemObj[semNo - 1].copies = noCopies;
     setSemester(SemObj);
-  }
+  };
 
   const handleSubmitClose = () => setModal(false);
   const handleAddressClose = () => setAddressModal(false);
@@ -145,34 +150,36 @@ function Upload(props) {
     let fileUpload = document.getElementById("cert").files[0];
     let college_id = document.getElementById("college-id").files[0];
     let cd = new FormData();
-    for(var i=0;i<docId.length;i++)
-    {
-      if(docId[i] && (docId[i].name.toLowerCase() == file.toLowerCase()))
-      {
+    for (var i = 0; i < docId.length; i++) {
+      if (docId[i] && docId[i].name.toLowerCase() == file.toLowerCase()) {
         cd.set("type", parseInt(docId[i].id));
       }
     }
     cd.append("certificate", fileUpload);
     cd.append("certificate", college_id);
-    if (file === "course de-registration" || file === "course re-registration") {
+    if (
+      file === "course de-registration" ||
+      file === "course re-registration"
+    ) {
       cd.set("course_code", courseCode);
       cd.set("course_name", course);
     }
-     if (file === "grade card" || file === "rank card") {
-      let sems="",copies="";
-      semester.forEach(entry=>{
-          if(entry.copies!=0){
-            if(sems=="") sems+=''+entry.id;
-            else sems+=","+entry.id;
+    if (file === "grade card" || file === "rank card") {
+      let sems = "",
+        copies = "";
+      semester.forEach((entry) => {
+        if (entry.copies != 0) {
+          if (sems == "") sems += "" + entry.id;
+          else sems += "," + entry.id;
 
-            if(copies=="") copies+=''+entry.copies;
-            else copies+=","+entry.copies;            
-          }
+          if (copies == "") copies += "" + entry.copies;
+          else copies += "," + entry.copies;
+        }
       });
 
-      cd.set("semester_no",sems);
-      cd.set("rank_grade_card_copies",copies);
-    } 
+      cd.set("semester_no", sems);
+      cd.set("rank_grade_card_copies", copies);
+    }
     if (
       emailDel &&
       document.getElementById("email-sel").checked &&
@@ -180,9 +187,9 @@ function Upload(props) {
     )
       cd.set("email", emailDel);
     if (
-      address &&
-      document.getElementById("postal-del").checked &&
-      file === "transcript" ||
+      (address &&
+        document.getElementById("postal-del").checked &&
+        file === "transcript") ||
       file === "grade card" ||
       file === "rank card"
     )
@@ -190,12 +197,11 @@ function Upload(props) {
     if (feeReceipt) cd.set("receipt", feeReceipt);
     if (contact) cd.set("contact", contact);
     if (purpose) cd.set("purpose", purpose);
-    if(file === "transcript") {
+    if (file === "transcript") {
       if (no_of_copies) cd.set("no_copies", no_of_copies);
     }
     cd.set("path", emails.toString());
     for (var pair of cd.entries()) {
-     
     }
     spider
       .post("api/student/certificate_request", cd)
@@ -221,7 +227,9 @@ function Upload(props) {
         setPreAddr([]);
         setCourse("");
         setCode("");
-        SemObj.forEach(obj=>{obj.copies=0;});
+        SemObj.forEach((obj) => {
+          obj.copies = 0;
+        });
         setSemester(SemObj);
         setNoOfCopies(null);
         spider
@@ -231,9 +239,7 @@ function Upload(props) {
               setPreAddr((p) => p.concat(add));
             });
           })
-          .catch((err) => {
-
-          });
+          .catch((err) => {});
 
         refreshStatus();
 
@@ -246,14 +252,14 @@ function Upload(props) {
           document.getElementById("emaildel").value = "";
         if (document.getElementById("postal-del"))
           document.getElementById("postal-del").value = "";
-        if(document.getElementById("no_of_copies"))
+        if (document.getElementById("no_of_copies"))
           document.getElementById("no_of_copies").value = "";
         document.getElementById("contact-number").value = "";
         document.getElementById("purpose").value = "";
         document.getElementById("college-id").value = "";
-        let copyInputDivNodes=document.querySelectorAll(".copy-input-div");
-        if(copyInputDivNodes){
-          copyInputDivNodes.forEach(node=>node.remove())
+        let copyInputDivNodes = document.querySelectorAll(".copy-input-div");
+        if (copyInputDivNodes) {
+          copyInputDivNodes.forEach((node) => node.remove());
         }
         document.getElementById("certType").value = "bonafide";
         setFile("bonafide");
@@ -295,28 +301,39 @@ function Upload(props) {
 
         <div className="row">
           <div className="col-md-6 form-left">
-          <div style={{width: '100%', display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-end'}}>
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "flex-end",
+                alignItems: "flex-end",
+              }}
+            >
               {file === "bonafide" || file === "transcript" ? (
-                  <a
-                    href="#!"
-                    onClick={calculate_source}
-                    id="anchorClick"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="float-right small-link"
-                  >
-                    Download Template
-                  </a>
-                ) : (
-                  <></>
-                )}
-              </div>
+                <a
+                  href="#!"
+                  onClick={calculate_source}
+                  id="anchorClick"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="float-right small-link"
+                >
+                  Download Template
+                </a>
+              ) : (
+                <></>
+              )}
+            </div>
             <form id="request-main">
               <div className="form-group">
                 <label htmlFor="certType">
-                  Enter Document type <span className="cmpl">*</span><MdHelp onClick={handleInstructionsOpen} style={{position: "absolute", right: "1em"}}/>
+                  Enter Document type <span className="cmpl">*</span>
+                  <MdHelp
+                    onClick={handleInstructionsOpen}
+                    style={{ position: "absolute", right: "1em" }}
+                  />
                 </label>
-                
+
                 <select
                   name="certType"
                   id="certType"
@@ -324,13 +341,20 @@ function Upload(props) {
                   onChange={(e) => {
                     let certType = e.target.value;
                     setFile(certType);
-                    if (file === "course de-registration" || file === "course re-registration") {
+                    if (
+                      file === "course de-registration" ||
+                      file === "course re-registration"
+                    ) {
                       document.getElementById("course-code").value = "";
                       document.getElementById("course-name").value = "";
                       setCourse("");
                       setCode("");
                     }
-                    if (certType === "transcript") {
+                    if (
+                      certType === "transcript" ||
+                      certType === "rank card" ||
+                      certType === "grade card"
+                    ) {
                       setCount(emailCount + 1);
                       setEmails(["transcript@nitt.edu"]);
                       document.getElementById(
@@ -362,7 +386,7 @@ function Upload(props) {
                           "cname-error-message"
                         ).innerHTML = "";
                       }
-                      if(document.getElementById("email-error-message")) {
+                      if (document.getElementById("email-error-message")) {
                         document.getElementById(
                           "email-error-message"
                         ).innerHTML = "";
@@ -370,13 +394,19 @@ function Upload(props) {
                     }
                   }}
                 >
-                  {docId.map(id=>{return(<option value={id.name.toLowerCase()}>{id.name}</option>)})}
+                  {docId.map((id) => {
+                    return (
+                      <option value={id.name.toLowerCase()}>{id.name}</option>
+                    );
+                  })}
                 </select>
               </div>
 
               {/* Certificate Delivery */}
 
-              {file === "transcript" || file==="rank card" || file==="grade card" ? (
+              {file === "transcript" ||
+              file === "rank card" ||
+              file === "grade card" ? (
                 <>
                   <div className="form-group">
                     <label htmlFor="delivery-sel">
@@ -637,7 +667,8 @@ function Upload(props) {
                 <></>
               )}
               {/* Course Deregistration/Registration */}
-              {file === "course de-registration" || file === "course re-registration" ? (
+              {file === "course de-registration" ||
+              file === "course re-registration" ? (
                 <>
                   <div className="form-group">
                     <label htmlFor="course-code">
@@ -677,6 +708,7 @@ function Upload(props) {
               ) : (
                 <></>
               )}
+
               {/* Contact information */}
               <div className="form-group">
                 <label htmlFor="contact-number">
@@ -695,6 +727,7 @@ function Upload(props) {
                 />
                 <small id="contact-error-message" className="error"></small>
               </div>
+
               {/* Fee Receipt */}
               {file === "transcript" ? (
                 <div className="fee-receipt">
@@ -719,30 +752,35 @@ function Upload(props) {
               ) : (
                 <></>
               )}
+
               {/*Semester and #copies for rank and grade card */}
-              {file==="rank card" || file==="grade card" ? (
+              {file === "rank card" || file === "grade card" ? (
                 <div className="semesters">
                   <div className="form-group">
                     <label htmlFor="semester">
                       Choose required semesters <span className="cmpl">*</span>
                     </label>
-                    {semester.map(sem=>{
-                        return( 
-                          <> 
-                            <div className="form-check">
-                              <input 
-                                type="checkbox" 
-                                className="form-check-input"
-                                id={"check_" + sem.sem}
-                                name={sem.sem}
-                                onChange={(e)=>{
-                                  if(!document.getElementById(`${sem.sem}box`)){
-                                    let semDiv=document.createElement("div");
-                                    semDiv.id=`${sem.sem}box`;
-                                    semDiv.classList.add("form-group","copy-input-div");
-                                    semDiv.style.background = "#f5f5f5";
-                                    semDiv.style.padding = "1rem";
-                                    semDiv.innerHTML=`<label for="no_of_copies_${sem.sem}"> 
+                    {semester.map((sem) => {
+                      return (
+                        <>
+                          <div className="form-check">
+                            <input
+                              type="checkbox"
+                              className="form-check-input"
+                              min="1"
+                              id={"check_" + sem.sem}
+                              name={sem.sem}
+                              onChange={(e) => {
+                                if (!document.getElementById(`${sem.sem}box`)) {
+                                  let semDiv = document.createElement("div");
+                                  semDiv.id = `${sem.sem}box`;
+                                  semDiv.classList.add(
+                                    "form-group",
+                                    "copy-input-div"
+                                  );
+                                  semDiv.style.background = "#f5f5f5";
+                                  semDiv.style.padding = "1rem";
+                                  semDiv.innerHTML = `<label for="no_of_copies_${sem.sem}"> 
                                                         ${sem.semName} - Number of Copies
                                                         <span class="cmpl">*</span>
                                                       </label> 
@@ -755,18 +793,27 @@ function Upload(props) {
                                                              required                                                         
                                                              min="1"                                                            
                                                       />
+                                                      <small
+                                                      id="rc-gc-no-of-copies-error-message"
+                                                      class="error"
+                                                    ></small>
                                                       <small id="${sem.sem}-no-of-copies-error-message" class="error"></small>`;
-                                    document.getElementById("semesterCopies").appendChild(semDiv);
-                                  }
-                                  else{
-                                    document.getElementById(`${sem.sem}box`).remove();
-                                  }
-                                }} />
-                              <label htmlFor={sem.sem}> {sem.semName} </label> 
-                            </div>
-                          </>
-                          )}
-                    )}
+                                  document
+                                    .getElementById("semesterCopies")
+                                    .appendChild(semDiv);
+                                } else {
+                                  document
+                                    .getElementById(`${sem.sem}box`)
+                                    .remove();
+                                }
+                              }}
+                            />
+
+                            <label htmlFor={sem.sem}> {sem.semName} </label>
+                          </div>
+                        </>
+                      );
+                    })}
                     <small
                       id="select-semester-error-message"
                       className="error"
@@ -780,14 +827,20 @@ function Upload(props) {
                 <></>
               )}
               {/* Administrator Email Addition */}
-              {file === "transcript" ? (
+              {file === "transcript" ||
+              file === "rank card" ||
+              file === "grade card" ? (
                 <></>
               ) : (
                 <>
                   <div className="form-group">
                     <label htmlFor="emailaddr">
                       Enter Signatories' Email address{" "}
-                      <span className="cmpl">*</span><MdHelp onClick={handleSignatoriesOpen} style={{position: "absolute", right: "1em"}}/>
+                      <span className="cmpl">*</span>
+                      <MdHelp
+                        onClick={handleSignatoriesOpen}
+                        style={{ position: "absolute", right: "1em" }}
+                      />
                     </label>
                     <input
                       type="email"
@@ -853,32 +906,20 @@ function Upload(props) {
               {/* Purpose */}
 
               <div className="form-group">
-                  {file === "bonafide" || file === "transcript" || file === "grade card" || file === "rank card"
-                  ? <>
-                      <label htmlFor="purpose">Enter Purpose <span className="cmpl">*</span></label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        name="purpose"
-                        id="purpose"
-                        placeholder="Purpose for document requisition"
-                        required
-                        onChange={(e) => {
-                          setPurpose(e.target.value);
-                        }}
-                      />
-                      <small id="purpose-error-message" className="error"></small>
-                    </>
-                  : <>
-                    {file === "course de-registration"
-                    ? <>
-                    Enter Reason <span className="cmpl">*</span>
+                {file === "bonafide" ||
+                file === "transcript" ||
+                file === "grade card" ||
+                file === "rank card" ? (
+                  <>
+                    <label htmlFor="purpose">
+                      Enter Purpose <span className="cmpl">*</span>
+                    </label>
                     <input
                       type="text"
                       className="form-control"
                       name="purpose"
                       id="purpose"
-                      placeholder="Reason for Course De-Registration"
+                      placeholder="Purpose for document requisition"
                       required
                       onChange={(e) => {
                         setPurpose(e.target.value);
@@ -886,30 +927,56 @@ function Upload(props) {
                     />
                     <small id="purpose-error-message" className="error"></small>
                   </>
-                    : <>
-                    Enter Reason <span className="cmpl">*</span>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="purpose"
-                      id="purpose"
-                      placeholder="Reason for Course Re-Registration"
-                      required
-                      onChange={(e) => {
-                        setPurpose(e.target.value);
-                      }}
-                    />
-                    <small id="purpose-error-message" className="error"></small>
+                ) : (
+                  <>
+                    {file === "course de-registration" ? (
+                      <>
+                        Enter Reason <span className="cmpl">*</span>
+                        <input
+                          type="text"
+                          className="form-control"
+                          name="purpose"
+                          id="purpose"
+                          placeholder="Reason for Course De-Registration"
+                          required
+                          onChange={(e) => {
+                            setPurpose(e.target.value);
+                          }}
+                        />
+                        <small
+                          id="purpose-error-message"
+                          className="error"
+                        ></small>
+                      </>
+                    ) : (
+                      <>
+                        Enter Reason <span className="cmpl">*</span>
+                        <input
+                          type="text"
+                          className="form-control"
+                          name="purpose"
+                          id="purpose"
+                          placeholder="Reason for Course Re-Registration"
+                          required
+                          onChange={(e) => {
+                            setPurpose(e.target.value);
+                          }}
+                        />
+                        <small
+                          id="purpose-error-message"
+                          className="error"
+                        ></small>
+                      </>
+                    )}
                   </>
-                    }
-                  </>
-                  }
+                )}
               </div>
 
-              {file === "transcript"
-              ? <div className="form-group">
+              {file === "transcript" ? (
+                <div className="form-group">
                   <label htmlFor="no_of_copies">
-                    Enter Number of copies (if you opted by post) <span className="cmpl">*</span>
+                    Enter Number of copies (if you opted by post){" "}
+                    <span className="cmpl">*</span>
                   </label>
                   <input
                     type="number"
@@ -923,10 +990,14 @@ function Upload(props) {
                     }}
                     min="0"
                   />
-                  <small id="no-of-copies-error-message" className="error"></small>
+                  <small
+                    id="no-of-copies-error-message"
+                    className="error"
+                  ></small>
                 </div>
-              : <></>
-              }
+              ) : (
+                <></>
+              )}
               {/* Certificate Addition */}
               <div className="form-group">
                 <label htmlFor="cert" style={{ width: "50%" }}>
@@ -1005,11 +1076,16 @@ function Upload(props) {
                       }
                     }
                     if (!purpose) {
-                      if(file === "bonafide" || file === "transcript" || file === "rank card" || file === "grade card") {
+                      if (
+                        file === "bonafide" ||
+                        file === "transcript" ||
+                        file === "rank card" ||
+                        file === "grade card"
+                      ) {
                         document.getElementById(
                           "purpose-error-message"
                         ).innerHTML = "Purpose field cannot be blank";
-                      } else if(file === "course de-registration") {
+                      } else if (file === "course de-registration") {
                         document.getElementById(
                           "purpose-error-message"
                         ).innerHTML = "Enter reason for course de-registration";
@@ -1043,32 +1119,48 @@ function Upload(props) {
                           "email-error-message"
                         ).innerHTML = "";
                       }
-                    } else if (file === "transcript" || file === "grade card" || file === "rank card") {
-                      if(file === "transcript") {
-                        if(no_of_copies < 0) {
-                          document.getElementById("no-of-copies-error-message").innerHTML = "Number of copies cannot be negative";
+                    } else if (
+                      file === "transcript" ||
+                      file === "grade card" ||
+                      file === "rank card"
+                    ) {
+                      if (file === "transcript") {
+                        if (no_of_copies < 0) {
+                          document.getElementById(
+                            "no-of-copies-error-message"
+                          ).innerHTML = "Number of copies cannot be negative";
                           error = 1;
                         } else {
-                          document.getElementById("no-of-copies-error-message").innerHTML = "";
+                          document.getElementById(
+                            "no-of-copies-error-message"
+                          ).innerHTML = "";
                         }
-                        if(address) {
-                          if(!no_of_copies) {
-                            document.getElementById("no-of-copies-error-message").innerHTML = "Enter the number of copies required";
+                        if (address) {
+                          if (!no_of_copies) {
+                            document.getElementById(
+                              "no-of-copies-error-message"
+                            ).innerHTML = "Enter the number of copies required";
                             error = 1;
-                          } else if(no_of_copies <= 0) {
-                            document.getElementById("no-of-copies-error-message").innerHTML = "Enter the number of copies required";
+                          } else if (no_of_copies <= 0) {
+                            document.getElementById(
+                              "no-of-copies-error-message"
+                            ).innerHTML = "Enter the number of copies required";
                             error = 1;
                           } else {
-                            document.getElementById("no-of-copies-error-message").innerHTML = "";
+                            document.getElementById(
+                              "no-of-copies-error-message"
+                            ).innerHTML = "";
                           }
                         }
                         if (!feeReceipt) {
-                          document.getElementById("fee-error-message").innerHTML =
-                            "Enter fee reference number";
+                          document.getElementById(
+                            "fee-error-message"
+                          ).innerHTML = "Enter fee reference number";
                           error = 1;
                         } else {
-                          document.getElementById("fee-error-message").innerHTML =
-                            "";
+                          document.getElementById(
+                            "fee-error-message"
+                          ).innerHTML = "";
                         }
                       }
                       if (
@@ -1122,7 +1214,7 @@ function Upload(props) {
                       } else {
                         setAddress("");
                       }
-                      if(file === "rank card" || file === "grade card") {
+                      if (file === "rank card" || file === "grade card") {
                         if (
                           !(
                             document.getElementById("check_s1").checked ||
@@ -1132,7 +1224,7 @@ function Upload(props) {
                             document.getElementById("check_s5").checked ||
                             document.getElementById("check_s6").checked ||
                             document.getElementById("check_s7").checked ||
-                            document.getElementById("check_s8").checked 
+                            document.getElementById("check_s8").checked
                           )
                         ) {
                           document.getElementById(
@@ -1143,17 +1235,30 @@ function Upload(props) {
                           document.getElementById(
                             "select-semester-error-message"
                           ).innerHTML = "";
-                        };
-                        
-                        SemObj.forEach(obj=>{obj.copies=0;});
-                        setSemester(SemObj);
-                        let copyInputNodes = document.querySelectorAll(".copies-input");
-                        copyInputNodes.forEach(node=>{
-                          setCopies(parseInt(node.id.slice(-1)),node.value);
-                        });
+                        }
 
+                        SemObj.forEach((obj) => {
+                          obj.copies = 0;
+                        });
+                        setSemester(SemObj);
+                        let copyInputNodes = document.querySelectorAll(
+                          ".copies-input"
+                        );
+                        copyInputNodes.forEach((node) => {
+                          if (node.value > 0)
+                            setCopies(parseInt(node.id.slice(-1)), node.value);
+                          else {
+                            document.getElementById(
+                              "rc-gc-no-of-copies-error-message"
+                            ).innerHTML = "Enter valid no. of copies";
+                            error = 1;
+                          }
+                        });
                       }
-                    } else if (file === "course re-registration" || file === "course de-registration") {
+                    } else if (
+                      file === "course re-registration" ||
+                      file === "course de-registration"
+                    ) {
                       if (!emailCount) {
                         document.getElementById(
                           "email-error-message"

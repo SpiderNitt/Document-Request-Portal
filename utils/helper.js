@@ -1,33 +1,34 @@
-require('dotenv').config({ path: '../env/.env' })
+require("dotenv").config({ path: "../env/.env" });
 
-const uuid = require('uuid');
-const multer = require('multer');
-const database = require('../database/database')
-const fs = require('fs')
-const nodemailer = require('nodemailer');
-const MulterError = multer.MulterError
-const pino = require('pino');
-const logger = pino({ level: process.env.LOG_LEVEL || 'info',  prettyPrint: process.env.ENV === 'DEV' });
+const uuid = require("uuid");
+const multer = require("multer");
+const database = require("../database/database");
+const fs = require("fs");
+const nodemailer = require("nodemailer");
+const MulterError = multer.MulterError;
+const pino = require("pino");
+const logger = pino({
+  level: process.env.LOG_LEVEL || "info",
+  prettyPrint: process.env.ENV === "DEV",
+});
 
+const mailTransporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL,
+    pass: process.env.EMAIL_PASS,
+  },
+});
 
-const mailTransporter = nodemailer.createTransport({ 
-    service: 'gmail',    
-    auth: { 
-        user: process.env.EMAIL, 
-        pass: process.env.EMAIL_PASS
-    } 
-}); 
+const responseHandle = (status_code, message, res) => {
+  let success = status_code == 200 ? true : false;
+  return res.status(status_code).json({ success, message });
+};
 
-const responseHandle = (status_code,message,res) => {
-    let success = status_code == 200 ? true : false
-    return res.status(status_code).json({success,message})
-}
-
-
-function renameFile(oldPath, newPath){
-    fs.renameSync(oldPath, newPath, (err)=>{
-        if(err) throw err;
-    })
+function renameFile(oldPath, newPath) {
+  fs.renameSync(oldPath, newPath, (err) => {
+    if (err) throw err;
+  });
 }
 
 const docFilter = function (req, file, cb) {
@@ -47,9 +48,9 @@ function validate_mail(path) {
 }
 
 // Determines whether admin can actually approve/decline
-// If admin before current admin has declined (or) 
+// If admin before current admin has declined (or)
 // if admin after current admin has approved
-// THen the current status of admin for a certificate 
+// THen the current status of admin for a certificate
 // should not be changed, as it might introduce inconsistency.
 
 // AN admin can approve or decline a ceritificate if:
@@ -80,16 +81,15 @@ async function approve_decline_rights(req, certificate_id) {
       current_verified = ele.no;
     }
   });
-  
+
   path_array.forEach(function (ele) {
-      // for path_no less than current, if the status is PENDING, then current admin cant approve
+    // for path_no less than current, if the status is PENDING, then current admin cant approve
     if (ele.no < current_verified && ele.status.includes("PENDING"))
       return false;
   });
 
-
   path_array.forEach(function (ele) {
-      // for path_no > current, if the status iS NOT PENDING, then current admin cannot approve
+    // for path_no > current, if the status iS NOT PENDING, then current admin cannot approve
     if (ele.no > current_verified && !ele.status.includes("PENDING")) {
       return false;
     }
@@ -131,18 +131,18 @@ function wrapper(row) {
   return object;
 }
 
-async function determine_pending({path_no, certificate_id, status}){
-    if(status !== 'PENDING') return false;
-    if(path_no === 1) return true;
-    const row = await database.CertificatePaths.findOne({
-        where: {
-            path_no: path_no - 1,
-            status: "APPROVED",
-            certificate_id,
-        },
-    });
-    if(row) return true;
-    return false;
+async function determine_pending({ path_no, certificate_id, status }) {
+  if (status !== "PENDING") return false;
+  if (path_no === 1) return true;
+  const row = await database.CertificatePaths.findOne({
+    where: {
+      path_no: path_no - 1,
+      status: "APPROVED",
+      certificate_id,
+    },
+  });
+  if (row) return true;
+  return false;
 }
 
 module.exports = {
@@ -155,5 +155,5 @@ module.exports = {
   check_compulsory,
   wrapper,
   determine_pending,
-  responseHandle
+  responseHandle,
 };

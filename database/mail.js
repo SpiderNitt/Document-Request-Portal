@@ -2,6 +2,13 @@ const database = require("./database");
 const sequelize = require("sequelize");
 const helper = require("../utils/helper");
 const cron = require("node-cron");
+const sgMail = require("@sendgrid/mail");
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const pino = require("pino");
+const logger = pino({
+  level: process.env.LOG_LEVEL || "info",
+  prettyPrint: process.env.ENV === "DEV",
+});
 // require('dotenv').config({ path: '../env/.env' })
 
 /* TODO: The output mail is (any non transcript person): 
@@ -125,38 +132,63 @@ async function driver() {
   }
 
   for (const mail_object of final_mail_counter_dict) {
-    console.log(mail_object);
-    let mailDetails = {
-      from: process.env.EMAIL,
+    let message =
+      "Respected Sir/Madam,<br />" +
+      "There are <strong>" +
+      mail_object.PENDING +
+      "</strong> requests pending.";
+
+    mail_object.MAIL.includes("transcript")
+      ? (message +=
+          "<br />There are " +
+          mail_object.APPROVED_WITHOUT_STATUS +
+          " requests that are verified but are not delivered through postal or email")
+      : (message += "");
+    message +=
+      '<br />Kindly visit <a href="https://studentrequest.nitt.edu">studentrequest.nitt.edu </a> to approve or reject them.<br /> ';
+    // let mailDetails = {
+    //   from: process.env.EMAIL,
+    //   to: mail_object.MAIL,
+    //   subject: "Pending Requests",
+    //   text: message,
+    // };
+
+    const msg = {
       to: mail_object.MAIL,
-      subject: "Pending Requests",
-      text:
-        "Respected Sir/Madam,\n" +
-        "There are <b>" +
-        mail_object.PENDING +
-        "</b> requests pending." +
-        mail_object.MAIL.includes("transcript")
-          ? "\nThere are " +
-            mail_object.APPROVED_WITHOUT_STATUS +
-            "requests that are verified but are yet to be processed"
-          : "",
+      from: process.env.EMAIL,
+      subject: "Pending Document Requests",
+      html: message,
     };
-    helper.mailTransporter.sendMail(mailDetails, async function (err, data) {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log(
-          "mail sent successfully for " +
-            mail_object.MAIL +
-            " on " +
-            new Date().toTimeString()
-        );
-      }
-    });
+    try {
+      await sgMail.send(msg);
+      logger.info(
+        "Mail sent to " + mail_object.MAIL + " on " + new Date().toTimeString()
+      );
+    } catch (err) {
+      logger.error(err);
+      logger.info(
+        "Unable to send mail to " +
+          mail_object.MAIL +
+          " on " +
+          new Date().toTimeString()
+      );
+    }
+    // helper.mailTransporter.sendMail(mailDetails, async function (err, data) {
+    //   if (err) {
+    //     console.log(err);
+    //   } else {
+    //     console.log(
+    //       "mail sent successfully for " +
+    //         mail_object.MAIL +
+    //         " on " +
+    //         new Date().toTimeString()
+    //     );
+    //   }
+    // });
   }
 }
-console.log("Cron started successfully");
 cron.schedule("0 9 * * *", function () {
-  console.log("Sending mail every 9AM");
+  logger.info("Sending mail every 9AM");
   driver();
 });
+// driver();

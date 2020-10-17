@@ -760,10 +760,11 @@ function Upload(props) {
                     <label htmlFor="semester">
                       Choose required semesters <span className="cmpl">*</span>
                     </label>
+                    <div className="row mx-2">
                     {semester.map((sem) => {
                       return (
                         <>
-                          <div className="form-check">
+                          <div className="form-check col-sm-3 col-6">
                             <input
                               type="checkbox"
                               className="form-check-input"
@@ -814,6 +815,7 @@ function Upload(props) {
                         </>
                       );
                     })}
+                    </div>
                     <small
                       id="select-semester-error-message"
                       className="error"

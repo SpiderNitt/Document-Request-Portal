@@ -7,7 +7,7 @@ const path = require('path');
 global.appRoot = path.resolve(__dirname);
 
 const app = express()
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 3001
 
 const fs = require('fs')
 
@@ -18,14 +18,14 @@ const { exit } = require('process');
 app.use(cors())
 app.use(express.json());
 app.use(morgan('dev'));
-//app.use(express.static('public/build'))
+app.use(express.static('public/build'))
 
 
 app.use('/api', apiRouter);
 app.use('/login', loginRouter);
 
 app.use(function(req, res){
-   res.sendFile('public/public/index.html', {root: __dirname});
+   res.sendFile('public/build/index.html', {root: __dirname});
 });
 
 try {

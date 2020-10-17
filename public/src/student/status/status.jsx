@@ -12,6 +12,8 @@ const cert_mapping = {
   2: "Transcript",
   3: "Course De-Registration",
   4: "Course Re-Registration",
+  5: "Rank Card",
+  6: "Grade Card"
 };
 
 export default class Status extends React.Component {
@@ -70,11 +72,19 @@ export default class Status extends React.Component {
     link.click();
   };
 
+  noOfCopies=(data)=>{
+    let str="";
+    data.forEach(item=>{
+        str+="Sem-"+item.semester_no+" (x"+item.no_copies+") , ";
+    });
+    return str;
+  }
+
 
   render() {
       return (
         <div>
-          {this.context.state.checkStatus1 || this.context.state.checkStatus2
+          {this.context.state.checkStatus1 || this.context.state.checkStatus2 || this.context.state.checkStatus3
           ? <div id="cert-timeline">
               {this.context.state.checkStatus1 ? (
                   <div className="cert-status">
@@ -251,6 +261,101 @@ export default class Status extends React.Component {
                 ) : (
                   <div></div>
                 )}
+
+               {this.context.state.checkStatus3 ? (
+                  <div className="cert-status">
+                    <div className="page-header row justify-content-center">
+                      <h3 className="text-center cert-status-head">Rank / Grade Card Status</h3>
+                    </div>
+                    {this.state.loading ? (
+                      <Loader
+                        className="text-center"
+                        type="Audio"
+                        color="rgb(13, 19, 41)"
+                        height={100}
+                        width={100}
+                        timeout={3000} //3 secs
+                      />
+                    ) : (
+                        <div className="container req-status">
+                          <table className="table cert-table status-table timeline-ovf">
+                            <thead className="thead-dark">
+                              <tr>
+                                <th scope="col">S.No</th>
+                                <th scope="col">Document Type</th>
+                                <th scope="col">Current Status</th>
+                                <th scope="col">Email Status</th>
+                                <th scope="col">Postal Status</th>
+                                <th scope="col">No. of Copies</th>
+                                <th scope="col">Actions</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {this.context.state.certData.map((data, index) => {
+                                if(data.type == 5 || data.type == 6) {
+                                  this.context.state.certStatus3++;
+                                  return (
+                                    <>
+                                      <tr key={index}>
+                                        <td>{this.context.state.certStatus3}</td>
+                                        <td>
+                                          {cert_mapping[data.type]}
+                                        </td>
+                                        <td>{data.status}</td>
+                                        <td>
+                                          {data.email_status ? data.email_status : "-"}
+                                        </td>
+                                        <td>
+                                          {data.postal_status ? data.postal_status : "-"}
+                                        </td>
+                                        <td>
+                                          {data.response_rank_grade_rows ? 
+                                             this.noOfCopies(data.response_rank_grade_rows)
+                                             : "-"}
+                                        </td>
+                                        <td>
+                                          <span className="table-icons">
+                                            <FaDownload
+                                              onClick={() => {
+                                                this.handleDownload(
+                                                  data.id,
+                                                  cert_mapping[data.type],
+                                                  data.certificate_extension
+                                                );
+                                              }}
+                                              className="table-icons-item"
+                                            />
+                                            <FaHistory
+                                              className="table-icons-item history"
+                                              onClick={() => {
+                                                this.setModalViewed(data.id);
+                                              }}
+                                            />
+                                          </span>
+                                        </td>
+                                      </tr>
+                                      <TimelineModal
+                                        id={data.id}
+                                        show={this.state.modalViewed === data.id}
+                                        hide={this.hideModalViewed}
+                                        data={this.context.state.certHis[data.id]}
+                                        email={data.email_status}
+                                        postal={data.postal_status}
+                                      ></TimelineModal>
+                                    </>
+                                  );
+                                }
+                              })}
+                            </tbody>
+                          </table>
+                        </div>
+                      )}
+                  </div>
+                ) : (
+                  <div></div>
+                )} 
+
+              
             </div>
         : <div className="container req-status">
             <h2 className="text-center"> Your Documents </h2>

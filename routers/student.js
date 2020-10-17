@@ -339,9 +339,9 @@ student.get('/certificate_types', async function (req, res) {
         let rows = await database.CertificateType.findAll();
         let response_json = []
         rows.forEach(function (ele) {
-            let { id, type, semwise_mapping } = helper.wrapper(ele)
+            let { id, name, semwise_mapping } = helper.wrapper(ele)
             response_json.push({
-                id, type, semwise_mapping
+                id, name, semwise_mapping
             })
         })
         res.status(200).json(response_json);

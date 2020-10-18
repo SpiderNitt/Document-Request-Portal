@@ -9,6 +9,10 @@ const logger = pino({
   level: process.env.LOG_LEVEL || "info",
   prettyPrint: process.env.ENV === "DEV",
 });
+
+let pending_count = 0;
+let approved_without_processing_count = 0;
+
 // require('dotenv').config({ path: '../env/.env' })
 
 /* TODO: The output mail is (any non transcript person): 
@@ -132,20 +136,23 @@ async function driver() {
   }
 
   for (const mail_object of final_mail_counter_dict) {
-    let message =
-      "Respected Sir/Madam,<br />" +
-      "There are <strong>" +
-      mail_object.PENDING +
-      "</strong> requests pending.";
+    let pending_count = mail_object.PENDING === 0 ? "no" : mail_object.PENDING;
+    let approved_without_processing_count =
+      mail_object.APPROVED_WITHOUT_STATUS === 0
+        ? "no"
+        : mail_object.APPROVED_WITHOUT_STATUS;
+    console.log();
+    let message = `Respected Sir/Madam,<br /> + There are <strong> ${pending_count} </strong> requests pending.`;
+    let transcript_extra = `<br />There are ${approved_without_processing_count} requests that are verified but are not delivered through postal or email`;
+    let footer_message = `<br />Kindly visit <a href="https://studentrequest.nitt.edu">studentrequest.nitt.edu </a> to approve or reject them.<br />`;
+    
 
     mail_object.MAIL.includes("transcript")
-      ? (message +=
-          "<br />There are " +
-          mail_object.APPROVED_WITHOUT_STATUS +
-          " requests that are verified but are not delivered through postal or email")
-      : (message += "");
-    message +=
-      '<br />Kindly visit <a href="https://studentrequest.nitt.edu">studentrequest.nitt.edu </a> to approve or reject them.<br /> ';
+      ? message += transcript_extra
+      : message += "";
+    if (mail_object.PENDING !== 0 || (mail_object.MAIL.includes('transcript') && mail_object.APPROVED_WITHOUT_STATUS !== 0))
+      message += footer_message;
+       
     // let mailDetails = {
     //   from: process.env.EMAIL,
     //   to: mail_object.MAIL,
@@ -173,6 +180,7 @@ async function driver() {
           new Date().toTimeString()
       );
     }
+
     // helper.mailTransporter.sendMail(mailDetails, async function (err, data) {
     //   if (err) {
     //     console.log(err);

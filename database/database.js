@@ -102,7 +102,7 @@ const Certificate = sequelize.define(
     },
     purpose: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: false
     },
     id_file: {
       type: DataTypes.STRING,
@@ -120,6 +120,10 @@ const Certificate = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: true,
     },
+    name: {
+      type: DataTypes.INTEGER, 
+      allowNull: true
+    }
   },
   {
     freezeTableName: true,

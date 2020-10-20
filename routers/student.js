@@ -83,6 +83,7 @@ student.post("/certificate_request", async function (req, res) {
           "path",
           "purpose",
           "contact",
+          "name"
         ])
       ) {
         // These fields must be present for every request.
@@ -110,6 +111,7 @@ student.post("/certificate_request", async function (req, res) {
         no_copies,
         semester_no,
         rank_grade_card_copies,
+        name
       } = req.body;
       let all_certs_from_db = await database.CertificateType.findAll();
       all_certs = {}
@@ -152,6 +154,7 @@ student.post("/certificate_request", async function (req, res) {
           course_code,
           course_name,
           no_copies,
+          name
         });
 
      

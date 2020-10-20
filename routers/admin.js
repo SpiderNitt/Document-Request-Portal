@@ -279,6 +279,7 @@ admin.get("/", async function (req, res) {
       if (["APPROVED", "DECLINED"].includes(status) || is_pending) {
         const ele = await database.Certificate.findOne({
           attributes: [
+            "name",
             "applier_roll",
             "type",
             "address",
@@ -300,6 +301,7 @@ admin.get("/", async function (req, res) {
           },
         });
         const {
+          name,
           applier_roll,
           type,
           postal_status,
@@ -354,6 +356,7 @@ admin.get("/", async function (req, res) {
           course_name,
           no_copies,
           response_rank_grade_rows,
+          name
         });
       }
     }

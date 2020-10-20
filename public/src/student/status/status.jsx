@@ -186,7 +186,7 @@ export default class Status extends React.Component {
               <div className="cert-status">
                 <div className="page-header row justify-content-center">
                   <h3 className="text-center cert-status-head">
-                    Course Re / De-Registeration Status
+                    Course Re / De-Registration Status
                   </h3>
                 </div>
                 {this.state.loading ? (

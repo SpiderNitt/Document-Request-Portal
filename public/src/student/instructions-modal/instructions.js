@@ -99,7 +99,7 @@ export default class InstructionsModal extends React.Component {
                 </ul>
               </li>
               <li>
-                <strong>Course Re-Registraion/De-Registration</strong>
+                <strong>Course Re-Registration/De-Registration</strong>
                 <ul>
                   <li>
                     Upload the Course Registration form as obtained from MIS.

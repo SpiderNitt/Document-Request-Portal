@@ -106,9 +106,10 @@ export const AddEmailDetails = (props) => {
 
   const approveHandler = (e) => {
     e.preventDefault();
+    isLoading(true);
     if (document.getElementById("upload-cert").files.length != 0) {
       let data = new FormData();
-      if(document.getElementById("upload-cert").files[0]) {
+      if (document.getElementById("upload-cert").files[0]) {
         data.append(
           "certificate",
           document.getElementById("upload-cert").files[0]
@@ -121,6 +122,7 @@ export const AddEmailDetails = (props) => {
           })
           .catch((err) => {});
       }
+      isLoading(false);
     }
   };
 

@@ -145,14 +145,17 @@ async function driver() {
     let message = `Respected Sir/Madam,<br /> + There are <strong> ${pending_count} </strong> requests pending.`;
     let transcript_extra = `<br />There are ${approved_without_processing_count} requests that are verified but are not delivered through postal or email`;
     let footer_message = `<br />Kindly visit <a href="https://studentrequest.nitt.edu">studentrequest.nitt.edu </a> to approve or reject them.<br />`;
-    
 
     mail_object.MAIL.includes("transcript")
-      ? message += transcript_extra
-      : message += "";
-    if (mail_object.PENDING !== 0 || (mail_object.MAIL.includes('transcript') && mail_object.APPROVED_WITHOUT_STATUS !== 0))
+      ? (message += transcript_extra)
+      : (message += "");
+    if (
+      mail_object.PENDING !== 0 ||
+      (mail_object.MAIL.includes("transcript") &&
+        mail_object.APPROVED_WITHOUT_STATUS !== 0)
+    )
       message += footer_message;
-       
+
     // let mailDetails = {
     //   from: process.env.EMAIL,
     //   to: mail_object.MAIL,

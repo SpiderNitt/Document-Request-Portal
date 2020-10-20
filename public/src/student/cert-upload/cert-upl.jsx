@@ -151,7 +151,7 @@ function Upload(props) {
     let college_id = document.getElementById("college-id").files[0];
     let cd = new FormData();
     for (var i = 0; i < docId.length; i++) {
-      if (docId[i] && docId[i].name.toLowerCase() == file.toLowerCase()) {
+      if (docId[i] && docId[i].name.toLowerCase() === file.toLowerCase()) {
         cd.set("type", parseInt(docId[i].id));
       }
     }
@@ -168,11 +168,11 @@ function Upload(props) {
       let sems = "",
         copies = "";
       semester.forEach((entry) => {
-        if (entry.copies != 0) {
-          if (sems == "") sems += "" + entry.id;
+        if (entry.copies !== 0) {
+          if (sems === "") sems += "" + entry.id;
           else sems += "," + entry.id;
 
-          if (copies == "") copies += "" + entry.copies;
+          if (copies === "") copies += "" + entry.copies;
           else copies += "," + entry.copies;
         }
       });
@@ -394,9 +394,11 @@ function Upload(props) {
                     }
                   }}
                 >
-                  {docId.map((id) => {
+                  {docId.map((id, index) => {
                     return (
-                      <option value={id.name.toLowerCase()}>{id.name}</option>
+                      <option key={index} value={id.name.toLowerCase()}>
+                        {id.name}
+                      </option>
                     );
                   })}
                 </select>
@@ -761,27 +763,29 @@ function Upload(props) {
                       Choose required semesters <span className="cmpl">*</span>
                     </label>
                     <div className="row mx-2">
-                    {semester.map((sem) => {
-                      return (
-                        <>
-                          <div className="form-check col-sm-3 col-6">
-                            <input
-                              type="checkbox"
-                              className="form-check-input"
-                              min="1"
-                              id={"check_" + sem.sem}
-                              name={sem.sem}
-                              onChange={(e) => {
-                                if (!document.getElementById(`${sem.sem}box`)) {
-                                  let semDiv = document.createElement("div");
-                                  semDiv.id = `${sem.sem}box`;
-                                  semDiv.classList.add(
-                                    "form-group",
-                                    "copy-input-div"
-                                  );
-                                  semDiv.style.background = "#f5f5f5";
-                                  semDiv.style.padding = "1rem";
-                                  semDiv.innerHTML = `<label for="no_of_copies_${sem.sem}"> 
+                      {semester.map((sem) => {
+                        return (
+                          <>
+                            <div className="form-check col-sm-3 col-6">
+                              <input
+                                type="checkbox"
+                                className="form-check-input"
+                                min="1"
+                                id={"check_" + sem.sem}
+                                name={sem.sem}
+                                onChange={(e) => {
+                                  if (
+                                    !document.getElementById(`${sem.sem}box`)
+                                  ) {
+                                    let semDiv = document.createElement("div");
+                                    semDiv.id = `${sem.sem}box`;
+                                    semDiv.classList.add(
+                                      "form-group",
+                                      "copy-input-div"
+                                    );
+                                    semDiv.style.background = "#f5f5f5";
+                                    semDiv.style.padding = "1rem";
+                                    semDiv.innerHTML = `<label for="no_of_copies_${sem.sem}"> 
                                                         ${sem.semName} - Number of Copies
                                                         <span class="cmpl">*</span>
                                                       </label> 
@@ -799,22 +803,22 @@ function Upload(props) {
                                                       class="error"
                                                     ></small>
                                                       <small id="${sem.sem}-no-of-copies-error-message" class="error"></small>`;
-                                  document
-                                    .getElementById("semesterCopies")
-                                    .appendChild(semDiv);
-                                } else {
-                                  document
-                                    .getElementById(`${sem.sem}box`)
-                                    .remove();
-                                }
-                              }}
-                            />
+                                    document
+                                      .getElementById("semesterCopies")
+                                      .appendChild(semDiv);
+                                  } else {
+                                    document
+                                      .getElementById(`${sem.sem}box`)
+                                      .remove();
+                                  }
+                                }}
+                              />
 
-                            <label htmlFor={sem.sem}> {sem.semName} </label>
-                          </div>
-                        </>
-                      );
-                    })}
+                              <label htmlFor={sem.sem}> {sem.semName} </label>
+                            </div>
+                          </>
+                        );
+                      })}
                     </div>
                     <small
                       id="select-semester-error-message"

@@ -40,9 +40,7 @@ function Admin() {
         });
         setTypes(Object.assign(certTypes, res.data));
       })
-      .catch((err) => {
-       
-      });
+      .catch((err) => {});
     spider
       .get("/api/admin")
       .then(async (res) => {
@@ -96,112 +94,121 @@ function Admin() {
       })
       .catch((err) => {});
   }, []);
-  const createButton = ()=>{
+  const createButton = () => {
     var buttons = [];
     var certs = [];
-    certReq.map((certreq) =>{
-      certreq.certificates.forEach(cert=>{
+    certReq.map((certreq) => {
+      certreq.certificates.forEach((cert) => {
         certs.push(certreq);
       });
     });
-    certs = [... new Set(certs)];
-    certs.map((item,index)=>{
+    certs = [...new Set(certs)];
+    certs.map((item, index) => {
       buttons.push(
         <div id={item.certificate_type} key={index}>
-        <button
-        onClick={()=>{
-          exportToExcel(item)
-        }}
-        style={{margin:'10px'}}
-        >
-        Export to Excel</button>
+          <button
+            onClick={() => {
+              exportToExcel(item);
+            }}
+            style={{ margin: "10px" }}
+          >
+            Export to Excel
+          </button>
         </div>
-        );
-    })
+      );
+    });
     return buttons;
-  }
+  };
   const exportToExcel = (certreq) => {
     var excelData = [];
     let index = 0;
-    if(certreq.certificate_type === "Bonafide") {
+    if (certreq.certificate_type === "Bonafide") {
       certreq.certificates.map((cert) => {
-      let temp = {};
-      index = index + 1;
-      if (document.getElementById(cert.id).checked === true) {
-        temp["S.No"] = index;
-        temp["Document Type"] = certreq.certificate_type;
-        temp["Roll number"] = cert["applier_roll"];
-        temp["Purpose"] = cert["purpose"];
-        temp["Contact"] = cert["contact"];
-        temp["Status"] = cert["status"];
-        temp["Approved"] = cert["approved"];
-        excelData.push(temp);
-      }
-    });
-  } else if(certreq.certificate_type === "Transcript") {
-    certreq.certificates.map((cert) => {
-    let temp = {};
-    index = index + 1;
-    if (document.getElementById(cert.id).checked === true) {
-      temp["S.No"] = index;
-      temp["Document Type"] = certreq.certificate_type;
-      temp["Roll number"] = cert["applier_roll"];
-      temp["Address"] = cert["address"];
-      temp["Email"] = cert["email"];
-      temp["Purpose"] = cert["purpose"];
-      temp["Contact"] = cert["contact"];
-      temp["Receipt"] = cert["receipt"];
-      temp["Number of copies"] = cert["no_copies"];
-      temp["Status"] = cert["status"];
-      temp["Postal Status"] = cert["postal_status"];
-      temp["Email Status"] = cert["email_status"];
-      temp["Approved"] = cert["approved"];
-      excelData.push(temp);
+        let temp = {};
+        index = index + 1;
+        if (document.getElementById(cert.id).checked === true) {
+          temp["S.No"] = index;
+          temp["Document Type"] = certreq.certificate_type;
+          temp["Roll number"] = cert["applier_roll"];
+          temp["Purpose"] = cert["purpose"];
+          temp["Contact"] = cert["contact"];
+          temp["Status"] = cert["status"];
+          temp["Approved"] = cert["approved"];
+          excelData.push(temp);
+        }
+      });
+    } else if (certreq.certificate_type === "Transcript") {
+      certreq.certificates.map((cert) => {
+        let temp = {};
+        index = index + 1;
+        if (document.getElementById(cert.id).checked === true) {
+          temp["S.No"] = index;
+          temp["Document Type"] = certreq.certificate_type;
+          temp["Roll number"] = cert["applier_roll"];
+          temp["Address"] = cert["address"];
+          temp["Email"] = cert["email"];
+          temp["Purpose"] = cert["purpose"];
+          temp["Contact"] = cert["contact"];
+          temp["Receipt"] = cert["receipt"];
+          temp["Number of copies"] = cert["no_copies"];
+          temp["Status"] = cert["status"];
+          temp["Postal Status"] = cert["postal_status"];
+          temp["Email Status"] = cert["email_status"];
+          temp["Approved"] = cert["approved"];
+          excelData.push(temp);
+        }
+      });
+    } else if (
+      certreq.certificate_type === "Course Re-Registration" ||
+      certreq.certificate_type === "Course De-Registration"
+    ) {
+      certreq.certificates.map((cert) => {
+        let temp = {};
+        index = index + 1;
+        if (document.getElementById(cert.id).checked === true) {
+          temp["S.No"] = index;
+          temp["Document Type"] = certreq.certificate_type;
+          temp["Roll number"] = cert["applier_roll"];
+          temp["Purpose"] = cert["purpose"];
+          temp["Contact"] = cert["contact"];
+          temp["Course Code"] = cert["course_code"];
+          temp["Course Name"] = cert["course_name"];
+          temp["Status"] = cert["status"];
+          temp["Approved"] = cert["approved"];
+          excelData.push(temp);
+        }
+      });
+    } else {
+      certreq.certificates.map((cert) => {
+        let semesterCopiesInfo = "";
+        for (let i = 0; i < cert.response_rank_grade_rows.length; i++) {
+          semesterCopiesInfo +=
+            "Sem " +
+            cert.response_rank_grade_rows[i].semester_no +
+            " - (x" +
+            cert.response_rank_grade_rows[i].no_copies +
+            "), ";
+        }
+        let temp = {};
+        index = index + 1;
+        if (document.getElementById(cert.id).checked === true) {
+          temp["S.No"] = index;
+          temp["Document Type"] = certreq.certificate_type;
+          temp["Roll number"] = cert["applier_roll"];
+          temp["Purpose"] = cert["purpose"];
+          temp["Contact"] = cert["contact"];
+          temp["Semester Copies"] = semesterCopiesInfo;
+          temp["Status"] = cert["status"];
+          temp["Approved"] = cert["approved"];
+          excelData.push(temp);
+        }
+      });
     }
-  });
-} else if(certreq.certificate_type === "Course Re-Registration" || certreq.certificate_type === "Course De-Registration") {
-  certreq.certificates.map((cert) => {
-  let temp = {};
-  index = index + 1;
-  if (document.getElementById(cert.id).checked === true) {
-    temp["S.No"] = index;
-    temp["Document Type"] = certreq.certificate_type;
-    temp["Roll number"] = cert["applier_roll"];
-    temp["Purpose"] = cert["purpose"];
-    temp["Contact"] = cert["contact"];
-    temp["Course Code"] = cert["course_code"];
-    temp["Course Name"] = cert["course_name"];
-    temp["Status"] = cert["status"];
-    temp["Approved"] = cert["approved"];
-    excelData.push(temp);
-  }
-});
-} else {
-  certreq.certificates.map((cert) => {
-    let semesterCopiesInfo = '';
-    for(let i = 0; i < cert.response_rank_grade_rows.length; i++) {
-      semesterCopiesInfo += 'Sem ' + cert.response_rank_grade_rows[i].semester_no + ' - (x' + cert.response_rank_grade_rows[i].no_copies + '), ';
+    if (excelData.length) {
+      const xls = new xlsExport(excelData, "Info");
+      xls.exportToXLS(`${certreq.certificate_type}_Request_List.xls`);
     }
-    let temp = {};
-    index = index + 1;
-    if (document.getElementById(cert.id).checked === true) {
-      temp["S.No"] = index;
-      temp["Document Type"] = certreq.certificate_type;
-      temp["Roll number"] = cert["applier_roll"];
-      temp["Purpose"] = cert["purpose"];
-      temp["Contact"] = cert["contact"];
-      temp["Semester Copies"] = semesterCopiesInfo;
-      temp["Status"] = cert["status"];
-      temp["Approved"] = cert["approved"];
-      excelData.push(temp);
-    }
-  });
-}
-  if (excelData.length) {
-    const xls = new xlsExport(excelData, "Info");
-    xls.exportToXLS(`${certreq.certificate_type}_Request_List.xls`);
-  }
-}
+  };
 
   return (
     <>
@@ -248,10 +255,10 @@ function Admin() {
                               <span className="req-notif">{pending}</span>
                             </span>
                             {/* {cert.certificate_type === "Transcript" ? ( */}
-                              <span className="pending-approved-number">
-                                Approved:
-                                <span className="req-notif">{approved}</span>
-                              </span>
+                            <span className="pending-approved-number">
+                              Approved:
+                              <span className="req-notif">{approved}</span>
+                            </span>
                             {/* ) : (
                               <></>
                             )} */}
@@ -259,11 +266,12 @@ function Admin() {
                         </Card.Header>
                         <Accordion.Collapse eventKey="0">
                           <Card.Body>
-                          <div className="download-details">
-                          {createButton().filter(button=>{
-                            if(button.props.id === cert.certificate_type) return button;
-                          })}
-                          </div>
+                            <div className="download-details">
+                              {createButton().filter((button) => {
+                                if (button.props.id === cert.certificate_type)
+                                  return button;
+                              })}
+                            </div>
                             {(pending === 0 &&
                               approved === 0 &&
                               cert.certificate_type === "Transcript") ||
@@ -278,14 +286,12 @@ function Admin() {
                               approved === 0 &&
                               cert.certificate_type ===
                                 "Course Re-registration") ||
-                              (pending === 0 &&
-                                approved === 0 &&
-                                cert.certificate_type ===
-                                  "Rank Card") || 
-                              (pending === 0 &&
-                                approved === 0 &&
-                                cert.certificate_type ===
-                                  "Grade Card") ? (
+                            (pending === 0 &&
+                              approved === 0 &&
+                              cert.certificate_type === "Rank Card") ||
+                            (pending === 0 &&
+                              approved === 0 &&
+                              cert.certificate_type === "Grade Card") ? (
                               <p className="placeholder-nil text-center">
                                 <FaListAlt className="mr-2" />
                                 No document requests
@@ -312,9 +318,7 @@ function Admin() {
                                           <th scope="col">Student ID</th>
                                           {cert.certificate_type ===
                                           "Bonafide" ? (
-                                            <th scope="col">
-                                              Upload Document
-                                            </th>
+                                            <th scope="col">Upload Document</th>
                                           ) : (
                                             <></>
                                           )}
@@ -329,15 +333,20 @@ function Admin() {
                                           ) : (
                                             <></>
                                           )}
-                                          {cert.certificate_type == "Transcript"
-                                          ? <th>Number of copies</th>
-                                          : <></>
-                                          }
-                                          {cert.certificate_type === "Rank Card" ||
-                                            cert.certificate_type === "Grade Card" 
-                                          ? <th>Semester Copies</th>
-                                          : <></>
-                                          }
+                                          {cert.certificate_type ===
+                                          "Transcript" ? (
+                                            <th>Number of copies</th>
+                                          ) : (
+                                            <></>
+                                          )}
+                                          {cert.certificate_type ===
+                                            "Rank Card" ||
+                                          cert.certificate_type ===
+                                            "Grade Card" ? (
+                                            <th>Semester Copies</th>
+                                          ) : (
+                                            <></>
+                                          )}
                                           <th>Purpose</th>
                                           <th>Contact</th>
                                           <th scope="col">Decision</th>
@@ -348,14 +357,37 @@ function Admin() {
                                       <tbody>
                                         {cert.certificates.map(
                                           (data, index) => {
-                                            if (!data.status.includes("APPROVED")) {
-                                              if(cert.certificate_type == "Rank Card" || 
-                                                 cert.certificate_type == "Grade Card") {
-                                                    var semCopies = '';
-                                                    for(let i = 0; i < data.response_rank_grade_rows.length; i++) {
-                                                      semCopies += 'Sem ' + data.response_rank_grade_rows[i].semester_no + ' - (x' + data.response_rank_grade_rows[i].no_copies + '), ';
-                                                    }
+                                            if (
+                                              !data.status.includes("APPROVED")
+                                            ) {
+                                              if (
+                                                cert.certificate_type ===
+                                                  "Rank Card" ||
+                                                cert.certificate_type ===
+                                                  "Grade Card"
+                                              ) {
+                                                var semCopies = "";
+                                                for (
+                                                  let i = 0;
+                                                  i <
+                                                  data.response_rank_grade_rows
+                                                    .length;
+                                                  i++
+                                                ) {
+                                                  semCopies +=
+                                                    "Sem " +
+                                                    data
+                                                      .response_rank_grade_rows[
+                                                      i
+                                                    ].semester_no +
+                                                    " - (x" +
+                                                    data
+                                                      .response_rank_grade_rows[
+                                                      i
+                                                    ].no_copies +
+                                                    "), ";
                                                 }
+                                              }
                                               return (
                                                 <tr key={index + 1}>
                                                   <th>{index + 1}</th>
@@ -383,7 +415,9 @@ function Admin() {
                                                       certType={
                                                         cert.certificate_type
                                                       }
-                                                      ext={data.certificate_extension}
+                                                      ext={
+                                                        data.certificate_extension
+                                                      }
                                                     />
                                                   </td>
                                                   <td>
@@ -431,15 +465,20 @@ function Admin() {
                                                   ) : (
                                                     <></>
                                                   )}
-                                                  {cert.certificate_type === "Transcript"
-                                                  ? <td>{data.no_copies}</td>
-                                                  : <></>
-                                                  }
-                                                  {cert.certificate_type === "Rank Card" ||
-                                                    cert.certificate_type === "Grade Card"
-                                                  ? <td>{semCopies}</td>
-                                                  : <></>
-                                                  }
+                                                  {cert.certificate_type ===
+                                                  "Transcript" ? (
+                                                    <td>{data.no_copies}</td>
+                                                  ) : (
+                                                    <></>
+                                                  )}
+                                                  {cert.certificate_type ===
+                                                    "Rank Card" ||
+                                                  cert.certificate_type ===
+                                                    "Grade Card" ? (
+                                                    <td>{semCopies}</td>
+                                                  ) : (
+                                                    <></>
+                                                  )}
                                                   <td>
                                                     {data.purpose
                                                       ? data.purpose
@@ -487,7 +526,6 @@ function Admin() {
                                         )}
                                       </tbody>
                                     </table>
-                                    
                                   </div>
                                 ) : (
                                   <></>
@@ -519,42 +557,57 @@ function Admin() {
                                           ) : (
                                             <></>
                                           )}
-                                          { cert.certificate_type === "Transcript"
-                                          ? <>
-                                            <th scopr="col">Number of copies</th>
-                                            <th scope="col">Email Address</th>
-                                            <th scope="col">Postal Address</th>
-                                          </>
-                                          : <></>
-                                          }
-                                          { cert.certificate_type === "Rank Card" ||
-                                            cert.certificate_type === "Grade Card"
-                                          ? <>
-                                            <th scopr="col">Semester Copies</th>
-                                            <th scope="col">Email Address</th>
-                                            <th scope="col">Postal Address</th>
-                                          </>
-                                          : <></>
-                                          }
+                                          {cert.certificate_type ===
+                                          "Transcript" ? (
+                                            <>
+                                              <th scopr="col">
+                                                Number of copies
+                                              </th>
+                                              <th scope="col">Email Address</th>
+                                              <th scope="col">
+                                                Postal Address
+                                              </th>
+                                            </>
+                                          ) : (
+                                            <></>
+                                          )}
+                                          {cert.certificate_type ===
+                                            "Rank Card" ||
+                                          cert.certificate_type ===
+                                            "Grade Card" ? (
+                                            <>
+                                              <th scopr="col">
+                                                Semester Copies
+                                              </th>
+                                              <th scope="col">Email Address</th>
+                                              <th scope="col">
+                                                Postal Address
+                                              </th>
+                                            </>
+                                          ) : (
+                                            <></>
+                                          )}
                                           <th scope="col">Contact</th>
                                           <th scope="col">Document file</th>
                                           {cert.certificate_type ===
                                           "Bonafide" ? (
-                                            <th scope="col">
-                                              Upload Document
-                                            </th>
+                                            <th scope="col">Upload Document</th>
                                           ) : (
                                             <></>
                                           )}
-                                          {cert.certificate_type === "Transcript" ||
-                                            cert.certificate_type === "Rank Card" ||
-                                            cert.certificate_type === "Grade Card"
-                                          ? <>
-                                            <th scope="col">Email</th>
-                                            <th scope="col">Postal</th>
-                                          </>
-                                          : <></>
-                                          }
+                                          {cert.certificate_type ===
+                                            "Transcript" ||
+                                          cert.certificate_type ===
+                                            "Rank Card" ||
+                                          cert.certificate_type ===
+                                            "Grade Card" ? (
+                                            <>
+                                              <th scope="col">Email</th>
+                                              <th scope="col">Postal</th>
+                                            </>
+                                          ) : (
+                                            <></>
+                                          )}
                                           <th></th>
                                         </tr>
                                       </thead>
@@ -563,15 +616,38 @@ function Admin() {
                                         {cert.certificates.map(
                                           (data, index) => {
                                             console.log(data);
-                                            if (data.status.includes("APPROVED")) {
-                                              if(cert.certificate_type == "Rank Card" || 
-                                                 cert.certificate_type == "Grade Card") {
-                                                    var semCopies = '';
-                                                    for(let i = 0; i < data.response_rank_grade_rows.length; i++) {
-                                                      semCopies += 'Sem ' + data.response_rank_grade_rows[i].semester_no + ' - (x' + data.response_rank_grade_rows[i].no_copies + '), ';
-                                                    }
+                                            if (
+                                              data.status.includes("APPROVED")
+                                            ) {
+                                              if (
+                                                cert.certificate_type ===
+                                                  "Rank Card" ||
+                                                cert.certificate_type ===
+                                                  "Grade Card"
+                                              ) {
+                                                var semCopies = "";
+                                                for (
+                                                  let i = 0;
+                                                  i <
+                                                  data.response_rank_grade_rows
+                                                    .length;
+                                                  i++
+                                                ) {
+                                                  semCopies +=
+                                                    "Sem " +
+                                                    data
+                                                      .response_rank_grade_rows[
+                                                      i
+                                                    ].semester_no +
+                                                    " - (x" +
+                                                    data
+                                                      .response_rank_grade_rows[
+                                                      i
+                                                    ].no_copies +
+                                                    "), ";
                                                 }
-                                                console.log(semCopies);
+                                              }
+                                              console.log(semCopies);
                                               return (
                                                 <tr key={index + 1}>
                                                   <th>{index + 1}</th>
@@ -605,39 +681,44 @@ function Admin() {
                                                   ) : (
                                                     <></>
                                                   )}
-                                                  {cert.certificate_type === "Transcript"
-                                                  ? <>
-                                                    <td>{data.no_copies}</td>
-                                                    <td>
-                                                      {data.email
-                                                        ? data.email
-                                                        : "-"}
-                                                    </td>
-                                                    <td>
-                                                      {data.address
-                                                        ? data.address
-                                                        : "-"}
-                                                    </td>
-                                                  </>
-                                                  : <></>
-                                                  }
-                                                  {cert.certificate_type === "Rank Card" ||
-                                                    cert.certificate_type === "Grade Card"
-                                                  ? <>
-                                                    <td>{semCopies}</td>
-                                                    <td>
-                                                      {data.email
-                                                        ? data.email
-                                                        : "-"}
-                                                    </td>
-                                                    <td>
-                                                      {data.address
-                                                        ? data.address
-                                                        : "-"}
-                                                    </td>
-                                                  </>
-                                                  : <></>
-                                                  }
+                                                  {cert.certificate_type ===
+                                                  "Transcript" ? (
+                                                    <>
+                                                      <td>{data.no_copies}</td>
+                                                      <td>
+                                                        {data.email
+                                                          ? data.email
+                                                          : "-"}
+                                                      </td>
+                                                      <td>
+                                                        {data.address
+                                                          ? data.address
+                                                          : "-"}
+                                                      </td>
+                                                    </>
+                                                  ) : (
+                                                    <></>
+                                                  )}
+                                                  {cert.certificate_type ===
+                                                    "Rank Card" ||
+                                                  cert.certificate_type ===
+                                                    "Grade Card" ? (
+                                                    <>
+                                                      <td>{semCopies}</td>
+                                                      <td>
+                                                        {data.email
+                                                          ? data.email
+                                                          : "-"}
+                                                      </td>
+                                                      <td>
+                                                        {data.address
+                                                          ? data.address
+                                                          : "-"}
+                                                      </td>
+                                                    </>
+                                                  ) : (
+                                                    <></>
+                                                  )}
                                                   <td>
                                                     {data.contact
                                                       ? data.contact
@@ -652,7 +733,9 @@ function Admin() {
                                                       certType={
                                                         cert.certificate_type
                                                       }
-                                                      ext={data.certificate_extension}
+                                                      ext={
+                                                        data.certificate_extension
+                                                      }
                                                     />
                                                   </td>
                                                   {cert.certificate_type ===
@@ -675,55 +758,63 @@ function Admin() {
                                                   ) : (
                                                     <></>
                                                   )}
-                                                  {cert.certificate_type === "Transcript" ||
-                                                    cert.certificate_type === "Rank Card" ||
-                                                    cert.certificate_type === "Grade Card"
-                                                  ? <>
-                                                  <td>
-                                                    {data.email ? (
-                                                      <AddEmailDetails
-                                                        roll={data.applier_roll}
-                                                        certType={
-                                                          cert.certificate_type
-                                                        }
-                                                        certId={
-                                                          data.certificate_id
-                                                        }
-                                                        email_status={
-                                                          data.email_status
-                                                        }
-                                                        postal_status={
-                                                          data.postal_status
-                                                        }
-                                                      />
-                                                    ) : (
-                                                      <>-</>
-                                                    )}
-                                                  </td>
-                                                  <td>
-                                                    {data.address ? (
-                                                      <AddPostalDetails
-                                                        roll={data.applier_roll}
-                                                        certType={
-                                                          cert.certificate_type
-                                                        }
-                                                        certId={
-                                                          data.certificate_id
-                                                        }
-                                                        email_status={
-                                                          data.email_status
-                                                        }
-                                                        postal_status={
-                                                          data.postal_status
-                                                        }
-                                                      />
-                                                    ) : (
-                                                      <>-</>
-                                                    )}
-                                                  </td>
-                                                  </>
-                                                  : <></>
-                                                  }
+                                                  {cert.certificate_type ===
+                                                    "Transcript" ||
+                                                  cert.certificate_type ===
+                                                    "Rank Card" ||
+                                                  cert.certificate_type ===
+                                                    "Grade Card" ? (
+                                                    <>
+                                                      <td>
+                                                        {data.email ? (
+                                                          <AddEmailDetails
+                                                            roll={
+                                                              data.applier_roll
+                                                            }
+                                                            certType={
+                                                              cert.certificate_type
+                                                            }
+                                                            certId={
+                                                              data.certificate_id
+                                                            }
+                                                            email_status={
+                                                              data.email_status
+                                                            }
+                                                            postal_status={
+                                                              data.postal_status
+                                                            }
+                                                          />
+                                                        ) : (
+                                                          <>-</>
+                                                        )}
+                                                      </td>
+                                                      <td>
+                                                        {data.address ? (
+                                                          <AddPostalDetails
+                                                            roll={
+                                                              data.applier_roll
+                                                            }
+                                                            certType={
+                                                              cert.certificate_type
+                                                            }
+                                                            certId={
+                                                              data.certificate_id
+                                                            }
+                                                            email_status={
+                                                              data.email_status
+                                                            }
+                                                            postal_status={
+                                                              data.postal_status
+                                                            }
+                                                          />
+                                                        ) : (
+                                                          <>-</>
+                                                        )}
+                                                      </td>
+                                                    </>
+                                                  ) : (
+                                                    <></>
+                                                  )}
                                                   <td>
                                                     <input
                                                       id={data.id}

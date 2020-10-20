@@ -18,7 +18,9 @@ export default function TimelineItem(props) {
       <span className={classNameString}></span>
       <div>
         <div className="timeline-heading">
-          <h6 className="timeline-title" style={{overflow: 'scroll'}}>{props.data.path_email}</h6>
+          <h6 className="timeline-title" style={{ overflow: "scroll" }}>
+            {props.data.path_email}
+          </h6>
           <p>
             {props.data.status}
             <small className="text-muted">

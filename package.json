@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "npx prettier --write ."
   },
   "keywords": [],
   "author": "",
@@ -28,6 +29,7 @@
     "uuid": "^8.3.0"
   },
   "devDependencies": {
-    "pino-pretty": "^4.3.0"
+    "pino-pretty": "^4.3.0",
+    "prettier": "2.1.2"
   }
 }

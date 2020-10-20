@@ -133,7 +133,9 @@ student.post("/certificate_request", async function (req, res) {
           fs.unlinkSync(id_final_dest);
           return;
         }
-        path = helper.handle_defaults(path, all_certs[certificate_id])
+        console.log(type, all_certs[type])
+        path = helper.handle_defaults(path, all_certs[type])
+        logger.info(path)
         
         let response = await database.Certificate.create({
           type,

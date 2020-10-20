@@ -111,6 +111,13 @@ student.post("/certificate_request", async function (req, res) {
         semester_no,
         rank_grade_card_copies,
       } = req.body;
+      let all_certs_from_db = await database.CertificateType.findAll();
+      all_certs = {}
+      all_certs_from_db.forEach(function(ele){
+        let {id, name} = helper.wrapper(ele)
+        all_certs[id] = name;
+      })
+
       let sem_nos, card_copies;
       if (semester_no && rank_grade_card_copies) {
         sem_nos = semester_no.split(",");
@@ -126,6 +133,8 @@ student.post("/certificate_request", async function (req, res) {
           fs.unlinkSync(id_final_dest);
           return;
         }
+        path = helper.handle_defaults(path, all_certs[certificate_id])
+        
         let response = await database.Certificate.create({
           type,
           applier_roll,
@@ -142,6 +151,8 @@ student.post("/certificate_request", async function (req, res) {
           course_name,
           no_copies,
         });
+
+     
 
         let certificate_id = response.getDataValue("id");
         const certTypes = await database.CertificateType.findAll({

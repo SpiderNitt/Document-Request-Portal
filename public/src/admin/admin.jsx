@@ -88,9 +88,12 @@ function Admin() {
           certReq[0].certificates.length +
             certReq[1].certificates.length +
             certReq[2].certificates.length +
-            certReq[3].certificates.length
+            certReq[3].certificates.length +
+            certReq[4].certificates.length +
+            certReq[5].certificates.length
         );
         setLoad(false);
+        console.log(certReq);
       })
       .catch((err) => {});
   }, []);
@@ -291,7 +294,8 @@ function Admin() {
                               cert.certificate_type === "Rank Card") ||
                             (pending === 0 &&
                               approved === 0 &&
-                              cert.certificate_type === "Grade Card") ? (
+                              cert.certificate_type === "Grade Card") ||
+                            0 ? (
                               <p className="placeholder-nil text-center">
                                 <FaListAlt className="mr-2" />
                                 No document requests
@@ -310,7 +314,7 @@ function Admin() {
                                       <thead className="thead-dark">
                                         <tr>
                                           <th scope="col">S.No</th>
-                                          <th scope="col">Roll No.</th>
+                                          <th scope="col">Name (Roll No.)</th>
                                           <th scope="col">
                                             Previous Approvals
                                           </th>
@@ -391,7 +395,10 @@ function Admin() {
                                               return (
                                                 <tr key={index + 1}>
                                                   <th>{index + 1}</th>
-                                                  <td>{data.applier_roll}</td>
+                                                  <td>
+                                                    {data.name} (
+                                                    {data.applier_roll})
+                                                  </td>
                                                   <td>
                                                     {data.approved.length === 0
                                                       ? "-"

@@ -365,6 +365,7 @@ export default class Status extends React.Component {
             ) : (
               <div></div>
             )}
+            <br />
           </div>
         ) : (
           <div className="container req-status">

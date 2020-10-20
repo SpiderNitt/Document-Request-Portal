@@ -25,7 +25,7 @@ function Upload(props) {
     { id: 7, sem: "s7", semName: "Sem 7", copies: 0 },
     { id: 8, sem: "s8", semName: "Sem 8", copies: 0 },
   ];
-
+  const [name, setName] = useState("");
   const [emailCount, setCount] = useState(0);
   const [emails, setEmails] = useState([]);
 
@@ -181,9 +181,11 @@ function Upload(props) {
       cd.set("rank_grade_card_copies", copies);
     }
     if (
-      emailDel &&
-      document.getElementById("email-sel").checked &&
-      file === "transcript"
+      (emailDel &&
+        document.getElementById("email-sel").checked &&
+        file === "transcript") ||
+      file === "grade card" ||
+      file === "rank card"
     )
       cd.set("email", emailDel);
     if (
@@ -197,6 +199,7 @@ function Upload(props) {
     if (feeReceipt) cd.set("receipt", feeReceipt);
     if (contact) cd.set("contact", contact);
     if (purpose) cd.set("purpose", purpose);
+    if (name) cd.set("name", name);
     if (file === "transcript") {
       if (no_of_copies) cd.set("no_copies", no_of_copies);
     }
@@ -227,6 +230,7 @@ function Upload(props) {
         setPreAddr([]);
         setCourse("");
         setCode("");
+        setName("");
         SemObj.forEach((obj) => {
           obj.copies = 0;
         });
@@ -297,10 +301,30 @@ function Upload(props) {
           pauseOnHover
         />
 
-        {/* Cetificate Type */}
-
         <div className="row">
           <div className="col-md-6 form-left">
+            {/* Name */}
+
+            <div className="form-group">
+              <label htmlFor="username">
+                Enter your Name <span className="cmpl">*</span>
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                name="contact"
+                id="username"
+                placeholder="Name"
+                required
+                onChange={(e) => {
+                  setName(e.target.value);
+                }}
+              />
+              <small id="name-error-message" className="error"></small>
+            </div>
+
+            {/* Certificate Type */}
+
             <div
               style={{
                 width: "100%",
@@ -449,7 +473,7 @@ function Upload(props) {
                           name="email-del"
                           id="emaildel"
                           aria-describedby="emailHelp"
-                          placeholder="Email id"
+                          placeholder="Email Id"
                           onChange={(e) => {
                             e.preventDefault();
                             let emailValues = document.getElementById(
@@ -1080,6 +1104,14 @@ function Upload(props) {
                           "contact-error-message"
                         ).innerHTML = "";
                       }
+                    }
+                    if (!name) {
+                      document.getElementById("name-error-message").innerHTML =
+                        "Name field cannot be blank";
+                      error = 1;
+                    } else {
+                      document.getElementById("name-error-message").innerHTML =
+                        "";
                     }
                     if (!purpose) {
                       if (

@@ -121,7 +121,7 @@ const Certificate = sequelize.define(
       allowNull: true,
     },
     name: {
-      type: DataTypes.INTEGER, 
+      type: DataTypes.STRING, 
       allowNull: true
     }
   },
@@ -246,7 +246,7 @@ const CertificatePaths = sequelize.define(
 );
 
 async function test_conn() {
-  await sequelize.sync();
+  await sequelize.sync({alter: true});
   console.log("All models were synchronized successfully.");
 }
 

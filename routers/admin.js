@@ -279,6 +279,7 @@ admin.get("/", async function (req, res) {
       if (["APPROVED", "DECLINED"].includes(status) || is_pending) {
         const ele = await database.Certificate.findOne({
           attributes: [
+            "name",
             "applier_roll",
             "type",
             "address",
@@ -300,6 +301,7 @@ admin.get("/", async function (req, res) {
           },
         });
         const {
+          name,
           applier_roll,
           type,
           postal_status,
@@ -354,6 +356,7 @@ admin.get("/", async function (req, res) {
           course_name,
           no_copies,
           response_rank_grade_rows,
+          name
         });
       }
     }
@@ -390,7 +393,7 @@ admin.post("/email", async function (req, res) {
   const upload = multer({
     storage: helpers.storage,
     fileFilter: helpers.docFilter,
-  }).single("certificate");
+  }).array("certificate");
 
   upload(req, res, async function (err) {
     if (err) {
@@ -402,7 +405,7 @@ admin.post("/email", async function (req, res) {
         res
       );
     }
-    if (!req.file) {
+    if (!req.files) {
       return helpers.responseHandle(
         500,
         responseMessages.SINGLE_FILE_NOT_FOUND,
@@ -417,10 +420,6 @@ admin.post("/email", async function (req, res) {
           res
         );
       }
-
-      let { filename } = req.file;
-      let filepath = req.file.path;
-      let initial_dest = appRoot + "/" + filepath;
 
       id_exists = await database.Certificate.findOne({
         attributes: ["id", "email_address", "applier_roll", "type"],
@@ -444,6 +443,8 @@ admin.post("/email", async function (req, res) {
         });
         let type_name = type_name_row.getDataValue("name");
         let applier_roll = id_exists.getDataValue("applier_roll");
+
+        // CODE USING MAILTRANSPORTER
         // let mailDetails = {
         //     from: process.env.EMAIL,
         //     to: to_email,
@@ -457,24 +458,27 @@ admin.post("/email", async function (req, res) {
         //         }
         //     ]
         // };
+        let attachments = [];
+        req.files.forEach(function (ele) {
+          let initial_dest = appRoot + "/" + ele.path;
+          attachments.push({
+            content: fs.readFileSync(initial_dest).toString("base64"),
+            type: "application/pdf",
+            disposition: "attachment",
+            filename: applier_roll + "_" + type_name + "_" + ele.originalname,
+          });
+        });
         const msg = {
           to: to_email,
           from: process.env.EMAIL,
           subject: type_name,
-          text:
+          html:
             "Dear " +
             applier_roll +
-            ",\n\tPlease find attached the " +
+            ",<br />&nbsp;&nbsp;Please find attached the <strong>" +
             type_name +
-            " document that you requested.",
-          attachments: [
-            {
-              content: fs.readFileSync(initial_dest).toString("base64"),
-              type: "application/pdf",
-              disposition: "attachment",
-              filename: applier_roll + "_" + type_name + ".pdf",
-            },
-          ],
+            "</strong> document(s) that you requested.",
+          attachments,
         };
 
         // send email and update the email status
@@ -488,12 +492,12 @@ admin.post("/email", async function (req, res) {
             },
           }
         );
-        // if the mail is successful or unsuccessful, delete the temp file
-        // care must be taken to ensure that file is deleted only after mail is sent
-        // else the asynchronous mail function will throw FILE_NOT_FOUND error
-        fs.unlinkSync(initial_dest);
+        // Do not delete the temporary file, since it was uploaded by admin.
+        // In case of issues, itll be easier to debug with files present.
+        // CLEAN THE TEMP DIRECTORY MANUALLY
         return helpers.responseHandle(200, responseMessages.MAIL_SENT, res);
 
+        // CODE USING MAIL TRANSPORTER
         // helpers.mailTransporter.sendMail(mailDetails, async function (err, data) {
         //     if (err) {
         //         logger.error(err);
@@ -516,7 +520,6 @@ admin.post("/email", async function (req, res) {
         // });
       } catch (err) {
         logger.error(err);
-        fs.unlinkSync(initial_dest);
         return helpers.responseHandle(500, responseMessages.MAIL_NOT_SENT, res);
       }
     }

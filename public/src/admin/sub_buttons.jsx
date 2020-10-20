@@ -106,13 +106,13 @@ export const AddEmailDetails = (props) => {
 
   const approveHandler = (e) => {
     e.preventDefault();
-    isLoading(true);
+    setLoading(true);
     if (document.getElementById("upload-cert").files.length != 0) {
       let data = new FormData();
       if (document.getElementById("upload-cert").files[0]) {
         data.append(
           "certificate",
-          document.getElementById("upload-cert").files[0]
+          document.getElementById("upload-cert").files
         );
         data.set("certificate_id", parseInt(props.certId));
         spider
@@ -122,7 +122,7 @@ export const AddEmailDetails = (props) => {
           })
           .catch((err) => {});
       }
-      isLoading(false);
+      setLoading(false);
     }
   };
 
@@ -181,7 +181,7 @@ export const AddEmailDetails = (props) => {
             <Modal.Body>
               <div className="form-group comments-main text-center">
                 <br />
-                <input type="file" id="upload-cert" />
+                <input type="file" id="upload-cert" multiple="multiple" />
                 <br />
                 <button
                   type="submit"

@@ -140,31 +140,6 @@ function Admin() {
           excelData.push(temp);
         }
       });
-<<<<<<< HEAD
-=======
-    } else if (certreq.certificate_type === "Transcript") {
-      certreq.certificates.map((cert) => {
-        let temp = {};
-        index = index + 1;
-        if (document.getElementById(cert.id).checked === true) {
-          temp["S.No"] = index;
-          temp["Document Type"] = certreq.certificate_type;
-          temp["Roll number"] = cert["applier_roll"];
-          temp["Address"] = cert["address"];
-          temp["Email"] = cert["email"];
-          temp["Purpose"] = cert["purpose"];
-          temp["Contact"] = cert["contact"];
-          temp["Receipt"] = cert["receipt"];
-          temp["Number of copies"] = cert["no_copies"];
-          temp["Status"] = cert["status"];
-          temp["Postal Status"] = cert["postal_status"];
-          temp["Email Status"] = cert["email_status"];
-          temp["Approved"] = cert["approved"];
-          temp["name"] = cert["name"];
-          excelData.push(temp);
-        }
-      });
->>>>>>> 91a2b32a09de95fea1e2f042f3d3c06c067c374c
     } else if (
       certreq.certificate_type === "Course Re-Registration" ||
       certreq.certificate_type === "Course De-Registration"

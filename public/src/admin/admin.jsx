@@ -140,27 +140,6 @@ function Admin() {
           excelData.push(temp);
         }
       });
-    } else if (certreq.certificate_type === "Transcript") {
-      certreq.certificates.map((cert) => {
-        let temp = {};
-        index = index + 1;
-        if (document.getElementById(cert.id).checked === true) {
-          temp["S.No"] = index;
-          temp["Document Type"] = certreq.certificate_type;
-          temp["Roll number"] = cert["applier_roll"];
-          temp["Address"] = cert["address"];
-          temp["Email"] = cert["email"];
-          temp["Purpose"] = cert["purpose"];
-          temp["Contact"] = cert["contact"];
-          temp["Receipt"] = cert["receipt"];
-          temp["Number of copies"] = cert["no_copies"];
-          temp["Status"] = cert["status"];
-          temp["Postal Status"] = cert["postal_status"];
-          temp["Email Status"] = cert["email_status"];
-          temp["Approved"] = cert["approved"];
-          excelData.push(temp);
-        }
-      });
     } else if (
       certreq.certificate_type === "Course Re-Registration" ||
       certreq.certificate_type === "Course De-Registration"
@@ -183,25 +162,34 @@ function Admin() {
       });
     } else {
       certreq.certificates.map((cert) => {
-        let semesterCopiesInfo = "";
-        for (let i = 0; i < cert.response_rank_grade_rows.length; i++) {
-          semesterCopiesInfo +=
-            "Sem " +
-            cert.response_rank_grade_rows[i].semester_no +
-            " - (x" +
-            cert.response_rank_grade_rows[i].no_copies +
-            "), ";
-        }
         let temp = {};
         index = index + 1;
         if (document.getElementById(cert.id).checked === true) {
           temp["S.No"] = index;
           temp["Document Type"] = certreq.certificate_type;
           temp["Roll number"] = cert["applier_roll"];
+          temp["Address"] = cert["address"];
+          temp["Email"] = cert["email"];
           temp["Purpose"] = cert["purpose"];
           temp["Contact"] = cert["contact"];
-          temp["Semester Copies"] = semesterCopiesInfo;
+          temp["Receipt"] = cert["receipt"];
+          if(certreq.certificate_type === "Grade Card") {
+            let semesterCopiesInfo = "";
+            for (let i = 0; i < cert.response_rank_grade_rows.length; i++) {
+              semesterCopiesInfo +=
+                "Sem " +
+                cert.response_rank_grade_rows[i].semester_no +
+                " - (x" +
+                cert.response_rank_grade_rows[i].no_copies +
+                "), ";
+            }
+            temp["Semester Copies"] = semesterCopiesInfo;
+          } else {
+            temp["Number of copies"] = cert["no_copies"];
+          }
           temp["Status"] = cert["status"];
+          temp["Postal Status"] = cert["postal_status"];
+          temp["Email Status"] = cert["email_status"];
           temp["Approved"] = cert["approved"];
           excelData.push(temp);
         }
@@ -338,14 +326,14 @@ function Admin() {
                                             <></>
                                           )}
                                           {cert.certificate_type ===
-                                          "Transcript" ? (
+                                            "Transcript" ||
+                                            cert.certificate_type ===
+                                            "Rank Card" ? (
                                             <th>Number of copies</th>
                                           ) : (
                                             <></>
                                           )}
                                           {cert.certificate_type ===
-                                            "Rank Card" ||
-                                          cert.certificate_type ===
                                             "Grade Card" ? (
                                             <th>Semester Copies</th>
                                           ) : (
@@ -364,10 +352,7 @@ function Admin() {
                                             if (
                                               !data.status.includes("APPROVED")
                                             ) {
-                                              if (
-                                                cert.certificate_type ===
-                                                  "Rank Card" ||
-                                                cert.certificate_type ===
+                                              if (cert.certificate_type ===
                                                   "Grade Card"
                                               ) {
                                                 var semCopies = "";
@@ -473,14 +458,14 @@ function Admin() {
                                                     <></>
                                                   )}
                                                   {cert.certificate_type ===
-                                                  "Transcript" ? (
+                                                    "Transcript" ||
+                                                    cert.certificate_type ===
+                                                    "Rank Card" ? (
                                                     <td>{data.no_copies}</td>
                                                   ) : (
                                                     <></>
                                                   )}
                                                   {cert.certificate_type ===
-                                                    "Rank Card" ||
-                                                  cert.certificate_type ===
                                                     "Grade Card" ? (
                                                     <td>{semCopies}</td>
                                                   ) : (
@@ -565,7 +550,9 @@ function Admin() {
                                             <></>
                                           )}
                                           {cert.certificate_type ===
-                                          "Transcript" ? (
+                                            "Transcript" ||
+                                            cert.certificate_type ===
+                                            "Rank Card" ? (
                                             <>
                                               <th scopr="col">
                                                 Number of copies
@@ -579,8 +566,6 @@ function Admin() {
                                             <></>
                                           )}
                                           {cert.certificate_type ===
-                                            "Rank Card" ||
-                                          cert.certificate_type ===
                                             "Grade Card" ? (
                                             <>
                                               <th scopr="col">
@@ -626,10 +611,7 @@ function Admin() {
                                             if (
                                               data.status.includes("APPROVED")
                                             ) {
-                                              if (
-                                                cert.certificate_type ===
-                                                  "Rank Card" ||
-                                                cert.certificate_type ===
+                                              if (cert.certificate_type ===
                                                   "Grade Card"
                                               ) {
                                                 var semCopies = "";
@@ -689,7 +671,9 @@ function Admin() {
                                                     <></>
                                                   )}
                                                   {cert.certificate_type ===
-                                                  "Transcript" ? (
+                                                    "Transcript" ||
+                                                    cert.certificate_type ===
+                                                    "Rank Card" ? (
                                                     <>
                                                       <td>{data.no_copies}</td>
                                                       <td>
@@ -707,8 +691,6 @@ function Admin() {
                                                     <></>
                                                   )}
                                                   {cert.certificate_type ===
-                                                    "Rank Card" ||
-                                                  cert.certificate_type ===
                                                     "Grade Card" ? (
                                                     <>
                                                       <td>{semCopies}</td>

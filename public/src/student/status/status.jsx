@@ -318,7 +318,10 @@ export default class Status extends React.Component {
                                       : "-"}
                                   </td>
                                   <td>
-                                    {data.response_rank_grade_rows
+                                    {data.type === 5 ?
+                                      data.no_copies ? 
+                                      data.no_copies : "-" 
+                                      : data.response_rank_grade_rows
                                       ? this.noOfCopies(
                                           data.response_rank_grade_rows
                                         )

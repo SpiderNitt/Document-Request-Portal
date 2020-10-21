@@ -24,6 +24,8 @@ function Upload(props) {
     { id: 6, sem: "s6", semName: "Sem 6", copies: 0 },
     { id: 7, sem: "s7", semName: "Sem 7", copies: 0 },
     { id: 8, sem: "s8", semName: "Sem 8", copies: 0 },
+    { id: 9, sem: "s9", semName: "Sem 9", copies: 0 },
+    { id: 10, sem: "s10", semName: "Sem 10", copies: 0 },
   ];
   const [name, setName] = useState("");
   const [emailCount, setCount] = useState(0);
@@ -164,7 +166,7 @@ function Upload(props) {
       cd.set("course_code", courseCode);
       cd.set("course_name", course);
     }
-    if (file === "grade card" || file === "rank card") {
+    if (file === "grade card") {
       let sems = "",
         copies = "";
       semester.forEach((entry) => {
@@ -200,7 +202,8 @@ function Upload(props) {
     if (contact) cd.set("contact", contact);
     if (purpose) cd.set("purpose", purpose);
     if (name) cd.set("name", name);
-    if (file === "transcript") {
+    if (file === "transcript" ||
+          file === "rank card") {
       if (no_of_copies) cd.set("no_copies", no_of_copies);
     }
     cd.set("path", emails.toString());
@@ -755,7 +758,9 @@ function Upload(props) {
               </div>
 
               {/* Fee Receipt */}
-              {file === "transcript" ? (
+              {file === "transcript" ||
+                file === "rank card" ||
+                file === "grade card" ? (
                 <div className="fee-receipt">
                   <div className="form-group">
                     <label htmlFor="feer">
@@ -779,8 +784,8 @@ function Upload(props) {
                 <></>
               )}
 
-              {/*Semester and #copies for rank and grade card */}
-              {file === "rank card" || file === "grade card" ? (
+              {/*Semester and #copies for grade card */}
+              {file === "grade card" ? (
                 <div className="semesters">
                   <div className="form-group">
                     <label htmlFor="semester">
@@ -1002,7 +1007,9 @@ function Upload(props) {
                 )}
               </div>
 
-              {file === "transcript" ? (
+              {file === "transcript" ||
+                file === "rank card"
+                 ? (
                 <div className="form-group">
                   <label htmlFor="no_of_copies">
                     Enter Number of copies (if you opted by post){" "}
@@ -1162,7 +1169,7 @@ function Upload(props) {
                       file === "grade card" ||
                       file === "rank card"
                     ) {
-                      if (file === "transcript") {
+                      if (file === "transcript" || file === "rank card") {
                         if (no_of_copies < 0) {
                           document.getElementById(
                             "no-of-copies-error-message"
@@ -1252,7 +1259,7 @@ function Upload(props) {
                       } else {
                         setAddress("");
                       }
-                      if (file === "rank card" || file === "grade card") {
+                      if (file === "grade card") {
                         if (
                           !(
                             document.getElementById("check_s1").checked ||
@@ -1262,7 +1269,9 @@ function Upload(props) {
                             document.getElementById("check_s5").checked ||
                             document.getElementById("check_s6").checked ||
                             document.getElementById("check_s7").checked ||
-                            document.getElementById("check_s8").checked
+                            document.getElementById("check_s8").checked ||
+                            document.getElementById("check_s9").checked ||
+                            document.getElementById("check_s10").checked
                           )
                         ) {
                           document.getElementById(
@@ -1412,7 +1421,10 @@ function Upload(props) {
                     {/* </div> */}
                     <li key={index} className="list-group-item gray">
                       {email}
-                      {file !== "transcript" ? (
+                      {file !== "transcript" &&
+                        file !== "rank card" &&
+                        file !== "grade card"
+                         ? (
                         <button
                           className="btn btn-del"
                           onClick={(e) => {

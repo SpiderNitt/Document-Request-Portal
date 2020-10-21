@@ -93,7 +93,6 @@ function Admin() {
             certReq[5].certificates.length
         );
         setLoad(false);
-        console.log(certReq);
       })
       .catch((err) => {});
   }, []);
@@ -240,7 +239,7 @@ function Admin() {
               cert.certificates.forEach((certificate) => {
                 if (certificate.status.includes("APPROVED")) {
                   approved = approved + 1;
-                } else {
+                } else if (certificate.status.includes("PENDING")){
                   pending = pending + 1;
                 }
               });
@@ -308,7 +307,7 @@ function Admin() {
                               <>
                                 {pending ? (
                                   <div className="table-responsive">
-                                    <div style={{ fontWeight: "bold" }}>
+                                    <div style={{ fontWeight: "bold", fontSize: "1.75em" }}>
                                       Pending
                                     </div>
                                     <table
@@ -366,7 +365,7 @@ function Admin() {
                                         {cert.certificates.map(
                                           (data, index) => {
                                             if (
-                                              !data.status.includes("APPROVED")
+                                              data.status.includes("PENDING")
                                             ) {
                                               if (
                                                 cert.certificate_type ===
@@ -543,7 +542,7 @@ function Admin() {
                                 )}
                                 {approved ? (
                                   <div className="table-responsive">
-                                    <div style={{ fontWeight: "bold" }}>
+                                    <div style={{ fontWeight: "bold", fontSize: "1.75em" }}>
                                       Approved
                                     </div>
                                     <table
@@ -626,7 +625,6 @@ function Admin() {
                                       <tbody>
                                         {cert.certificates.map(
                                           (data, index) => {
-                                            console.log(data);
                                             if (
                                               data.status.includes("APPROVED")
                                             ) {
@@ -658,7 +656,6 @@ function Admin() {
                                                     "), ";
                                                 }
                                               }
-                                              console.log(semCopies);
                                               return (
                                                 <tr key={index + 1}>
                                                   <th>{index + 1}</th>

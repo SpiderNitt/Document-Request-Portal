@@ -314,7 +314,6 @@ admin.get("/", async function (req, res) {
           course_code,
           course_name,
           no_copies,
-          status,
           id_file,
           file,
         } = helpers.wrapper(ele);

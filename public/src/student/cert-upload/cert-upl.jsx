@@ -264,6 +264,7 @@ function Upload(props) {
         document.getElementById("contact-number").value = "";
         document.getElementById("purpose").value = "";
         document.getElementById("college-id").value = "";
+        document.getElementById("username").value = "";
         let copyInputDivNodes = document.querySelectorAll(".copy-input-div");
         if (copyInputDivNodes) {
           copyInputDivNodes.forEach((node) => node.remove());
@@ -368,6 +369,8 @@ function Upload(props) {
                   onChange={(e) => {
                     let certType = e.target.value;
                     setFile(certType);
+                    setName("");
+                    document.getElementById("username").value = "";
                     if (
                       file === "course de-registration" ||
                       file === "course re-registration"

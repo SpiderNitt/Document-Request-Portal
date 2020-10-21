@@ -111,11 +111,16 @@ export const AddEmailDetails = (props) => {
     if (document.getElementById("upload-cert").files.length != 0) {
       let data = new FormData();
       if (document.getElementById("upload-cert").files[0]) {
-        data.append(
-          "certificate",
-          document.getElementById("upload-cert").files
-        );
+        let all_files = document.getElementById("upload-cert").files;
+        for (let i = 0; i < all_files.length; i++) {
+          data.append("certificate", all_files[i]);
+        }
+        // data.append(
+        //   "certificate",
+        //   document.getElementById("upload-cert").files
+        // );
         data.set("certificate_id", parseInt(props.certId));
+
         spider
           .post("/api/admin/email", data)
           .then((res) => {
@@ -193,12 +198,13 @@ export const AddEmailDetails = (props) => {
                 >
                   Submit
                 </button>
-                {props.email_status
-                ? <p className="file-check-msg" style={{marginTop: '1em'}}>
+                {props.email_status ? (
+                  <p className="file-check-msg" style={{ marginTop: "1em" }}>
                     <strong>Email has been sent</strong>
                   </p>
-                : <></>
-                }
+                ) : (
+                  <></>
+                )}
               </div>
             </Modal.Body>
           </>
@@ -291,12 +297,13 @@ export const AddPostalDetails = (props) => {
             >
               Submit
             </button>
-            {props.postal_status
-                ? <p className="file-check-msg" style={{marginTop: '1em'}}>
-                    <strong>Post has been sent</strong>
-                  </p>
-                : <></>
-                }
+            {props.postal_status ? (
+              <p className="file-check-msg" style={{ marginTop: "1em" }}>
+                <strong>Post has been sent</strong>
+              </p>
+            ) : (
+              <></>
+            )}
           </div>
         </Modal.Body>
       </Modal>

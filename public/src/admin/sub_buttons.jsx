@@ -131,10 +131,12 @@ export const AddEmailDetails = (props) => {
     <>
       {props.email_status ? (
         <button
-          className="btn btn-secondary p-1 m-1"
+          className="btn btn-success p-1 m-1"
           width="50"
           type="button"
-          disabled
+          onClick={(e) => {
+            setModal(true);
+          }}
         >
           <div>Email Sent</div>
         </button>
@@ -191,6 +193,12 @@ export const AddEmailDetails = (props) => {
                 >
                   Submit
                 </button>
+                {props.email_status
+                ? <p className="file-check-msg" style={{marginTop: '1em'}}>
+                    <strong>Email has been sent</strong>
+                  </p>
+                : <></>
+                }
               </div>
             </Modal.Body>
           </>
@@ -225,10 +233,12 @@ export const AddPostalDetails = (props) => {
     <>
       {props.postal_status ? (
         <button
-          className="btn btn-secondary p-1 m-1"
+          className="btn btn-success p-1 m-1"
           width="50"
           type="button"
-          disabled
+          onClick={(e) => {
+            setModal(true);
+          }}
         >
           Post Sent
         </button>
@@ -281,6 +291,12 @@ export const AddPostalDetails = (props) => {
             >
               Submit
             </button>
+            {props.postal_status
+                ? <p className="file-check-msg" style={{marginTop: '1em'}}>
+                    <strong>Post has been sent</strong>
+                  </p>
+                : <></>
+                }
           </div>
         </Modal.Body>
       </Modal>

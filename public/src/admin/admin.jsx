@@ -95,7 +95,6 @@ function Admin() {
         );
         setRefreshing(false);
         setLoad(false);
-        console.log(certReq);
       })
       .catch((err) => {});
   }, [isRefreshing]);
@@ -139,6 +138,7 @@ function Admin() {
           temp["Contact"] = cert["contact"];
           temp["Status"] = cert["status"];
           temp["Approved"] = cert["approved"];
+          temp["name"] = cert["name"];
           excelData.push(temp);
         }
       });
@@ -160,6 +160,7 @@ function Admin() {
           temp["Postal Status"] = cert["postal_status"];
           temp["Email Status"] = cert["email_status"];
           temp["Approved"] = cert["approved"];
+          temp["name"] = cert["name"];
           excelData.push(temp);
         }
       });
@@ -180,6 +181,7 @@ function Admin() {
           temp["Course Name"] = cert["course_name"];
           temp["Status"] = cert["status"];
           temp["Approved"] = cert["approved"];
+          temp["name"] = cert["name"];
           excelData.push(temp);
         }
       });
@@ -205,6 +207,7 @@ function Admin() {
           temp["Semester Copies"] = semesterCopiesInfo;
           temp["Status"] = cert["status"];
           temp["Approved"] = cert["approved"];
+          temp["name"] = cert["name"];
           excelData.push(temp);
         }
       });
@@ -241,9 +244,8 @@ function Admin() {
               cert.certificates.forEach((certificate) => {
                 if (certificate.status.includes("APPROVED")) {
                   approved = approved + 1;
-                } else {
-                  if(!certificate.status.includes("DECLINED"))
-                    pending = pending + 1;
+                } else if (certificate.status.includes("PENDING")){
+                  pending = pending + 1;
                 }
               });
               return (
@@ -310,7 +312,7 @@ function Admin() {
                               <>
                                 {pending ? (
                                   <div className="table-responsive">
-                                    <div style={{ fontWeight: "bold" }}>
+                                    <div style={{ fontWeight: "bold", fontSize: "1.75em" }}>
                                       Pending
                                     </div>
                                     <table
@@ -368,7 +370,7 @@ function Admin() {
                                         {cert.certificates.map(
                                           (data, index) => {
                                             if (
-                                              !data.status.includes("APPROVED") && !data.status.includes("DECLINED")
+                                              data.status.includes("PENDING")
                                             ) {
                                               if (
                                                 cert.certificate_type ===
@@ -547,7 +549,7 @@ function Admin() {
                                 )}
                                 {approved ? (
                                   <div className="table-responsive">
-                                    <div style={{ fontWeight: "bold" }}>
+                                    <div style={{ fontWeight: "bold", fontSize: "1.75em" }}>
                                       Approved
                                     </div>
                                     <table
@@ -557,7 +559,7 @@ function Admin() {
                                       <thead className="thead-dark">
                                         <tr>
                                           <th scope="col">S.No</th>
-                                          <th scope="col">Roll No.</th>
+                                          <th scope="col">Name (Roll No.)</th>
                                           <th scope="col">
                                             Previous Approvals
                                           </th>
@@ -630,7 +632,6 @@ function Admin() {
                                       <tbody>
                                         {cert.certificates.map(
                                           (data, index) => {
-                                            console.log(data);
                                             if (
                                               data.status.includes("APPROVED")
                                             ) {
@@ -662,11 +663,13 @@ function Admin() {
                                                     "), ";
                                                 }
                                               }
-                                              console.log(semCopies);
                                               return (
                                                 <tr key={index + 1}>
                                                   <th>{index + 1}</th>
-                                                  <td>{data.applier_roll}</td>
+                                                  <td>
+                                                    {data.name} (
+                                                    {data.applier_roll})
+                                                  </td>
                                                   <td>
                                                     {data.approved.length === 0
                                                       ? "-"

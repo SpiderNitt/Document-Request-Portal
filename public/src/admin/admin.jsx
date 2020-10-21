@@ -26,6 +26,7 @@ function Admin() {
   const [isLoading, setLoad] = useState(true);
   const [certTypes, setTypes] = useState([]);
   const [length, setLength] = useState(0);
+  const [isRefreshing,setRefreshing] = useState(false);
 
   useEffect(() => {
     spider
@@ -92,10 +93,11 @@ function Admin() {
             certReq[4].certificates.length +
             certReq[5].certificates.length
         );
+        setRefreshing(false);
         setLoad(false);
       })
       .catch((err) => {});
-  }, []);
+  }, [isRefreshing]);
   const createButton = () => {
     var buttons = [];
     var certs = [];
@@ -202,6 +204,9 @@ function Admin() {
       xls.exportToXLS(`${certreq.certificate_type}_Request_List.xls`);
     }
   };
+  const changeRefresh = (boolVal) => {
+    setRefreshing(boolVal);
+  };
 
   return (
     <>
@@ -228,6 +233,9 @@ function Admin() {
                   approved = approved + 1;
                 } else if (certificate.status.includes("PENDING")){
                   pending = pending + 1;
+                } else {
+                  if(!certificate.status.includes("DECLINED"))
+                    pending = pending + 1;
                 }
               });
               return (
@@ -352,7 +360,7 @@ function Admin() {
                                         {cert.certificates.map(
                                           (data, index) => {
                                             if (
-                                              data.status.includes("PENDING")
+                                              !data.status.includes("APPROVED") && !data.status.includes("DECLINED")
                                             ) {
                                               if (cert.certificate_type ===
                                                   "Grade Card"
@@ -494,6 +502,7 @@ function Admin() {
                                                       certType={
                                                         cert.certificate_type
                                                       }
+                                                      refresh={ changeRefresh }
                                                     />{" "}
                                                     <Reject
                                                       roll={data.applier_roll}
@@ -504,6 +513,7 @@ function Admin() {
                                                       certType={
                                                         cert.certificate_type
                                                       }
+                                                      refresh={ changeRefresh }
                                                     />
                                                   </td>
                                                   <td>

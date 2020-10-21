@@ -31,6 +31,7 @@ export const Approve = (props) => {
       .post("api/admin/approve", cd)
       .then((res) => {
         setModal(false);
+        props.refresh(true);
       })
       .catch((err) => {});
   };
@@ -319,7 +320,8 @@ export const Reject = (props) => {
       })
       .then((res) => {
         setModal(false);
-        window.location.reload();
+        props.refresh(true);
+        //window.location.reload();
       })
       .catch((err) => {});
   };

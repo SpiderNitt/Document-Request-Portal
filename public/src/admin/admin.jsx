@@ -137,6 +137,7 @@ function Admin() {
           temp["Contact"] = cert["contact"];
           temp["Status"] = cert["status"];
           temp["Approved"] = cert["approved"];
+          temp["name"] = cert["name"];
           excelData.push(temp);
         }
       });
@@ -158,6 +159,7 @@ function Admin() {
           temp["Postal Status"] = cert["postal_status"];
           temp["Email Status"] = cert["email_status"];
           temp["Approved"] = cert["approved"];
+          temp["name"] = cert["name"];
           excelData.push(temp);
         }
       });
@@ -178,6 +180,7 @@ function Admin() {
           temp["Course Name"] = cert["course_name"];
           temp["Status"] = cert["status"];
           temp["Approved"] = cert["approved"];
+          temp["name"] = cert["name"];
           excelData.push(temp);
         }
       });
@@ -203,6 +206,7 @@ function Admin() {
           temp["Semester Copies"] = semesterCopiesInfo;
           temp["Status"] = cert["status"];
           temp["Approved"] = cert["approved"];
+          temp["name"] = cert["name"];
           excelData.push(temp);
         }
       });
@@ -549,7 +553,7 @@ function Admin() {
                                       <thead className="thead-dark">
                                         <tr>
                                           <th scope="col">S.No</th>
-                                          <th scope="col">Roll No.</th>
+                                          <th scope="col">Name (Roll No.)</th>
                                           <th scope="col">
                                             Previous Approvals
                                           </th>
@@ -658,7 +662,10 @@ function Admin() {
                                               return (
                                                 <tr key={index + 1}>
                                                   <th>{index + 1}</th>
-                                                  <td>{data.applier_roll}</td>
+                                                  <td>
+                                                    {data.name} (
+                                                    {data.applier_roll})
+                                                  </td>
                                                   <td>
                                                     {data.approved.length === 0
                                                       ? "-"

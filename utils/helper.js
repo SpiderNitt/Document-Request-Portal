@@ -149,7 +149,7 @@ function handle_defaults(path, name) {
   path = path.map((ele) => ele.trim());
   if (name.toLowerCase().includes("bonafide")) {
     if (!path.includes("adsw@nitt.edu")) path.push("adsw@nitt.edu");
-    if (!path.push("swoffice@nitt.edu")) path.push("swoffice@nitt.edu");
+    if (!path.includes("swoffice@nitt.edu")) path.push("swoffice@nitt.edu");
   } else if (name.toLowerCase().includes("registration")) {
     if (!path.includes("ugacad@nitt.edu")) path.push("ugacad@nitt.edu");
     if (!path.includes("ugsection@nitt.edu")) path.push("ugsection@nitt.edu");

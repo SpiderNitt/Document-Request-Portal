@@ -19,6 +19,7 @@ const middlewares = require("../utils/middlewares");
 const database = require("../database/database");
 const helpers = require("../utils/helper");
 const { determine_pending } = require("../utils/helper");
+const helper = require("../utils/helper");
 
 admin.use("/", middlewares.is_admin);
 
@@ -355,7 +356,7 @@ admin.get("/", async function (req, res) {
           course_name,
           no_copies,
           response_rank_grade_rows,
-          name
+          name,
         });
       }
     }
@@ -434,6 +435,9 @@ admin.post("/email", async function (req, res) {
 
       try {
         let to_email = id_exists.getDataValue("email_address");
+        if (!to_email) {
+          return helper.responseHandle(400, responseMessages.EMAIL_NULL, res);
+        }
         let type_name_row = await database.CertificateType.findOne({
           attributes: ["name"],
           where: {

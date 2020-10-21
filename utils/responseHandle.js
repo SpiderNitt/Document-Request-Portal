@@ -12,6 +12,7 @@ const response_messages = {
 
   DEFAULT_401: "Unauthorized",
   INVALID_CREDENTIALS: "Invalid username/password Combination",
+  EMAIL_NULL: "There is no from specified for the email. Contact applicant",
 
   DEFAULT_403: "Forbidden",
   ACCESS_DENIED: "You do not have rights to this resource",

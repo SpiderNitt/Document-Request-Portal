@@ -482,7 +482,7 @@ admin.post("/email", async function (req, res) {
 
         // send email and update the email status
         await sgMail.send(msg);
-        let email_status = "Email Sent";
+        let email_status = "Email sent by " + req.jwt_payload.username;
         await database.Certificate.update(
           { email_status },
           {

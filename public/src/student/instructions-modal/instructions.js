@@ -77,7 +77,7 @@ export default class InstructionsModal extends React.Component {
               </li>
 
               <li>
-                <strong>Transcript</strong>
+                <strong>Transcript/ Rank Card/ Grade Card</strong>
                 <ul>
                   <li>Upload the fee receipt after payment.</li>
                   <li>

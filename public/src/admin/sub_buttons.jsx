@@ -115,20 +115,17 @@ export const AddEmailDetails = (props) => {
         for (let i = 0; i < all_files.length; i++) {
           data.append("certificate", all_files[i]);
         }
-        // data.append(
-        //   "certificate",
-        //   document.getElementById("upload-cert").files
-        // );
+
         data.set("certificate_id", parseInt(props.certId));
 
         spider
           .post("/api/admin/email", data)
           .then((res) => {
             setModal(false);
+            setLoading(false);
           })
           .catch((err) => {});
       }
-      setLoading(false);
     }
   };
 
@@ -165,50 +162,44 @@ export const AddEmailDetails = (props) => {
         dialogClassName="approveModal"
         aria-labelledby="contained-modal-title-vcenter"
       >
-        {isLoading ? (
-          <>
+        <Modal.Header closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            Send {props.certType} to {props.roll} by mail
             <br />
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {isLoading ? (
             <Loader
               className="text-center"
               type="Audio"
               color="rgb(13, 19, 41)"
               height={100}
               width={100}
-              timeout={3000} //3 secs
+              // timeout={3000} //3 secs
             />
-            <br />
-          </>
-        ) : (
-          <>
-            <Modal.Header closeButton>
-              <Modal.Title id="contained-modal-title-vcenter">
-                Send {props.certType} to {props.roll} by mail
-                <br />
-              </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <div className="form-group comments-main text-center">
-                <br />
-                <input type="file" id="upload-cert" multiple="multiple" />
-                <br />
-                <button
-                  type="submit"
-                  className="btn btn-success"
-                  onClick={approveHandler}
-                >
-                  Submit
-                </button>
-                {props.email_status ? (
-                  <p className="file-check-msg" style={{ marginTop: "1em" }}>
-                    <strong>Email has been sent</strong>
-                  </p>
-                ) : (
-                  <></>
-                )}
-              </div>
-            </Modal.Body>
-          </>
-        )}
+          ) : (
+            <div className="form-group comments-main text-center">
+              <br />
+              <input type="file" id="upload-cert" multiple="multiple" />
+              <br />
+              <button
+                type="submit"
+                className="btn btn-success"
+                onClick={approveHandler}
+              >
+                Submit
+              </button>
+              {props.email_status ? (
+                <p className="file-check-msg" style={{ marginTop: "1em" }}>
+                  <strong>Email has been sent</strong>
+                </p>
+              ) : (
+                <></>
+              )}
+            </div>
+          )}
+        </Modal.Body>
       </Modal>
     </>
   );

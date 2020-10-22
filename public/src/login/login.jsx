@@ -46,17 +46,22 @@ function Login(props) {
             // if (err.status === 500) {
             //   document.getElementById("login-error-message").innerHTML =
             //     "Internal Server Error. Please try again later.";
-            if (
-              err.status !== 401 ||
-              err.status !== 400 ||
-              err.status !== 404 ||
-              err.status !== 500 ||
-              err.status !== 503
-            ) {
-              document.getElementById("login-error-message").innerHTML =
-                "Service currently unavailable. Please try again later.";
+
+            switch (err.response.status) {
+              case 400:
+              case 401:
+              case 404:
+              case 500:
+              case 503:
+                document.getElementById("login-error-message").innerHTML = "";
+                break;
+              default:
+                document.getElementById("login-error-message").innerHTML =
+                  "Service currently unavailable. Please try again later.";
+                setLoading(false);
+                break;
+    
             }
-            // if (err.status) setLoading(false);
           });
       } else {
         // alert("Not @nitt");

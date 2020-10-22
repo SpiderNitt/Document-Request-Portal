@@ -172,6 +172,7 @@ export default class Status extends React.Component {
                               </>
                             );
                           }
+                          return 0;
                         })}
                       </tbody>
                     </table>
@@ -257,6 +258,7 @@ export default class Status extends React.Component {
                               </>
                             );
                           }
+                          return 0;
                         })}
                       </tbody>
                     </table>
@@ -360,6 +362,7 @@ export default class Status extends React.Component {
                               </>
                             );
                           }
+                          return 0;
                         })}
                       </tbody>
                     </table>

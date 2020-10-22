@@ -108,7 +108,7 @@ export const AddEmailDetails = (props) => {
   const approveHandler = (e) => {
     e.preventDefault();
     setLoading(true);
-    if (document.getElementById("upload-cert").files.length != 0) {
+    if (document.getElementById("upload-cert").files.length !== 0) {
       let data = new FormData();
       if (document.getElementById("upload-cert").files[0]) {
         let all_files = document.getElementById("upload-cert").files;

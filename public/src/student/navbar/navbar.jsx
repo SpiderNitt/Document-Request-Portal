@@ -11,7 +11,7 @@ function NavBar(props) {
     <div className="navMain">
       <div id="sideNav" className="sidenav">
         <a
-          // href=""
+          href="/#"
           className="closebtn"
           onClick={() => {
             document.getElementById("sideNav").style.width = "0";

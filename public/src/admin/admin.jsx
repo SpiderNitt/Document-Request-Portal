@@ -97,6 +97,7 @@ function Admin() {
         setLoad(false);
       })
       .catch((err) => {});
+       // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isRefreshing]);
   const createButton = () => {
     var buttons = [];
@@ -104,7 +105,9 @@ function Admin() {
     certReq.map((certreq) => {
       certreq.certificates.forEach((cert) => {
         certs.push(certreq);
+        return 0;
       });
+      return 0;
     });
     certs = [...new Set(certs)];
     certs.map((item, index) => {
@@ -120,6 +123,7 @@ function Admin() {
           </button>
         </div>
       );
+      return 0;
     });
     return buttons;
   };
@@ -141,6 +145,7 @@ function Admin() {
           temp["name"] = cert["name"];
           excelData.push(temp);
         }
+        return 0;
       });
     } else if (
       certreq.certificate_type === "Course Re-Registration" ||
@@ -162,6 +167,7 @@ function Admin() {
           temp["name"] = cert["name"];
           excelData.push(temp);
         }
+        return 0;
       });
     } else {
       certreq.certificates.map((cert) => {
@@ -197,6 +203,7 @@ function Admin() {
           temp["name"] = cert["name"];
           excelData.push(temp);
         }
+        return 0;
       });
     }
     if (excelData.length) {
@@ -271,6 +278,8 @@ function Admin() {
                               {createButton().filter((button) => {
                                 if (button.props.id === cert.certificate_type)
                                   return button;
+                                else
+                                return 0;
                               })}
                             </div>
                             {(pending === 0 &&
@@ -535,7 +544,8 @@ function Admin() {
                                                 </tr>
                                               );
                                             }
-                                          }
+                                          return 0;
+                                        }
                                         )}
                                       </tbody>
                                     </table>
@@ -842,6 +852,7 @@ function Admin() {
                                                 </tr>
                                               );
                                             }
+                                            return 0;
                                           }
                                         )}
                                       </tbody>

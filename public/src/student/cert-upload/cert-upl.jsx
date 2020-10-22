@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import spider from "../../utils/API";
 import { StatusContext } from "../../contexts/StatusContext";
 import { ToastContainer } from "react-toastify";
-import { Modal } from "react-bootstrap";
+import { Modal } from "react-bootstrap"; //eslint-disable-next-line
 import CertificateTemplate from "../cert-templates/cert-temp";
 import Loader from "react-loader-spinner";
 import InstructionsModal from "../instructions-modal/instructions";
@@ -206,7 +206,7 @@ function Upload(props) {
     if (file === "transcript" || file === "rank card") {
       if (no_of_copies) cd.set("no_copies", no_of_copies);
     }
-    cd.set("path", emails.toString());
+    cd.set("path", emails.toString()); //eslint-disable-next-line
     for (var pair of cd.entries()) {
     }
     spider
@@ -371,8 +371,8 @@ function Upload(props) {
                     let certType = e.target.value;
                     setFile(certType);
                     docId.forEach((type) => {
-                      if (type.name.toLowerCase() == certType) {
-                        if (type.semwise_mapping == true) setSemwiseMap(true);
+                      if (type.name.toLowerCase() === certType) {
+                        if (type.semwise_mapping === true) setSemwiseMap(true);
                         else setSemwiseMap(false);
                       }
                     });
@@ -445,7 +445,7 @@ function Upload(props) {
 
               {file === "transcript" ||
               file === "rank card" ||
-              semwiseMap == true ? (
+              semwiseMap === true ? (
                 <>
                   <div className="form-group">
                     <label htmlFor="delivery-sel">
@@ -563,6 +563,7 @@ function Upload(props) {
                                 </label>
                               </div>
                             );
+                            return 0;
                         })
                       ) : (
                         <small className="form-text text-muted">
@@ -770,7 +771,7 @@ function Upload(props) {
               {/* Fee Receipt */}
               {file === "transcript" ||
               file === "rank card" ||
-              semwiseMap == true ? (
+              semwiseMap === true ? (
                 <div className="fee-receipt">
                   <div className="form-group">
                     <label htmlFor="feer">
@@ -795,7 +796,7 @@ function Upload(props) {
               )}
 
               {/*Semester and #copies for grade card */}
-              {semwiseMap == true ? (
+              {semwiseMap === true ? (
                 <div className="semesters">
                   <div className="form-group">
                     <label htmlFor="semester">
@@ -874,7 +875,7 @@ function Upload(props) {
               {/* Administrator Email Addition */}
               {file === "transcript" ||
               file === "rank card" ||
-              semwiseMap == true ? (
+              semwiseMap === true ? (
                 <></>
               ) : (
                 <>
@@ -953,7 +954,7 @@ function Upload(props) {
               <div className="form-group">
                 {file === "bonafide" ||
                 file === "transcript" ||
-                semwiseMap == true ||
+                semwiseMap === true ||
                 file === "rank card" ? (
                   <>
                     <label htmlFor="purpose">
@@ -1133,7 +1134,7 @@ function Upload(props) {
                         file === "bonafide" ||
                         file === "transcript" ||
                         file === "rank card" ||
-                        semwiseMap == true
+                        semwiseMap === true
                       ) {
                         document.getElementById(
                           "purpose-error-message"
@@ -1174,7 +1175,7 @@ function Upload(props) {
                       }
                     } else if (
                       file === "transcript" ||
-                      semwiseMap == true ||
+                      semwiseMap === true ||
                       file === "rank card"
                     ) {
                       if (file === "transcript" || file === "rank card") {
@@ -1267,7 +1268,7 @@ function Upload(props) {
                       } else {
                         setAddress("");
                       }
-                      if (semwiseMap == true) {
+                      if (semwiseMap === true) {
                         if (
                           !(
                             document.getElementById("check_s1").checked ||

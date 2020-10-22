@@ -26,7 +26,7 @@ function Admin() {
   const [isLoading, setLoad] = useState(true);
   const [certTypes, setTypes] = useState([]);
   const [length, setLength] = useState(0);
-  const [isRefreshing,setRefreshing] = useState(false);
+  const [isRefreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     spider
@@ -176,7 +176,7 @@ function Admin() {
           temp["Purpose"] = cert["purpose"];
           temp["Contact"] = cert["contact"];
           temp["Receipt"] = cert["receipt"];
-          if(certreq.certificate_type === "Grade Card") {
+          if (certreq.certificate_type === "Grade Card") {
             let semesterCopiesInfo = "";
             for (let i = 0; i < cert.response_rank_grade_rows.length; i++) {
               semesterCopiesInfo +=
@@ -231,10 +231,10 @@ function Admin() {
               cert.certificates.forEach((certificate) => {
                 if (certificate.status.includes("APPROVED")) {
                   approved = approved + 1;
-                } else if (certificate.status.includes("PENDING")){
+                } else if (certificate.status.includes("PENDING")) {
                   pending = pending + 1;
                 } else {
-                  if(!certificate.status.includes("DECLINED"))
+                  if (!certificate.status.includes("DECLINED"))
                     pending = pending + 1;
                 }
               });
@@ -302,7 +302,12 @@ function Admin() {
                               <>
                                 {pending ? (
                                   <div className="table-responsive">
-                                    <div style={{ fontWeight: "bold", fontSize: "1.75em" }}>
+                                    <div
+                                      style={{
+                                        fontWeight: "bold",
+                                        fontSize: "1.75em",
+                                      }}
+                                    >
                                       Pending
                                     </div>
                                     <table
@@ -337,14 +342,14 @@ function Admin() {
                                           )}
                                           {cert.certificate_type ===
                                             "Transcript" ||
-                                            cert.certificate_type ===
+                                          cert.certificate_type ===
                                             "Rank Card" ? (
                                             <th>Number of copies</th>
                                           ) : (
                                             <></>
                                           )}
                                           {cert.certificate_type ===
-                                            "Grade Card" ? (
+                                          "Grade Card" ? (
                                             <th>Semester Copies</th>
                                           ) : (
                                             <></>
@@ -360,10 +365,14 @@ function Admin() {
                                         {cert.certificates.map(
                                           (data, index) => {
                                             if (
-                                              !data.status.includes("APPROVED") && !data.status.includes("DECLINED")
+                                              !data.status.includes(
+                                                "APPROVED"
+                                              ) &&
+                                              !data.status.includes("DECLINED")
                                             ) {
-                                              if (cert.certificate_type ===
-                                                  "Grade Card"
+                                              if (
+                                                cert.certificate_type ===
+                                                "Grade Card"
                                               ) {
                                                 var semCopies = "";
                                                 for (
@@ -469,14 +478,14 @@ function Admin() {
                                                   )}
                                                   {cert.certificate_type ===
                                                     "Transcript" ||
-                                                    cert.certificate_type ===
+                                                  cert.certificate_type ===
                                                     "Rank Card" ? (
                                                     <td>{data.no_copies}</td>
                                                   ) : (
                                                     <></>
                                                   )}
                                                   {cert.certificate_type ===
-                                                    "Grade Card" ? (
+                                                  "Grade Card" ? (
                                                     <td>{semCopies}</td>
                                                   ) : (
                                                     <></>
@@ -502,7 +511,7 @@ function Admin() {
                                                       certType={
                                                         cert.certificate_type
                                                       }
-                                                      refresh={ changeRefresh }
+                                                      refresh={changeRefresh}
                                                     />{" "}
                                                     <Reject
                                                       roll={data.applier_roll}
@@ -513,7 +522,7 @@ function Admin() {
                                                       certType={
                                                         cert.certificate_type
                                                       }
-                                                      refresh={ changeRefresh }
+                                                      refresh={changeRefresh}
                                                     />
                                                   </td>
                                                   <td>
@@ -536,7 +545,12 @@ function Admin() {
                                 )}
                                 {approved ? (
                                   <div className="table-responsive">
-                                    <div style={{ fontWeight: "bold", fontSize: "1.75em" }}>
+                                    <div
+                                      style={{
+                                        fontWeight: "bold",
+                                        fontSize: "1.75em",
+                                      }}
+                                    >
                                       Approved
                                     </div>
                                     <table
@@ -563,7 +577,7 @@ function Admin() {
                                           )}
                                           {cert.certificate_type ===
                                             "Transcript" ||
-                                            cert.certificate_type ===
+                                          cert.certificate_type ===
                                             "Rank Card" ? (
                                             <>
                                               <th scopr="col">
@@ -578,7 +592,7 @@ function Admin() {
                                             <></>
                                           )}
                                           {cert.certificate_type ===
-                                            "Grade Card" ? (
+                                          "Grade Card" ? (
                                             <>
                                               <th scopr="col">
                                                 Semester Copies
@@ -622,8 +636,9 @@ function Admin() {
                                             if (
                                               data.status.includes("APPROVED")
                                             ) {
-                                              if (cert.certificate_type ===
-                                                  "Grade Card"
+                                              if (
+                                                cert.certificate_type ===
+                                                "Grade Card"
                                               ) {
                                                 var semCopies = "";
                                                 for (
@@ -685,7 +700,7 @@ function Admin() {
                                                   )}
                                                   {cert.certificate_type ===
                                                     "Transcript" ||
-                                                    cert.certificate_type ===
+                                                  cert.certificate_type ===
                                                     "Rank Card" ? (
                                                     <>
                                                       <td>{data.no_copies}</td>
@@ -704,7 +719,7 @@ function Admin() {
                                                     <></>
                                                   )}
                                                   {cert.certificate_type ===
-                                                    "Grade Card" ? (
+                                                  "Grade Card" ? (
                                                     <>
                                                       <td>{semCopies}</td>
                                                       <td>

@@ -167,7 +167,7 @@ function Upload(props) {
       cd.set("course_code", courseCode);
       cd.set("course_name", course);
     }
-    if (semwiseMap==true) {
+    if (semwiseMap === true) {
       let sems = "",
         copies = "";
       semester.forEach((entry) => {
@@ -187,7 +187,7 @@ function Upload(props) {
       (emailDel &&
         document.getElementById("email-sel").checked &&
         file === "transcript") ||
-      semwiseMap==true ||
+      semwiseMap === true ||
       file === "rank card"
     )
       cd.set("email", emailDel);
@@ -195,7 +195,7 @@ function Upload(props) {
       (address &&
         document.getElementById("postal-del").checked &&
         file === "transcript") ||
-      semwiseMap==true ||
+      semwiseMap === true ||
       file === "rank card"
     )
       cd.set("address", address);
@@ -203,8 +203,7 @@ function Upload(props) {
     if (contact) cd.set("contact", contact);
     if (purpose) cd.set("purpose", purpose);
     if (name) cd.set("name", name);
-    if (file === "transcript" ||
-          file === "rank card") {
+    if (file === "transcript" || file === "rank card") {
       if (no_of_copies) cd.set("no_copies", no_of_copies);
     }
     cd.set("path", emails.toString());
@@ -371,17 +370,14 @@ function Upload(props) {
                   onChange={(e) => {
                     let certType = e.target.value;
                     setFile(certType);
-                    docId.forEach((type)=>{
-                      if(type.name.toLowerCase()==certType){
-                        if(type.semwise_mapping == true)
-                          setSemwiseMap(true);
-                        else
-                          setSemwiseMap(false);
-
-                        }                        
+                    docId.forEach((type) => {
+                      if (type.name.toLowerCase() == certType) {
+                        if (type.semwise_mapping == true) setSemwiseMap(true);
+                        else setSemwiseMap(false);
+                      }
                     });
-                    setName("");
-                    document.getElementById("username").value = "";
+                    // setName("");
+                    // document.getElementById("username").value = "";
                     if (
                       file === "course de-registration" ||
                       file === "course re-registration"
@@ -449,7 +445,7 @@ function Upload(props) {
 
               {file === "transcript" ||
               file === "rank card" ||
-              semwiseMap==true ? (
+              semwiseMap == true ? (
                 <>
                   <div className="form-group">
                     <label htmlFor="delivery-sel">
@@ -773,8 +769,8 @@ function Upload(props) {
 
               {/* Fee Receipt */}
               {file === "transcript" ||
-                file === "rank card" ||
-                semwiseMap==true ? (
+              file === "rank card" ||
+              semwiseMap == true ? (
                 <div className="fee-receipt">
                   <div className="form-group">
                     <label htmlFor="feer">
@@ -799,7 +795,7 @@ function Upload(props) {
               )}
 
               {/*Semester and #copies for grade card */}
-              {semwiseMap==true ? (
+              {semwiseMap == true ? (
                 <div className="semesters">
                   <div className="form-group">
                     <label htmlFor="semester">
@@ -839,7 +835,7 @@ function Upload(props) {
                                                              placeholder="Number of copies for ${sem.semName}" 
                                                              value=1
                                                              required                                                         
-                                                             min="1"                                                            
+                                                             min="1" 
                                                       />
                                                       <small
                                                       id="rc-gc-no-of-copies-error-message"
@@ -878,7 +874,7 @@ function Upload(props) {
               {/* Administrator Email Addition */}
               {file === "transcript" ||
               file === "rank card" ||
-              semwiseMap==true ? (
+              semwiseMap == true ? (
                 <></>
               ) : (
                 <>
@@ -957,7 +953,7 @@ function Upload(props) {
               <div className="form-group">
                 {file === "bonafide" ||
                 file === "transcript" ||
-                semwiseMap==true ||
+                semwiseMap == true ||
                 file === "rank card" ? (
                   <>
                     <label htmlFor="purpose">
@@ -1021,9 +1017,7 @@ function Upload(props) {
                 )}
               </div>
 
-              {file === "transcript" ||
-                file === "rank card"
-                 ? (
+              {file === "transcript" || file === "rank card" ? (
                 <div className="form-group">
                   <label htmlFor="no_of_copies">
                     Enter Number of copies (if you opted by post){" "}
@@ -1139,7 +1133,7 @@ function Upload(props) {
                         file === "bonafide" ||
                         file === "transcript" ||
                         file === "rank card" ||
-                        semwiseMap==true
+                        semwiseMap == true
                       ) {
                         document.getElementById(
                           "purpose-error-message"
@@ -1180,7 +1174,7 @@ function Upload(props) {
                       }
                     } else if (
                       file === "transcript" ||
-                      semwiseMap==true ||
+                      semwiseMap == true ||
                       file === "rank card"
                     ) {
                       if (file === "transcript" || file === "rank card") {
@@ -1273,7 +1267,7 @@ function Upload(props) {
                       } else {
                         setAddress("");
                       }
-                      if (semwiseMap==true) {
+                      if (semwiseMap == true) {
                         if (
                           !(
                             document.getElementById("check_s1").checked ||
@@ -1307,7 +1301,7 @@ function Upload(props) {
                         );
                         copyInputNodes.forEach((node) => {
                           if (node.value > 0)
-                            setCopies(parseInt(node.id.slice(-1)), node.value);
+                            setCopies(parseInt(node.id.slice(14)), node.value);
                           else {
                             document.getElementById(
                               "rc-gc-no-of-copies-error-message"
@@ -1436,9 +1430,8 @@ function Upload(props) {
                     <li key={index} className="list-group-item gray">
                       {email}
                       {file !== "transcript" &&
-                        file !== "rank card" &&
-                        file !== "grade card"
-                         ? (
+                      file !== "rank card" &&
+                      file !== "grade card" ? (
                         <button
                           className="btn btn-del"
                           onClick={(e) => {

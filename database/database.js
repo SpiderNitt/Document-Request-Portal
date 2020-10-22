@@ -102,7 +102,7 @@ const Certificate = sequelize.define(
     },
     purpose: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     id_file: {
       type: DataTypes.STRING,
@@ -121,9 +121,9 @@ const Certificate = sequelize.define(
       allowNull: true,
     },
     name: {
-      type: DataTypes.STRING, 
-      allowNull: true
-    }
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   {
     freezeTableName: true,
@@ -246,7 +246,7 @@ const CertificatePaths = sequelize.define(
 );
 
 async function test_conn() {
-  await sequelize.sync({alter: true});
+  await sequelize.sync({ alter: true });
   console.log("All models were synchronized successfully.");
 }
 

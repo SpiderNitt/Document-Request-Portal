@@ -55,16 +55,18 @@ function Admin() {
         for (let i = 0; i < temp.length; i++) {
           let approval_list = [];
           temp[i].approved = [];
-
+          let comment_list = [];
           let res = await spider.get("/api/student/certificate_history", {
             params: { id: temp[i].certificate_id },
           });
           res.data.forEach((t) => {
             if (t.status === "APPROVED") {
               approval_list.push(t.path_email);
+              comment_list.push(t.comments);
             }
           });
           temp[i].approved = approval_list;
+          temp[i].comments = comment_list;
           temp[i].id = i + 1;
         }
         let merged = [];
@@ -321,6 +323,7 @@ function Admin() {
                                           <th scope="col">
                                             Previous Approvals
                                           </th>
+                                          <th>Previous Comments</th>
                                           <th scope="col">Document file</th>
                                           <th scope="col">Student ID</th>
                                           {cert.certificate_type ===
@@ -356,6 +359,7 @@ function Admin() {
                                           )}
                                           <th>Purpose</th>
                                           <th>Contact</th>
+
                                           <th scope="col">Decision</th>
                                           <th></th>
                                         </tr>
@@ -417,6 +421,13 @@ function Admin() {
                                                           }
                                                         )}
                                                   </td>
+                                                  <td>
+                                                    {data.comments &&
+                                                    data.comments.length
+                                                      ? data.comments
+                                                      : "-"}
+                                                  </td>
+
                                                   <td>
                                                     <Download
                                                       certId={
@@ -525,6 +536,7 @@ function Admin() {
                                                       refresh={changeRefresh}
                                                     />
                                                   </td>
+
                                                   <td>
                                                     <input
                                                       id={data.id}
@@ -607,12 +619,12 @@ function Admin() {
                                           )}
                                           <th scope="col">Contact</th>
                                           <th scope="col">Document file</th>
-                                          {cert.certificate_type ===
+                                          {/* {cert.certificate_type ===
                                           "Bonafide" ? (
                                             <th scope="col">Upload Document</th>
                                           ) : (
                                             <></>
-                                          )}
+                                          )} */}
                                           {cert.certificate_type ===
                                             "Transcript" ||
                                           cert.certificate_type ===
@@ -755,7 +767,7 @@ function Admin() {
                                                       }
                                                     />
                                                   </td>
-                                                  {cert.certificate_type ===
+                                                  {/* {cert.certificate_type ===
                                                   "Bonafide" ? (
                                                     <td>
                                                       <Upload
@@ -774,7 +786,7 @@ function Admin() {
                                                     </td>
                                                   ) : (
                                                     <></>
-                                                  )}
+                                                  )} */}
                                                   {cert.certificate_type ===
                                                     "Transcript" ||
                                                   cert.certificate_type ===

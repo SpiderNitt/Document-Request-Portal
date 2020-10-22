@@ -61,8 +61,9 @@ function Admin() {
           });
           res.data.forEach((t) => {
             if (t.status === "APPROVED") {
+              comment_list.push(t.path_email + " - " + t.comments + "\n");
               approval_list.push(t.path_email);
-              comment_list.push(t.comments);
+              // comment_list.push(t.comments);
             }
           });
           temp[i].approved = approval_list;
@@ -424,7 +425,16 @@ function Admin() {
                                                   <td>
                                                     {data.comments &&
                                                     data.comments.length
-                                                      ? data.comments
+                                                      ? data.comments.map(
+                                                          (ele) => {
+                                                            return (
+                                                              <>
+                                                                {ele}
+                                                                <br />
+                                                              </>
+                                                            );
+                                                          }
+                                                        )
                                                       : "-"}
                                                   </td>
 

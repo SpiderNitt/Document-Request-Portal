@@ -117,7 +117,8 @@ export default class Status extends React.Component {
                           <th scope="col">Actions</th>
                         </tr>
                       </thead>
-                      <tbody>{/*eslint-disable-next-line*/} 
+                      <tbody>
+                        {/*eslint-disable-next-line*/}
                         {this.context.state.certData.map((data, index) => {
                           if (data.type === 1 || data.type === 2) {
                             this.context.state.certStatus1++;
@@ -169,7 +170,7 @@ export default class Status extends React.Component {
                                   email={data.email_status}
                                   postal={data.postal_status}
                                 ></TimelineModal>
-                             </React.Fragment>
+                              </React.Fragment>
                             );
                           }
                         })}
@@ -211,7 +212,8 @@ export default class Status extends React.Component {
                           <th scope="col">Actions</th>
                         </tr>
                       </thead>
-                      <tbody>{/*eslint-disable-next-line*/}
+                      <tbody>
+                        {/*eslint-disable-next-line*/}
                         {this.context.state.certData.map((data, index) => {
                           if (data.type === 3 || data.type === 4) {
                             this.context.state.certStatus2++;
@@ -254,7 +256,7 @@ export default class Status extends React.Component {
                                   hide={this.hideModalViewed}
                                   data={this.context.state.certHis[data.id]}
                                 ></TimelineModal>
-                             </React.Fragment>
+                              </React.Fragment>
                             );
                           }
                           // return 0;
@@ -298,7 +300,8 @@ export default class Status extends React.Component {
                           <th scope="col">Actions</th>
                         </tr>
                       </thead>
-                      <tbody>{/*eslint-disable-next-line*/}
+                      <tbody>
+                        {/*eslint-disable-next-line*/}
                         {this.context.state.certData.map((data, index) => {
                           if (data.type === 5 || data.type === 6) {
                             this.context.state.certStatus3++;
@@ -358,7 +361,7 @@ export default class Status extends React.Component {
                                   email={data.email_status}
                                   postal={data.postal_status}
                                 ></TimelineModal>
-                             </React.Fragment>
+                              </React.Fragment>
                             );
                           }
                           // return 0;

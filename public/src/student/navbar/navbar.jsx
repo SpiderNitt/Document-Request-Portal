@@ -9,7 +9,8 @@ function NavBar(props) {
   };
   return (
     <div className="navMain">
-      <div id="sideNav" className="sidenav">{/*eslint-disable-next-line*/}
+      <div id="sideNav" className="sidenav">
+        {/*eslint-disable-next-line*/}
         <a
           //href=" "
           className="closebtn"

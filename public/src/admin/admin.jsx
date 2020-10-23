@@ -97,7 +97,7 @@ function Admin() {
         setLoad(false);
       })
       .catch((err) => {});
-       // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isRefreshing]);
   const createButton = () => {
     var buttons = [];
@@ -127,7 +127,8 @@ function Admin() {
   const exportToExcel = (certreq) => {
     var excelData = [];
     let index = 0;
-    if (certreq.certificate_type === "Bonafide") { // eslint-disable-next-line
+    if (certreq.certificate_type === "Bonafide") {
+      // eslint-disable-next-line
       certreq.certificates.map((cert) => {
         let temp = {};
         index = index + 1;
@@ -165,7 +166,8 @@ function Admin() {
           excelData.push(temp);
         }
       });
-    } else {// eslint-disable-next-line
+    } else {
+      // eslint-disable-next-line
       certreq.certificates.map((cert) => {
         let temp = {};
         index = index + 1;
@@ -242,7 +244,7 @@ function Admin() {
               });
               return (
                 <div key={index}>
-                  {console.log = console.warn = console.error = () => {}}
+                  {(console.log = console.warn = console.error = () => {})}
                   {cert.certificates.length ? (
                     <Accordion className="acc-main text-center">
                       <Card className="table-main">
@@ -270,7 +272,9 @@ function Admin() {
                         </Card.Header>
                         <Accordion.Collapse eventKey="0">
                           <Card.Body>
-                          <div className="download-details"> {/*eslint-disable-next-line*/}
+                            <div className="download-details">
+                              {" "}
+                              {/*eslint-disable-next-line*/}
                               {createButton().filter((button) => {
                                 if (button.props.id === cert.certificate_type)
                                   return button;
@@ -365,7 +369,8 @@ function Admin() {
                                       </thead>
 
                                       <tbody>
-                                        {cert.certificates.map(// eslint-disable-next-line
+                                        {cert.certificates.map(
+                                          // eslint-disable-next-line
                                           (data, index) => {
                                             if (
                                               !data.status.includes(
@@ -538,7 +543,7 @@ function Admin() {
                                                 </tr>
                                               );
                                             }
-                                        }
+                                          }
                                         )}
                                       </tbody>
                                     </table>
@@ -634,7 +639,8 @@ function Admin() {
                                       </thead>
 
                                       <tbody>
-                                        {cert.certificates.map(// eslint-disable-next-line
+                                        {cert.certificates.map(
+                                          // eslint-disable-next-line
                                           (data, index) => {
                                             if (
                                               data.status.includes("APPROVED")

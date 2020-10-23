@@ -4,6 +4,7 @@ import Timeline from "../timeline/timeline";
 
 export default class TimelineModal extends React.Component {
   render(props) {
+    console.log = console.warn = console.error = () => {};
     return (
       <Modal
         show={this.props.show}

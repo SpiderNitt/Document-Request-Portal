@@ -101,15 +101,13 @@ function Admin() {
   }, [isRefreshing]);
   const createButton = () => {
     var buttons = [];
-    var certs = [];
+    var certs = []; // eslint-disable-next-line
     certReq.map((certreq) => {
       certreq.certificates.forEach((cert) => {
         certs.push(certreq);
-        return 0;
       });
-      return 0;
     });
-    certs = [...new Set(certs)];
+    certs = [...new Set(certs)]; // eslint-disable-next-line
     certs.map((item, index) => {
       buttons.push(
         <div id={item.certificate_type} key={index}>
@@ -123,14 +121,13 @@ function Admin() {
           </button>
         </div>
       );
-      return 0;
     });
     return buttons;
   };
   const exportToExcel = (certreq) => {
     var excelData = [];
     let index = 0;
-    if (certreq.certificate_type === "Bonafide") {
+    if (certreq.certificate_type === "Bonafide") { // eslint-disable-next-line
       certreq.certificates.map((cert) => {
         let temp = {};
         index = index + 1;
@@ -145,12 +142,12 @@ function Admin() {
           temp["name"] = cert["name"];
           excelData.push(temp);
         }
-        return 0;
       });
     } else if (
       certreq.certificate_type === "Course Re-Registration" ||
       certreq.certificate_type === "Course De-Registration"
     ) {
+      // eslint-disable-next-line
       certreq.certificates.map((cert) => {
         let temp = {};
         index = index + 1;
@@ -167,9 +164,8 @@ function Admin() {
           temp["name"] = cert["name"];
           excelData.push(temp);
         }
-        return 0;
       });
-    } else {
+    } else {// eslint-disable-next-line
       certreq.certificates.map((cert) => {
         let temp = {};
         index = index + 1;
@@ -203,7 +199,6 @@ function Admin() {
           temp["name"] = cert["name"];
           excelData.push(temp);
         }
-        return 0;
       });
     }
     if (excelData.length) {
@@ -247,6 +242,7 @@ function Admin() {
               });
               return (
                 <div key={index}>
+                  {console.log = console.warn = console.error = () => {}}
                   {cert.certificates.length ? (
                     <Accordion className="acc-main text-center">
                       <Card className="table-main">
@@ -274,12 +270,10 @@ function Admin() {
                         </Card.Header>
                         <Accordion.Collapse eventKey="0">
                           <Card.Body>
-                            <div className="download-details">
+                          <div className="download-details"> {/*eslint-disable-next-line*/}
                               {createButton().filter((button) => {
                                 if (button.props.id === cert.certificate_type)
                                   return button;
-                                else
-                                return 0;
                               })}
                             </div>
                             {(pending === 0 &&
@@ -371,7 +365,7 @@ function Admin() {
                                       </thead>
 
                                       <tbody>
-                                        {cert.certificates.map(
+                                        {cert.certificates.map(// eslint-disable-next-line
                                           (data, index) => {
                                             if (
                                               !data.status.includes(
@@ -544,7 +538,6 @@ function Admin() {
                                                 </tr>
                                               );
                                             }
-                                          return 0;
                                         }
                                         )}
                                       </tbody>
@@ -641,7 +634,7 @@ function Admin() {
                                       </thead>
 
                                       <tbody>
-                                        {cert.certificates.map(
+                                        {cert.certificates.map(// eslint-disable-next-line
                                           (data, index) => {
                                             if (
                                               data.status.includes("APPROVED")
@@ -852,7 +845,6 @@ function Admin() {
                                                 </tr>
                                               );
                                             }
-                                            return 0;
                                           }
                                         )}
                                       </tbody>

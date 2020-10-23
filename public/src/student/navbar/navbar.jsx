@@ -9,9 +9,9 @@ function NavBar(props) {
   };
   return (
     <div className="navMain">
-      <div id="sideNav" className="sidenav">
+      <div id="sideNav" className="sidenav">{/*eslint-disable-next-line*/}
         <a
-          href="/#"
+          //href=" "
           className="closebtn"
           onClick={() => {
             document.getElementById("sideNav").style.width = "0";

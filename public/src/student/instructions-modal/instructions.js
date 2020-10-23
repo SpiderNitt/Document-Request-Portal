@@ -3,7 +3,9 @@ import { Modal } from "react-bootstrap";
 import "./instructions.css";
 export default class InstructionsModal extends React.Component {
   render() {
+    console.log = console.warn = console.error = () => {};
     return (
+      /*eslint-disable-next-line*/
       <Modal
         show={this.props.show}
         onHide={this.props.hide}

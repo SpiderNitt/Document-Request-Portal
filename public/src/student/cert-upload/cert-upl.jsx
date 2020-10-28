@@ -4,14 +4,13 @@ import { StatusContext } from "../../contexts/StatusContext";
 import { ToastContainer } from "react-toastify";
 import { Modal } from "react-bootstrap"; //eslint-disable-next-line
 import CertificateTemplate from "../cert-templates/cert-temp";
+import SemCheckboxes from './SemCheckboxes';
 import Loader from "react-loader-spinner";
 import InstructionsModal from "../instructions-modal/instructions";
 import SignatoriesInstructionsModal from "../instructions-modal/signatories-instructions";
 import { MdHelp } from "react-icons/md";
 import store from '../../store';
-import {setName} from '../../actions';
-import {setEmails} from '../../actions';
-import {setCertPdf} from '../../actions';
+import {setName, setEmails, setCertPdf, setInstructionModal} from '../../actions';
 import "./cert-upl.css";
 import "react-toastify/dist/ReactToastify.min.css";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
@@ -38,7 +37,7 @@ function Upload(props) {
   const [file, setFile] = useState("bonafide");
   const [fileModal, setFileModal] = useState(false);
 
-  const [instructionsModal, setInstructionsModal] = useState(true);
+  //const [instructionsModal, setInstructionsModal] = useState(true);
   const [signatoriesModal, setSignatoriesModal] = useState(false);
 
   const [cert_fileName, setCertFileName] = useState("");
@@ -142,8 +141,8 @@ function Upload(props) {
   const handleClose = () => setFileModal(false);
   const handleFileOpen = () => setFileModal(true);
 
-  const handleInstructionsClose = () => setInstructionsModal(false);
-  const handleInstructionsOpen = () => setInstructionsModal(true);
+  const handleInstructionsClose = () => store.dispatch(setInstructionModal(false));
+  const handleInstructionsOpen = () => store.dispatch(setInstructionModal(true))
 
   const handleSignatoriesClose = () => setSignatoriesModal(false);
   const handleSignatoriesOpen = () => setSignatoriesModal(true);
@@ -798,78 +797,9 @@ function Upload(props) {
 
               {/*Semester and #copies for grade card */}
               {semwiseMap === true ? (
-                <div className="semesters">
-                  <div className="form-group">
-                    <label htmlFor="semester">
-                      Choose required semesters <span className="cmpl">*</span>
-                    </label>
-                    <div className="row mx-2">
-                      {semester.map((sem) => {
-                        return (
-                          <>
-                            <div className="form-check col-sm-3 col-6">
-                              <input
-                                type="checkbox"
-                                className="form-check-input"
-                                min="1"
-                                id={"check_" + sem.sem}
-                                name={sem.sem}
-                                onChange={(e) => {
-                                  if (
-                                    !document.getElementById(`${sem.sem}box`)
-                                  ) {
-                                    let semDiv = document.createElement("div");
-                                    semDiv.id = `${sem.sem}box`;
-                                    semDiv.classList.add(
-                                      "form-group",
-                                      "copy-input-div"
-                                    );
-                                    semDiv.style.background = "#f5f5f5";
-                                    semDiv.style.padding = "1rem";
-                                    semDiv.innerHTML = `<label for="no_of_copies_${sem.sem}"> 
-                                                        ${sem.semName} - Number of Copies
-                                                        <span class="cmpl">*</span>
-                                                      </label> 
-                                                      <input type="number" 
-                                                             class="form-control copies-input" 
-                                                             name="no_of_copies_${sem.sem}"
-                                                             id="no_of_copies_${sem.sem}"
-                                                             placeholder="Number of copies for ${sem.semName}" 
-                                                             value=1
-                                                             required                                                         
-                                                             min="1" 
-                                                      />
-                                                      <small
-                                                      id="rc-gc-no-of-copies-error-message"
-                                                      class="error"
-                                                    ></small>
-                                                      <small id="${sem.sem}-no-of-copies-error-message" class="error"></small>`;
-                                    document
-                                      .getElementById("semesterCopies")
-                                      .appendChild(semDiv);
-                                  } else {
-                                    document
-                                      .getElementById(`${sem.sem}box`)
-                                      .remove();
-                                  }
-                                }}
-                              />
-
-                              <label htmlFor={sem.sem}> {sem.semName} </label>
-                            </div>
-                          </>
-                        );
-                      })}
-                    </div>
-                    <small
-                      id="select-semester-error-message"
-                      className="error"
-                    ></small>
-                  </div>
-                  <div className="form-group">
-                    <div id="semesterCopies"></div>
-                  </div>
-                </div>
+                  <SemCheckboxes 
+                    semester={semester}> 
+                  </SemCheckboxes>
               ) : (
                 <></>
               )}
@@ -1490,7 +1420,7 @@ function Upload(props) {
         </Modal>
         {/* <CertificateTemplate fileType={file} /> */}
         <InstructionsModal
-          show={instructionsModal}
+          //show={store.getState().instructionsModal}
           hide={handleInstructionsClose}
           centered
         ></InstructionsModal>

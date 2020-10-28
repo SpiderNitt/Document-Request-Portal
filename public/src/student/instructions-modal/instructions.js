@@ -1,7 +1,9 @@
 import React from "react";
 import { Modal } from "react-bootstrap";
 import "./instructions.css";
-export default class InstructionsModal extends React.Component {
+import {connect} from 'react-redux'
+
+class InstructionsModal extends React.Component {
   render() {
     console.log = console.warn = console.error = () => {};
     return (
@@ -153,3 +155,13 @@ export default class InstructionsModal extends React.Component {
     );
   }
 }
+
+const mapStateToProps= (state) =>{
+  return {
+    show: state.instructionsModal
+  }
+}
+
+export default connect(mapStateToProps)(InstructionsModal);
+
+

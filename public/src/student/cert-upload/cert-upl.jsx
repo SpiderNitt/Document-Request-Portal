@@ -8,7 +8,10 @@ import Loader from "react-loader-spinner";
 import InstructionsModal from "../instructions-modal/instructions";
 import SignatoriesInstructionsModal from "../instructions-modal/signatories-instructions";
 import { MdHelp } from "react-icons/md";
-
+import store from '../../store';
+import {setName} from '../../actions';
+import {setEmails} from '../../actions';
+import {setCertPdf} from '../../actions';
 import "./cert-upl.css";
 import "react-toastify/dist/ReactToastify.min.css";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
@@ -27,11 +30,9 @@ function Upload(props) {
     { id: 9, sem: "s9", semName: "Sem 9", copies: 0 },
     { id: 10, sem: "s10", semName: "Sem 10", copies: 0 },
   ];
-  const [name, setName] = useState("");
-  const [emailCount, setCount] = useState(0);
-  const [emails, setEmails] = useState([]);
 
-  const [cert_pdf, setCertPdf] = useState(null);
+  const [emailCount, setCount] = useState(0);
+
   const [id_pdf, setIdPdf] = useState(null);
 
   const [file, setFile] = useState("bonafide");
@@ -108,7 +109,7 @@ function Upload(props) {
           "File extension must be .doc, .docx or .pdf";
       } else {
         document.getElementById("file-error-message").innerHTML = "";
-        setCertPdf(URL.createObjectURL(e.target.files[0]));
+        store.dispatch(setCertPdf(URL.createObjectURL(e.target.files[0])));
         setCertFileButton(true);
         setCertFileName(e.target.files[0].name);
       }
@@ -202,11 +203,11 @@ function Upload(props) {
     if (feeReceipt) cd.set("receipt", feeReceipt);
     if (contact) cd.set("contact", contact);
     if (purpose) cd.set("purpose", purpose);
-    if (name) cd.set("name", name);
+    if (store.getState().name) cd.set("name", store.getState().name);
     if (file === "transcript" || file === "rank card") {
       if (no_of_copies) cd.set("no_copies", no_of_copies);
     }
-    cd.set("path", emails.toString()); //eslint-disable-next-line
+    cd.set("path", store.getState().emails.toString()); //eslint-disable-next-line
     for (var pair of cd.entries()) {
     }
     spider
@@ -215,7 +216,7 @@ function Upload(props) {
         setModal(false);
         setLoading(false);
         setCount(0);
-        setEmails([]);
+        store.dispatch(setEmails([]));
         setCertFileButton(false);
         setIdFileButton(false);
         setFileModal(false);
@@ -224,7 +225,7 @@ function Upload(props) {
         setFee("");
         setPurpose("");
         setContact("");
-        setCertPdf(null);
+        store.dispatch(setCertPdf(null));
         setIdPdf(null);
         setCertFileName("");
         setIdFileName("");
@@ -233,7 +234,7 @@ function Upload(props) {
         setPreAddr([]);
         setCourse("");
         setCode("");
-        setName("");
+        store.dispatch(setName(""));
         SemObj.forEach((obj) => {
           obj.copies = 0;
         });
@@ -322,7 +323,7 @@ function Upload(props) {
                 placeholder="Name"
                 required
                 onChange={(e) => {
-                  setName(e.target.value);
+                  store.dispatch(setName((e.target.value)));
                 }}
               />
               <small id="name-error-message" className="error"></small>
@@ -393,7 +394,7 @@ function Upload(props) {
                       certType === "grade card"
                     ) {
                       setCount(emailCount + 1);
-                      setEmails(["transcript@nitt.edu"]);
+                      store.dispatch(setEmails(["transcript@nitt.edu"]));
                       document.getElementById(
                         "contact-error-message"
                       ).innerHTML = "";
@@ -404,7 +405,7 @@ function Upload(props) {
                         "";
                     } else {
                       setCount(0);
-                      setEmails([]);
+                      store.dispatch(setEmails([]));
                       document.getElementById(
                         "contact-error-message"
                       ).innerHTML = "";
@@ -929,9 +930,9 @@ function Upload(props) {
                               student_webmail.test(emailValues.value) === true
                             ) {
                               alert("Cannot enter student webmail");
-                            } else if (!emails.includes(emailValues.value)) {
+                            } else if (!store.getState().emails.includes(emailValues.value)) {
                               setCount(emailCount + 1);
-                              setEmails(emails.concat(emailValues.value));
+                              store.dispatch(setEmails(store.getState().emails.concat(emailValues.value)));
                             } else {
                               alert("Duplicate entry!");
                             }
@@ -1121,7 +1122,7 @@ function Upload(props) {
                         ).innerHTML = "";
                       }
                     }
-                    if (!name) {
+                    if (!store.getState().name) {
                       document.getElementById("name-error-message").innerHTML =
                         "Name field cannot be blank";
                       error = 1;
@@ -1379,7 +1380,7 @@ function Upload(props) {
                     <li className="modal-pop list-group-item">
                       {user + "@nitt.edu"}
                     </li>
-                    {emails.map((email, index) => {
+                    {store.getState().emails.map((email, index) => {
                       return (
                         <li key={index} className="modal-pop list-group-item">
                           <div className="d-block text-center">
@@ -1411,12 +1412,12 @@ function Upload(props) {
           </Modal>
           <div className="col-md-6  cert-right d-flex justify-content-center">
             <ul className="list-group emailList">
-              {emails.length > 0 ? (
+              {store.getState().emails.length > 0 ? (
                 <li className="list-group-item">{user + "@nitt.edu"}</li>
               ) : (
                 <></>
               )}
-              {emails.map((email, index) => {
+              {store.getState().emails.map((email, index) => {
                 return (
                   <div key={index}>
                     <div className="d-block text-center">
@@ -1438,8 +1439,8 @@ function Upload(props) {
                           onClick={(e) => {
                             e.preventDefault();
                             setCount(emailCount - 1);
-                            emails.splice(index, 1);
-                            setEmails(emails);
+                            store.getState().emails.splice(index, 1);
+                            store.dispatch(setEmails(store.getState().emails));
                           }}
                         >
                           <span>&#127335;</span>
@@ -1469,7 +1470,7 @@ function Upload(props) {
           </Modal.Header>
           <Modal.Body>
             <embed
-              src={cert_pdf}
+              src={store.getState().cert_pdf}
               className="embed-modal"
               height={document.documentElement.clientHeight * 0.75}
             />

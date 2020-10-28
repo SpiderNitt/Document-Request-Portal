@@ -25,6 +25,7 @@
     "node-cron": "^2.0.3",
     "nodemailer": "^6.4.11",
     "pino": "^6.7.0",
+    "redux": "^4.0.5",
     "sequelize": "^6.3.4",
     "uuid": "^8.3.0"
   },

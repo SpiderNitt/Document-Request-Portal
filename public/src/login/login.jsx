@@ -7,8 +7,8 @@ import "react-toastify/dist/ReactToastify.css";
 import jwtHandler from "../utils/parsejwt";
 import Loader from "react-loader-spinner";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
-import store from '../store';
-import {setLoading} from '../actions';
+import store from "../store";
+import { setLoading } from "../actions";
 function Login(props) {
   const history = useHistory();
   const loginHandler = (e) => {

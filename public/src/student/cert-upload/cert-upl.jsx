@@ -8,10 +8,12 @@ import Loader from "react-loader-spinner";
 import InstructionsModal from "../instructions-modal/instructions";
 import SignatoriesInstructionsModal from "../instructions-modal/signatories-instructions";
 import { MdHelp } from "react-icons/md";
-import store from '../../store';
-import {setName} from '../../actions';
-import {setEmails} from '../../actions';
-import {setCertPdf} from '../../actions';
+import store from "../../store";
+import { setName } from "../../actions";
+import { setEmails } from "../../actions";
+import { setCertPdf } from "../../actions";
+import { setEmailCount } from "../../actions";
+import { setIdPdf } from "../../actions";
 import "./cert-upl.css";
 import "react-toastify/dist/ReactToastify.min.css";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
@@ -30,10 +32,6 @@ function Upload(props) {
     { id: 9, sem: "s9", semName: "Sem 9", copies: 0 },
     { id: 10, sem: "s10", semName: "Sem 10", copies: 0 },
   ];
-
-  const [emailCount, setCount] = useState(0);
-
-  const [id_pdf, setIdPdf] = useState(null);
 
   const [file, setFile] = useState("bonafide");
   const [fileModal, setFileModal] = useState(false);
@@ -129,7 +127,7 @@ function Upload(props) {
           "File extension must be .doc, .docx or .pdf";
       } else {
         document.getElementById("file-error-message").innerHTML = "";
-        setIdPdf(URL.createObjectURL(e.target.files[0]));
+        store.dispatch(setIdPdf(URL.createObjectURL(e.target.files[0])));
         setIdFileButton(true);
         setIdFileName(e.target.files[0].name);
       }
@@ -215,7 +213,7 @@ function Upload(props) {
       .then((res) => {
         setModal(false);
         setLoading(false);
-        setCount(0);
+        store.dispatch(setEmailCount(0));
         store.dispatch(setEmails([]));
         setCertFileButton(false);
         setIdFileButton(false);
@@ -226,7 +224,7 @@ function Upload(props) {
         setPurpose("");
         setContact("");
         store.dispatch(setCertPdf(null));
-        setIdPdf(null);
+        store.dispatch(setIdPdf(null));
         setCertFileName("");
         setIdFileName("");
         setCertFileButton("");
@@ -323,7 +321,7 @@ function Upload(props) {
                 placeholder="Name"
                 required
                 onChange={(e) => {
-                  store.dispatch(setName((e.target.value)));
+                  store.dispatch(setName(e.target.value));
                 }}
               />
               <small id="name-error-message" className="error"></small>
@@ -393,7 +391,9 @@ function Upload(props) {
                       certType === "rank card" ||
                       certType === "grade card"
                     ) {
-                      setCount(emailCount + 1);
+                      store.dispatch(
+                        setEmailCount(store.getState().emailCount + 1)
+                      );
                       store.dispatch(setEmails(["transcript@nitt.edu"]));
                       document.getElementById(
                         "contact-error-message"
@@ -404,7 +404,7 @@ function Upload(props) {
                       document.getElementById("file-error-message").innerHTML =
                         "";
                     } else {
-                      setCount(0);
+                      store.dispatch(setEmailCount(0));
                       store.dispatch(setEmails([]));
                       document.getElementById(
                         "contact-error-message"
@@ -930,9 +930,21 @@ function Upload(props) {
                               student_webmail.test(emailValues.value) === true
                             ) {
                               alert("Cannot enter student webmail");
-                            } else if (!store.getState().emails.includes(emailValues.value)) {
-                              setCount(emailCount + 1);
-                              store.dispatch(setEmails(store.getState().emails.concat(emailValues.value)));
+                            } else if (
+                              !store
+                                .getState()
+                                .emails.includes(emailValues.value)
+                            ) {
+                              store.dispatch(
+                                setEmailCount(store.getState().emailCount + 1)
+                              );
+                              store.dispatch(
+                                setEmails(
+                                  store
+                                    .getState()
+                                    .emails.concat(emailValues.value)
+                                )
+                              );
                             } else {
                               alert("Duplicate entry!");
                             }
@@ -1164,7 +1176,7 @@ function Upload(props) {
                         "";
                     }
                     if (file === "bonafide") {
-                      if (!emailCount) {
+                      if (!store.getState().emailCount) {
                         document.getElementById(
                           "email-error-message"
                         ).innerHTML = "Add email addresses";
@@ -1316,7 +1328,7 @@ function Upload(props) {
                       file === "course re-registration" ||
                       file === "course de-registration"
                     ) {
-                      if (!emailCount) {
+                      if (!store.getState().emailCount) {
                         document.getElementById(
                           "email-error-message"
                         ).innerHTML = "Add email addresses";
@@ -1438,7 +1450,9 @@ function Upload(props) {
                           className="btn btn-del"
                           onClick={(e) => {
                             e.preventDefault();
-                            setCount(emailCount - 1);
+                            store.dispatch(
+                              setEmailCount(store.getState().emailCount - 1)
+                            );
                             store.getState().emails.splice(index, 1);
                             store.dispatch(setEmails(store.getState().emails));
                           }}
@@ -1482,7 +1496,7 @@ function Upload(props) {
           </Modal.Header>
           <Modal.Body>
             <embed
-              src={id_pdf}
+              src={store.getState().id_pdf}
               className="embed-modal"
               height={document.documentElement.clientHeight * 0.75}
             />

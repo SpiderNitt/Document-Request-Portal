@@ -43,6 +43,30 @@ export default (state, action) => {
         id_pdf: action.payload.id_pdf,
       };
     }
+    case "SET_CERT_FILENAME": {
+      return {
+        ...state,
+        cert_fileName: action.payload.cert_fileName,
+      };
+    }
+    case "SET_ID_FILENAME":{
+      return{
+        ...state,
+        id_fileName:action.payload.id_fileName
+      }
+    }
+    case "SET_CERT_FILEBUTTON":{
+      return{
+        ...state,
+        cert_fileButton:action.payload.cert_fileButton
+      }
+    }
+    case "SET_ID_FILEBUTTON":{
+      return{
+        ...state,
+        id_fileButton:action.payload.id_fileButton
+      }
+    } 
     default:
       return state;
   }

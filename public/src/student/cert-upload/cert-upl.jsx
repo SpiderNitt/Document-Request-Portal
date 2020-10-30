@@ -14,6 +14,10 @@ import { setEmails } from "../../actions";
 import { setCertPdf } from "../../actions";
 import { setEmailCount } from "../../actions";
 import { setIdPdf } from "../../actions";
+import {setCertFileName} from '../../actions';
+import {setIdFileName} from '../../actions';
+import {setCertFileButton} from '../../actions';
+// import {setIdFileButton} from '../../actions';
 import "./cert-upl.css";
 import "react-toastify/dist/ReactToastify.min.css";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
@@ -39,9 +43,6 @@ function Upload(props) {
   const [instructionsModal, setInstructionsModal] = useState(true);
   const [signatoriesModal, setSignatoriesModal] = useState(false);
 
-  const [cert_fileName, setCertFileName] = useState("");
-  const [id_fileName, setIdFileName] = useState("");
-  const [cert_fileButton, setCertFileButton] = useState("");
   const [id_fileButton, setIdFileButton] = useState("");
   const [docId, setDocId] = useState([]);
 
@@ -108,12 +109,12 @@ function Upload(props) {
       } else {
         document.getElementById("file-error-message").innerHTML = "";
         store.dispatch(setCertPdf(URL.createObjectURL(e.target.files[0])));
-        setCertFileButton(true);
-        setCertFileName(e.target.files[0].name);
+        store.dispatch(setCertFileButton(true));
+        store.dispatch(setCertFileName(e.target.files[0].name));
       }
     } else {
-      setCertFileName(null);
-      setCertFileButton(true);
+      store.dispatch(setCertFileName(null));
+      store.dispatch(setCertFileButton(true));
     }
   };
 
@@ -129,10 +130,10 @@ function Upload(props) {
         document.getElementById("file-error-message").innerHTML = "";
         store.dispatch(setIdPdf(URL.createObjectURL(e.target.files[0])));
         setIdFileButton(true);
-        setIdFileName(e.target.files[0].name);
+        store.dispatch(setIdFileName(e.target.files[0].name));
       }
     } else {
-      setIdFileName(null);
+      store.dispatch(setIdFileName(null));
       setIdFileButton(true);
     }
   };
@@ -215,7 +216,7 @@ function Upload(props) {
         setLoading(false);
         store.dispatch(setEmailCount(0));
         store.dispatch(setEmails([]));
-        setCertFileButton(false);
+        store.dispatch(setCertFileButton(false));
         setIdFileButton(false);
         setFileModal(false);
         setAddress("");
@@ -225,9 +226,9 @@ function Upload(props) {
         setContact("");
         store.dispatch(setCertPdf(null));
         store.dispatch(setIdPdf(null));
-        setCertFileName("");
-        setIdFileName("");
-        setCertFileButton("");
+        store.dispatch(setCertFileName(""));
+        store.dispatch(setIdFileName(""));
+        store.dispatch(setCertFileButton(""));
         setIdFileButton("");
         setPreAddr([]);
         setCourse("");
@@ -1091,7 +1092,7 @@ function Upload(props) {
                 </div>
 
                 <span style={{ display: "flex", justifyContent: "center" }}>
-                  {cert_fileButton && id_fileButton ? (
+                  {store.getState().cert_fileButton && id_fileButton ? (
                     <button
                       type="button"
                       className="btn btn-primary mr-2 mobl-btn"
@@ -1479,7 +1480,7 @@ function Upload(props) {
         >
           <Modal.Header closeButton>
             <Modal.Title id="contained-modal-title-vcenter">
-              Uploaded files: <br /> Certificate: {cert_fileName}
+              Uploaded files: <br /> Certificate: {store.getState().cert_fileName}
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
@@ -1491,7 +1492,7 @@ function Upload(props) {
           </Modal.Body>
           <Modal.Header closeButton>
             <Modal.Title id="contained-modal-title-vcenter">
-              Uploaded files: <br /> Id file: {id_fileName}
+              Uploaded files: <br /> Id file: {store.getState().id_fileName}
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>

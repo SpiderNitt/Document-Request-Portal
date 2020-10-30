@@ -9,6 +9,10 @@ const initalState = {
   cert_pdf: null,
   emailCount: 0,
   id_pdf: null,
+  cert_fileName:"",
+  id_fileName:"",
+  cert_fileButton:"",
+  id_fileButton:""
 };
 const store = createStore(
   reducer,

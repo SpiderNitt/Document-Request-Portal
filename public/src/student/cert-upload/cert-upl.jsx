@@ -4,13 +4,23 @@ import { StatusContext } from "../../contexts/StatusContext";
 import { ToastContainer } from "react-toastify";
 import { Modal } from "react-bootstrap"; //eslint-disable-next-line
 import CertificateTemplate from "../cert-templates/cert-temp";
-import SemCheckboxes from './SemCheckboxes';
+import SemCheckboxes from "./SemCheckboxes";
+import CourseDetails from "./CourseDetails";
 import Loader from "react-loader-spinner";
 import InstructionsModal from "../instructions-modal/instructions";
 import SignatoriesInstructionsModal from "../instructions-modal/signatories-instructions";
 import { MdHelp } from "react-icons/md";
-import store from '../../store';
-import {setName, setEmails, setCertPdf, setInstructionModal} from '../../actions';
+import store from "../../store";
+import {
+  setName,
+  setEmails,
+  setCertPdf,
+  setInstructionModal,
+  setSignatoriesModal,
+  setCode,
+  setCourse,
+  setPurpose,
+} from "../../actions";
 import "./cert-upl.css";
 import "react-toastify/dist/ReactToastify.min.css";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
@@ -38,7 +48,7 @@ function Upload(props) {
   const [fileModal, setFileModal] = useState(false);
 
   //const [instructionsModal, setInstructionsModal] = useState(true);
-  const [signatoriesModal, setSignatoriesModal] = useState(false);
+  //const [signatoriesModal, setSignatoriesModal] = useState(false);
 
   const [cert_fileName, setCertFileName] = useState("");
   const [id_fileName, setIdFileName] = useState("");
@@ -57,11 +67,11 @@ function Upload(props) {
   const [preAddress, setPreAddr] = useState([]);
   const [addressModal, setAddressModal] = useState(false);
   const [contact, setContact] = useState("");
-  const [purpose, setPurpose] = useState("");
+  //const [purpose, setPurpose] = useState("");
   const [no_of_copies, setNoOfCopies] = useState(0);
 
-  const [courseCode, setCode] = useState("");
-  const [course, setCourse] = useState("");
+  //const [courseCode, setCode] = useState("");
+  //const [course, setCourse] = useState("");
 
   const statusCtx = useContext(StatusContext);
 
@@ -141,11 +151,14 @@ function Upload(props) {
   const handleClose = () => setFileModal(false);
   const handleFileOpen = () => setFileModal(true);
 
-  const handleInstructionsClose = () => store.dispatch(setInstructionModal(false));
-  const handleInstructionsOpen = () => store.dispatch(setInstructionModal(true))
+  const handleInstructionsClose = () =>
+    store.dispatch(setInstructionModal(false));
+  const handleInstructionsOpen = () =>
+    store.dispatch(setInstructionModal(true));
 
-  const handleSignatoriesClose = () => setSignatoriesModal(false);
-  const handleSignatoriesOpen = () => setSignatoriesModal(true);
+  const handleSignatoriesClose = () =>
+    store.dispatch(setSignatoriesModal(false));
+  const handleSignatoriesOpen = () => store.dispatch(setSignatoriesModal(true));
 
   const certificateRequest = (e) => {
     e.preventDefault();
@@ -164,8 +177,8 @@ function Upload(props) {
       file === "course de-registration" ||
       file === "course re-registration"
     ) {
-      cd.set("course_code", courseCode);
-      cd.set("course_name", course);
+      cd.set("course_code", store.getState().courseCode);
+      cd.set("course_name", store.getState().course);
     }
     if (semwiseMap === true) {
       let sems = "",
@@ -201,7 +214,7 @@ function Upload(props) {
       cd.set("address", address);
     if (feeReceipt) cd.set("receipt", feeReceipt);
     if (contact) cd.set("contact", contact);
-    if (purpose) cd.set("purpose", purpose);
+    if (store.getState().purpose) cd.set("purpose", store.getState().purpose);
     if (store.getState().name) cd.set("name", store.getState().name);
     if (file === "transcript" || file === "rank card") {
       if (no_of_copies) cd.set("no_copies", no_of_copies);
@@ -222,7 +235,7 @@ function Upload(props) {
         setAddress("");
         setEmailDel("");
         setFee("");
-        setPurpose("");
+        store.dispatch(setPurpose(""));
         setContact("");
         store.dispatch(setCertPdf(null));
         setIdPdf(null);
@@ -231,8 +244,8 @@ function Upload(props) {
         setCertFileButton("");
         setIdFileButton("");
         setPreAddr([]);
-        setCourse("");
-        setCode("");
+        store.dispatch(setCourse(""));
+        store.dispatch(setCode(""));
         store.dispatch(setName(""));
         SemObj.forEach((obj) => {
           obj.copies = 0;
@@ -322,7 +335,7 @@ function Upload(props) {
                 placeholder="Name"
                 required
                 onChange={(e) => {
-                  store.dispatch(setName((e.target.value)));
+                  store.dispatch(setName(e.target.value));
                 }}
               />
               <small id="name-error-message" className="error"></small>
@@ -384,8 +397,8 @@ function Upload(props) {
                     ) {
                       document.getElementById("course-code").value = "";
                       document.getElementById("course-name").value = "";
-                      setCourse("");
-                      setCode("");
+                      store.dispatch(setCourse(""));
+                      store.dispatch(setCode(""));
                     }
                     if (
                       certType === "transcript" ||
@@ -709,42 +722,7 @@ function Upload(props) {
               {/* Course Deregistration/Registration */}
               {file === "course de-registration" ||
               file === "course re-registration" ? (
-                <>
-                  <div className="form-group">
-                    <label htmlFor="course-code">
-                      Course Code <span className="cmpl">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="ccode"
-                      id="course-code"
-                      placeholder="Course code"
-                      required
-                      onChange={(e) => {
-                        setCode(e.target.value);
-                      }}
-                    />
-                    <small id="ccode-error-message" className="error"></small>
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="course-name">
-                      Course Name <span className="cmpl">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="cname"
-                      id="course-name"
-                      placeholder=" Course name"
-                      required
-                      onChange={(e) => {
-                        setCourse(e.target.value);
-                      }}
-                    />
-                    <small id="cname-error-message" className="error"></small>
-                  </div>
-                </>
+                <CourseDetails></CourseDetails>
               ) : (
                 <></>
               )}
@@ -797,9 +775,7 @@ function Upload(props) {
 
               {/*Semester and #copies for grade card */}
               {semwiseMap === true ? (
-                  <SemCheckboxes 
-                    semester={semester}> 
-                  </SemCheckboxes>
+                <SemCheckboxes semester={semester}></SemCheckboxes>
               ) : (
                 <></>
               )}
@@ -860,9 +836,19 @@ function Upload(props) {
                               student_webmail.test(emailValues.value) === true
                             ) {
                               alert("Cannot enter student webmail");
-                            } else if (!store.getState().emails.includes(emailValues.value)) {
+                            } else if (
+                              !store
+                                .getState()
+                                .emails.includes(emailValues.value)
+                            ) {
                               setCount(emailCount + 1);
-                              store.dispatch(setEmails(store.getState().emails.concat(emailValues.value)));
+                              store.dispatch(
+                                setEmails(
+                                  store
+                                    .getState()
+                                    .emails.concat(emailValues.value)
+                                )
+                              );
                             } else {
                               alert("Duplicate entry!");
                             }
@@ -899,14 +885,15 @@ function Upload(props) {
                       placeholder="Purpose for document requisition"
                       required
                       onChange={(e) => {
-                        setPurpose(e.target.value);
+                        store.dispatch(setPurpose(e.target.value));
                       }}
                     />
                     <small id="purpose-error-message" className="error"></small>
                   </>
                 ) : (
                   <>
-                    {file === "course de-registration" ? (
+                    {file === "course de-registration" ||
+                    file === "course re-registration" ? (
                       <>
                         Enter Reason <span className="cmpl">*</span>
                         <input
@@ -914,10 +901,14 @@ function Upload(props) {
                           className="form-control"
                           name="purpose"
                           id="purpose"
-                          placeholder="Reason for Course De-Registration"
+                          placeholder={
+                            file === "course de-registration"
+                              ? "Reason for Course De-Registration"
+                              : "Reason for Course Re-registration"
+                          }
                           required
                           onChange={(e) => {
-                            setPurpose(e.target.value);
+                            store.dispatch(setPurpose(e.target.value));
                           }}
                         />
                         <small
@@ -926,24 +917,7 @@ function Upload(props) {
                         ></small>
                       </>
                     ) : (
-                      <>
-                        Enter Reason <span className="cmpl">*</span>
-                        <input
-                          type="text"
-                          className="form-control"
-                          name="purpose"
-                          id="purpose"
-                          placeholder="Reason for Course Re-Registration"
-                          required
-                          onChange={(e) => {
-                            setPurpose(e.target.value);
-                          }}
-                        />
-                        <small
-                          id="purpose-error-message"
-                          className="error"
-                        ></small>
-                      </>
+                      <></>
                     )}
                   </>
                 )}
@@ -1060,7 +1034,7 @@ function Upload(props) {
                       document.getElementById("name-error-message").innerHTML =
                         "";
                     }
-                    if (!purpose) {
+                    if (!store.getState().purpose) {
                       if (
                         file === "bonafide" ||
                         file === "transcript" ||
@@ -1256,12 +1230,12 @@ function Upload(props) {
                           "email-error-message"
                         ).innerHTML = "";
                       }
-                      if (!courseCode) {
+                      if (!store.getState().courseCode) {
                         document.getElementById(
                           "ccode-error-message"
                         ).innerHTML = "Enter your course code";
                       }
-                      if (!course) {
+                      if (!store.getState().course) {
                         document.getElementById(
                           "cname-error-message"
                         ).innerHTML = "Enter your course name";
@@ -1425,7 +1399,7 @@ function Upload(props) {
           centered
         ></InstructionsModal>
         <SignatoriesInstructionsModal
-          show={signatoriesModal}
+          //show={signatoriesModal}
           hide={handleSignatoriesClose}
           centered
         ></SignatoriesInstructionsModal>

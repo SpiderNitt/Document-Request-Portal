@@ -1,7 +1,7 @@
 import React from "react";
 import { Modal } from "react-bootstrap";
 import "./instructions.css";
-import {connect} from 'react-redux'
+import { connect } from "react-redux";
 
 class InstructionsModal extends React.Component {
   render() {
@@ -156,12 +156,10 @@ class InstructionsModal extends React.Component {
   }
 }
 
-const mapStateToProps= (state) =>{
+const mapStateToProps = (state) => {
   return {
-    show: state.instructionsModal
-  }
-}
+    show: state.instructionsModal,
+  };
+};
 
 export default connect(mapStateToProps)(InstructionsModal);
-
-

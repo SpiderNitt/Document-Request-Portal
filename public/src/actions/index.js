@@ -6,6 +6,14 @@ export function setInstructionModal(bool) {
     },
   };
 }
+export function setSignatoriesModal(bool) {
+  return {
+    type: "SET_SIGNATORIES_MODAL",
+    payload: {
+      signatoriesModal: bool,
+    },
+  };
+}
 export function setLoading(bool) {
   return {
     type: "SET_LOADING",
@@ -91,3 +99,27 @@ export function setIdFileButton(bool)
 }
 
 
+export function setPurpose(url) {
+  return {
+    type: "SET_PURPOSE",
+    payload: {
+      purpose: url,
+    },
+  };
+}
+export function setCode(url) {
+  return {
+    type: "SET_CODE",
+    payload: {
+      courseCode: url,
+    },
+  };
+}
+export function setCourse(url) {
+  return {
+    type: "SET_COURSE",
+    payload: {
+      course: url,
+    },
+  };
+}

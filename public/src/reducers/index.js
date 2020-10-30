@@ -7,6 +7,12 @@ export default (state, action) => {
         instructionsModal: action.payload.instructionsModal,
       };
     }
+    case "SET_SIGNATORIES_MODAL": {
+      return {
+        ...state,
+        signatoriesModal: action.payload.signatoriesModal,
+      };
+    }
     case "SET_LOADING": {
       return {
         ...state,
@@ -67,6 +73,24 @@ export default (state, action) => {
         id_fileButton:action.payload.id_fileButton
       }
     } 
+    case "SET_PURPOSE": {
+      return {
+        ...state,
+        purpose: action.payload.purpose,
+      };
+    }
+    case "SET_CODE": {
+      return {
+        ...state,
+        courseCode: action.payload.courseCode,
+      };
+    }
+    case "SET_COURSE": {
+      return {
+        ...state,
+        course: action.payload.course,
+      };
+    }
     default:
       return state;
   }

@@ -12,7 +12,10 @@ const initalState = {
   cert_fileName:"",
   id_fileName:"",
   cert_fileButton:"",
-  id_fileButton:""
+  id_fileButton:"",
+  purpose: "",
+  courseCode: "",
+  course: "",
 };
 const store = createStore(
   reducer,

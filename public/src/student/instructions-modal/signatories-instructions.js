@@ -1,7 +1,9 @@
 import React from "react";
 import { Modal } from "react-bootstrap";
 import "./instructions.css";
-export default class SignatoriesInstructionsModal extends React.Component {
+import { connect } from "react-redux";
+
+class SignatoriesInstructionsModal extends React.Component {
   render() {
     return (
       <Modal
@@ -72,3 +74,11 @@ export default class SignatoriesInstructionsModal extends React.Component {
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    show: state.signatoriesModal,
+  };
+};
+
+export default connect(mapStateToProps)(SignatoriesInstructionsModal);

@@ -4,14 +4,18 @@ import { StatusContext } from "../../contexts/StatusContext";
 import { ToastContainer } from "react-toastify";
 import { Modal } from "react-bootstrap"; //eslint-disable-next-line
 import CertificateTemplate from "../cert-templates/cert-temp";
-import SemCheckboxes from "./SemCheckboxes";
-import CourseDetails from "./CourseDetails";
+import SemCheckboxes from "./formFields/SemCheckboxes";
+import CourseDetails from "./formFields/CourseDetails";
+import Purpose from "./formFields/Purpose";
+import Contact from "./formFields/Contact";
+import NoOfCopies from "./formFields/NoOfCopies";
+import FeeRef from "./formFields/FeeRef";
 import Loader from "react-loader-spinner";
 import InstructionsModal from "../instructions-modal/instructions";
 import SignatoriesInstructionsModal from "../instructions-modal/signatories-instructions";
+import FilesModal from "./formFields/FilesModal";
 import { MdHelp } from "react-icons/md";
 import store from "../../store";
-// import {setIdFileButton} from '../../actions';
 import {
   setName,
   setEmails,
@@ -20,12 +24,14 @@ import {
   setIdPdf,
   setCertFileName,
   setIdFileName,
-  setCertFileButton,
   setInstructionModal,
   setSignatoriesModal,
   setCode,
   setCourse,
   setPurpose,
+  setContact,
+  setNoOfCopies,
+  setFee,
 } from "../../actions";
 import "./cert-upl.css";
 import "react-toastify/dist/ReactToastify.min.css";
@@ -46,31 +52,34 @@ function Upload(props) {
     { id: 10, sem: "s10", semName: "Sem 10", copies: 0 },
   ];
 
+  // UPLOAD DATA
+
   const [file, setFile] = useState("bonafide");
-  const [fileModal, setFileModal] = useState(false);
-
-  //const [instructionsModal, setInstructionsModal] = useState(true);
-  //const [signatoriesModal, setSignatoriesModal] = useState(false);
-
-  const [id_fileButton, setIdFileButton] = useState("");
   const [docId, setDocId] = useState([]);
 
   const [semester, setSemester] = useState(SemObj);
   const [semwiseMap, setSemwiseMap] = useState(false);
 
-  const [showModal, setModal] = useState(false);
-  const [isLoading, setLoading] = useState(false);
-  const [feeReceipt, setFee] = useState("");
+  //const [feeReceipt, setFee] = useState(""); reduxed
   const [emailDel, setEmailDel] = useState("");
   const [address, setAddress] = useState("");
   const [preAddress, setPreAddr] = useState([]);
-  const [addressModal, setAddressModal] = useState(false);
-  const [contact, setContact] = useState("");
-  //const [purpose, setPurpose] = useState("");
-  const [no_of_copies, setNoOfCopies] = useState(0);
+  //const [contact, setContact] = useState(""); reduxed
+  //const [purpose, setPurpose] = useState(""); reduxed
+  //const [no_of_copies, setNoOfCopies] = useState(0); reduxed
+  //const [courseCode, setCode] = useState(""); reduxed
+  //const [course, setCourse] = useState(""); reduxed
 
-  //const [courseCode, setCode] = useState("");
-  //const [course, setCourse] = useState("");
+  // MODAL AND LOADING VARIABLES
+
+  const [fileModal, setFileModal] = useState(false);
+  //const [instructionsModal, setInstructionsModal] = useState(true); reduxed
+  //const [signatoriesModal, setSignatoriesModal] = useState(false); reduxed
+  const [addressModal, setAddressModal] = useState(false);
+  const [showModal, setModal] = useState(false);
+  const [isLoading, setLoading] = useState(false);
+  const [cert_fileButton, setCertFileButton] = useState("");
+  const [id_fileButton, setIdFileButton] = useState("");
 
   const statusCtx = useContext(StatusContext);
 
@@ -118,12 +127,12 @@ function Upload(props) {
       } else {
         document.getElementById("file-error-message").innerHTML = "";
         store.dispatch(setCertPdf(URL.createObjectURL(e.target.files[0])));
-        store.dispatch(setCertFileButton(true));
+        setCertFileButton(true);
         store.dispatch(setCertFileName(e.target.files[0].name));
       }
     } else {
       store.dispatch(setCertFileName(null));
-      store.dispatch(setCertFileButton(true));
+      setCertFileButton(true);
     }
   };
 
@@ -211,12 +220,14 @@ function Upload(props) {
       file === "rank card"
     )
       cd.set("address", address);
-    if (feeReceipt) cd.set("receipt", feeReceipt);
-    if (contact) cd.set("contact", contact);
+    if (store.getState().feeReceipt)
+      cd.set("receipt", store.getState().feeReceipt);
+    if (store.getState().contact) cd.set("contact", store.getState().contact);
     if (store.getState().purpose) cd.set("purpose", store.getState().purpose);
     if (store.getState().name) cd.set("name", store.getState().name);
     if (file === "transcript" || file === "rank card") {
-      if (no_of_copies) cd.set("no_copies", no_of_copies);
+      if (store.getState().no_of_copies)
+        cd.set("no_copies", store.getState().no_of_copies);
     }
     cd.set("path", store.getState().emails.toString()); //eslint-disable-next-line
     for (var pair of cd.entries()) {
@@ -228,20 +239,18 @@ function Upload(props) {
         setLoading(false);
         store.dispatch(setEmailCount(0));
         store.dispatch(setEmails([]));
-        store.dispatch(setCertFileButton(false));
+        setCertFileButton(false);
         setIdFileButton(false);
         setFileModal(false);
         setAddress("");
         setEmailDel("");
-        setFee("");
+        store.dispatch(setFee(""));
         store.dispatch(setPurpose(""));
-        setContact("");
+        store.dispatch(setContact(""));
         store.dispatch(setCertPdf(null));
         store.dispatch(setIdPdf(null));
         store.dispatch(setCertFileName(""));
         store.dispatch(setIdFileName(""));
-        store.dispatch(setCertFileButton(""));
-        setIdFileButton("");
         setPreAddr([]);
         store.dispatch(setCourse(""));
         store.dispatch(setCode(""));
@@ -250,7 +259,7 @@ function Upload(props) {
           obj.copies = 0;
         });
         setSemester(SemObj);
-        setNoOfCopies(null);
+        store.dispatch(setNoOfCopies(null));
         spider
           .get("/api/student/address")
           .then((res) => {
@@ -729,57 +738,14 @@ function Upload(props) {
               )}
 
               {/* Contact information */}
-              <div className="form-group">
-                <label htmlFor="contact-number">
-                  Enter your Contact Number <span className="cmpl">*</span>
-                </label>
-                <input
-                  type="number"
-                  className="form-control"
-                  name="contact"
-                  id="contact-number"
-                  placeholder="Contact number"
-                  required
-                  onChange={(e) => {
-                    setContact(e.target.value);
-                  }}
-                />
-                <small id="contact-error-message" className="error"></small>
-              </div>
+              <Contact></Contact>
 
               {/* Fee Receipt */}
-              {file === "transcript" ||
-              file === "rank card" ||
-              semwiseMap === true ? (
-                <div className="fee-receipt">
-                  <div className="form-group">
-                    <label htmlFor="feer">
-                      Enter Fee Reference ID <span className="cmpl">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="feer"
-                      id="feer"
-                      required
-                      placeholder="Fee Reference ID"
-                      onChange={(e) => {
-                        setFee(e.target.value);
-                      }}
-                    />
-                    <small id="fee-error-message" className="error"></small>
-                  </div>
-                </div>
-              ) : (
-                <></>
-              )}
+              <FeeRef file={file} semwiseMap={semwiseMap}></FeeRef>
 
               {/*Semester and #copies for grade card */}
-              {semwiseMap === true ? (
-                <SemCheckboxes semester={semester}></SemCheckboxes>
-              ) : (
-                <></>
-              )}
+              <SemCheckboxes semester={semester}></SemCheckboxes>
+
               {/* Administrator Email Addition */}
               {file === "transcript" ||
               file === "rank card" ||
@@ -870,88 +836,12 @@ function Upload(props) {
               <br />
 
               {/* Purpose */}
+              <Purpose file={file} semwiseMap={semwiseMap}></Purpose>
 
-              <div className="form-group">
-                {file === "bonafide" ||
-                file === "transcript" ||
-                semwiseMap === true ||
-                file === "rank card" ? (
-                  <>
-                    <label htmlFor="purpose">
-                      Enter Purpose <span className="cmpl">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="purpose"
-                      id="purpose"
-                      placeholder="Purpose for document requisition"
-                      required
-                      onChange={(e) => {
-                        store.dispatch(setPurpose(e.target.value));
-                      }}
-                    />
-                    <small id="purpose-error-message" className="error"></small>
-                  </>
-                ) : (
-                  <>
-                    {file === "course de-registration" ||
-                    file === "course re-registration" ? (
-                      <>
-                        Enter Reason <span className="cmpl">*</span>
-                        <input
-                          type="text"
-                          className="form-control"
-                          name="purpose"
-                          id="purpose"
-                          placeholder={
-                            file === "course de-registration"
-                              ? "Reason for Course De-Registration"
-                              : "Reason for Course Re-registration"
-                          }
-                          required
-                          onChange={(e) => {
-                            store.dispatch(setPurpose(e.target.value));
-                          }}
-                        />
-                        <small
-                          id="purpose-error-message"
-                          className="error"
-                        ></small>
-                      </>
-                    ) : (
-                      <></>
-                    )}
-                  </>
-                )}
-              </div>
+              {/* No of copies */}
 
-              {file === "transcript" || file === "rank card" ? (
-                <div className="form-group">
-                  <label htmlFor="no_of_copies">
-                    Enter Number of copies (if you opted by post){" "}
-                    <span className="cmpl">*</span>
-                  </label>
-                  <input
-                    type="number"
-                    className="form-control"
-                    name="no_of_copies"
-                    id="no_of_copies"
-                    placeholder="Number of copies"
-                    required
-                    onChange={(e) => {
-                      setNoOfCopies(e.target.value);
-                    }}
-                    min="0"
-                  />
-                  <small
-                    id="no-of-copies-error-message"
-                    className="error"
-                  ></small>
-                </div>
-              ) : (
-                <></>
-              )}
+              <NoOfCopies file={file}></NoOfCopies>
+
               {/* Certificate Addition */}
               <div className="form-group">
                 <label htmlFor="cert" style={{ width: "50%" }}>
@@ -986,7 +876,7 @@ function Upload(props) {
                 </div>
 
                 <span style={{ display: "flex", justifyContent: "center" }}>
-                  {store.getState().cert_fileButton && id_fileButton ? (
+                  {cert_fileButton && id_fileButton === true ? (
                     <button
                       type="button"
                       className="btn btn-primary mr-2 mobl-btn"
@@ -1011,14 +901,14 @@ function Upload(props) {
                     let college_id = document.getElementById("college-id")
                       .files[0];
                     let error = 0;
-                    if (!contact) {
+                    if (!store.getState().contact) {
                       document.getElementById(
                         "contact-error-message"
                       ).innerHTML = "Contact field cannot be blank";
                       error = 1;
                     } else {
                       // const re = /^\s*(?:\+?(\d{1,3}))?[- (]*(\d{3})[- )]*(\d{3})[- ]*(\d{4})(?: *[x/#]{1}(\d+))?\s*$/;
-                      if (contact.length !== 10) {
+                      if (store.getState().contact.length !== 10) {
                         document.getElementById(
                           "contact-error-message"
                         ).innerHTML = "Enter a valid contact number";
@@ -1087,7 +977,7 @@ function Upload(props) {
                       file === "rank card"
                     ) {
                       if (file === "transcript" || file === "rank card") {
-                        if (no_of_copies < 0) {
+                        if (store.getState().no_of_copies < 0) {
                           document.getElementById(
                             "no-of-copies-error-message"
                           ).innerHTML = "Number of copies cannot be negative";
@@ -1098,12 +988,12 @@ function Upload(props) {
                           ).innerHTML = "";
                         }
                         if (address) {
-                          if (!no_of_copies) {
+                          if (!store.getState().no_of_copies) {
                             document.getElementById(
                               "no-of-copies-error-message"
                             ).innerHTML = "Enter the number of copies required";
                             error = 1;
-                          } else if (no_of_copies <= 0) {
+                          } else if (store.getState().no_of_copies <= 0) {
                             document.getElementById(
                               "no-of-copies-error-message"
                             ).innerHTML = "Enter the number of copies required";
@@ -1114,7 +1004,7 @@ function Upload(props) {
                             ).innerHTML = "";
                           }
                         }
-                        if (!feeReceipt) {
+                        if (!store.getState().feeReceipt) {
                           document.getElementById(
                             "fee-error-message"
                           ).innerHTML = "Enter fee reference number";
@@ -1364,45 +1254,18 @@ function Upload(props) {
             </ul>
           </div>
         </div>
-        <Modal
-          size="lg"
-          show={fileModal}
-          onHide={handleClose}
-          keyboard={false}
-          dialogClassName="pdfModal"
-          aria-labelledby="contained-modal-title-vcenter"
-        >
-          <Modal.Header closeButton>
-            <Modal.Title id="contained-modal-title-vcenter">
-              Uploaded files: <br /> Certificate: {store.getState().cert_fileName}
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <embed
-              src={store.getState().cert_pdf}
-              className="embed-modal"
-              height={document.documentElement.clientHeight * 0.75}
-            />
-          </Modal.Body>
-          <Modal.Header closeButton>
-            <Modal.Title id="contained-modal-title-vcenter">
-              Uploaded files: <br /> Id file: {store.getState().id_fileName}
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <embed
-              src={store.getState().id_pdf}
-              className="embed-modal"
-              height={document.documentElement.clientHeight * 0.75}
-            />
-          </Modal.Body>
-        </Modal>
-        {/* <CertificateTemplate fileType={file} /> */}
+
+        {/* ID and certificate Modal*/}
+        <FilesModal fileModal={fileModal} handleClose={handleClose}>
+          {" "}
+        </FilesModal>
+
         <InstructionsModal
           //show={store.getState().instructionsModal}
           hide={handleInstructionsClose}
           centered
         ></InstructionsModal>
+
         <SignatoriesInstructionsModal
           //show={signatoriesModal}
           hide={handleSignatoriesClose}
@@ -1410,8 +1273,6 @@ function Upload(props) {
         ></SignatoriesInstructionsModal>
       </div>
     </>
-    // )}
-    // </>
   );
 }
 

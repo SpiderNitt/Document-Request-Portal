@@ -66,38 +66,34 @@ export function setCertFileName(name) {
   return {
     type: "SET_CERT_FILENAME",
     payload: {
-      cert_fileName: name
+      cert_fileName: name,
     },
   };
 }
-export function setIdFileName(id)
-{
-  return{
-    type:"SET_ID_FILENAME",
-    payload:{
-      id_fileName: id
-    }
-  }
+export function setIdFileName(id) {
+  return {
+    type: "SET_ID_FILENAME",
+    payload: {
+      id_fileName: id,
+    },
+  };
 }
-export function setCertFileButton(id)
-{
-  return{
-    type:"SET_CERT_FILEBUTTON",
-    payload:{
-      cert_fileButton: id
-    }
-  }
+export function setCertFileButton(id) {
+  return {
+    type: "SET_CERT_FILEBUTTON",
+    payload: {
+      cert_fileButton: id,
+    },
+  };
 }
-export function setIdFileButton(bool)
-{
-  return{
-    type:"SET_ID_FILEBUTTON",
-    payload:{
-      id_fileButton: bool
-    }
-  }
+export function setIdFileButton(bool) {
+  return {
+    type: "SET_ID_FILEBUTTON",
+    payload: {
+      id_fileButton: bool,
+    },
+  };
 }
-
 
 export function setPurpose(url) {
   return {
@@ -120,6 +116,30 @@ export function setCourse(url) {
     type: "SET_COURSE",
     payload: {
       course: url,
+    },
+  };
+}
+export function setContact(url) {
+  return {
+    type: "SET_CONTACT",
+    payload: {
+      contact: url,
+    },
+  };
+}
+export function setFee(url) {
+  return {
+    type: "SET_FEE",
+    payload: {
+      feeReceipt: url,
+    },
+  };
+}
+export function setNoOfCopies(url) {
+  return {
+    type: "SET_NO_OF_COPIES",
+    payload: {
+      no_of_copies: url,
     },
   };
 }

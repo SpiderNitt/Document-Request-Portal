@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import store from "../../store";
-import { setCode, setCourse } from "../../actions";
+import store from "../../../store";
+import { setCode, setCourse } from "../../../actions";
 
 export class CourseDetails extends Component {
   render() {

@@ -55,24 +55,24 @@ export default (state, action) => {
         cert_fileName: action.payload.cert_fileName,
       };
     }
-    case "SET_ID_FILENAME":{
-      return{
+    case "SET_ID_FILENAME": {
+      return {
         ...state,
-        id_fileName:action.payload.id_fileName
-      }
+        id_fileName: action.payload.id_fileName,
+      };
     }
-    case "SET_CERT_FILEBUTTON":{
-      return{
+    case "SET_CERT_FILEBUTTON": {
+      return {
         ...state,
-        cert_fileButton:action.payload.cert_fileButton
-      }
+        cert_fileButton: action.payload.cert_fileButton,
+      };
     }
-    case "SET_ID_FILEBUTTON":{
-      return{
+    case "SET_ID_FILEBUTTON": {
+      return {
         ...state,
-        id_fileButton:action.payload.id_fileButton
-      }
-    } 
+        id_fileButton: action.payload.id_fileButton,
+      };
+    }
     case "SET_PURPOSE": {
       return {
         ...state,
@@ -89,6 +89,24 @@ export default (state, action) => {
       return {
         ...state,
         course: action.payload.course,
+      };
+    }
+    case "SET_CONTACT": {
+      return {
+        ...state,
+        contact: action.payload.contact,
+      };
+    }
+    case "SET_NO_OF_COPIES": {
+      return {
+        ...state,
+        no_of_copies: action.payload.no_of_copies,
+      };
+    }
+    case "SET_FEE": {
+      return {
+        ...state,
+        feeReceipt: action.payload.feeReceipt,
       };
     }
     default:

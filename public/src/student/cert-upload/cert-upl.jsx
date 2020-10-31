@@ -32,6 +32,7 @@ import {
   setContact,
   setNoOfCopies,
   setFee,
+  setFile
 } from "../../actions";
 import "./cert-upl.css";
 import "react-toastify/dist/ReactToastify.min.css";
@@ -54,7 +55,7 @@ function Upload(props) {
 
   // UPLOAD DATA
 
-  const [file, setFile] = useState("bonafide");
+  // const [file, setFile] = useState("bonafide"); reduxed
   const [docId, setDocId] = useState([]);
 
   const [semester, setSemester] = useState(SemObj);
@@ -175,15 +176,15 @@ function Upload(props) {
     let college_id = document.getElementById("college-id").files[0];
     let cd = new FormData();
     for (var i = 0; i < docId.length; i++) {
-      if (docId[i] && docId[i].name.toLowerCase() === file.toLowerCase()) {
+      if (docId[i] && docId[i].name.toLowerCase() === store.getState().file.toLowerCase()) {
         cd.set("type", parseInt(docId[i].id));
       }
     }
     cd.append("certificate", fileUpload);
     cd.append("certificate", college_id);
     if (
-      file === "course de-registration" ||
-      file === "course re-registration"
+      store.getState().file === "course de-registration" ||
+      store.getState().file === "course re-registration"
     ) {
       cd.set("course_code", store.getState().courseCode);
       cd.set("course_name", store.getState().course);
@@ -207,17 +208,17 @@ function Upload(props) {
     if (
       (emailDel &&
         document.getElementById("email-sel").checked &&
-        file === "transcript") ||
+        store.getState().file === "transcript") ||
       semwiseMap === true ||
-      file === "rank card"
+      store.getState().file === "rank card"
     )
       cd.set("email", emailDel);
     if (
       (address &&
         document.getElementById("postal-del").checked &&
-        file === "transcript") ||
+        store.getState().file === "transcript") ||
       semwiseMap === true ||
-      file === "rank card"
+      store.getState().file === "rank card"
     )
       cd.set("address", address);
     if (store.getState().feeReceipt)
@@ -225,7 +226,7 @@ function Upload(props) {
     if (store.getState().contact) cd.set("contact", store.getState().contact);
     if (store.getState().purpose) cd.set("purpose", store.getState().purpose);
     if (store.getState().name) cd.set("name", store.getState().name);
-    if (file === "transcript" || file === "rank card") {
+    if (store.getState().file === "transcript" || store.getState().file === "rank card") {
       if (store.getState().no_of_copies)
         cd.set("no_copies", store.getState().no_of_copies);
     }
@@ -291,7 +292,7 @@ function Upload(props) {
           copyInputDivNodes.forEach((node) => node.remove());
         }
         document.getElementById("certType").value = "bonafide";
-        setFile("bonafide");
+        store.dispatch(setFile("bonafide"));
         setSemwiseMap(false);
       })
       .catch((err) => {});
@@ -359,7 +360,7 @@ function Upload(props) {
                 alignItems: "flex-end",
               }}
             >
-              {file === "bonafide" || file === "transcript" ? (
+              {store.getState().file === "bonafide" || store.getState().file === "transcript" ? (
                 <a
                   href="#!"
                   onClick={calculate_source}
@@ -390,7 +391,7 @@ function Upload(props) {
                   className="form-control"
                   onChange={(e) => {
                     let certType = e.target.value;
-                    setFile(certType);
+                    store.dispatch(setFile(certType));
                     docId.forEach((type) => {
                       if (type.name.toLowerCase() === certType) {
                         if (type.semwise_mapping === true) setSemwiseMap(true);
@@ -400,11 +401,14 @@ function Upload(props) {
                     // setName("");
                     // document.getElementById("username").value = "";
                     if (
-                      file === "course de-registration" ||
-                      file === "course re-registration"
+                      store.getState().file === "course de-registration" ||
+                      store.getState().file === "course re-registration"
                     ) {
-                      document.getElementById("course-code").value = "";
-                      document.getElementById("course-name").value = "";
+                      if(document.getElementById('course-code') && document.getElementById("course-name"))
+                      {
+                        document.getElementById("course-code").value = "";
+                        document.getElementById("course-name").value = "";
+                      }
                       store.dispatch(setCourse(""));
                       store.dispatch(setCode(""));
                     }
@@ -420,9 +424,12 @@ function Upload(props) {
                       document.getElementById(
                         "contact-error-message"
                       ).innerHTML = "";
-                      document.getElementById(
-                        "purpose-error-message"
-                      ).innerHTML = "";
+                      if(document.getElementById("purpose-error-message"))
+                      {
+                        document.getElementById(
+                          "purpose-error-message"
+                        ).innerHTML = "";
+                      }
                       document.getElementById("file-error-message").innerHTML =
                         "";
                     } else {
@@ -466,8 +473,8 @@ function Upload(props) {
 
               {/* Certificate Delivery */}
 
-              {file === "transcript" ||
-              file === "rank card" ||
+              {store.getState().file === "transcript" ||
+              store.getState().file === "rank card" ||
               semwiseMap === true ? (
                 <>
                   <div className="form-group">
@@ -730,8 +737,8 @@ function Upload(props) {
                 <></>
               )}
               {/* Course Deregistration/Registration */}
-              {file === "course de-registration" ||
-              file === "course re-registration" ? (
+              {store.getState().file === "course de-registration" ||
+              store.getState().file === "course re-registration" ? (
                 <CourseDetails></CourseDetails>
               ) : (
                 <></>
@@ -741,14 +748,14 @@ function Upload(props) {
               <Contact></Contact>
 
               {/* Fee Receipt */}
-              <FeeRef file={file} semwiseMap={semwiseMap}></FeeRef>
+              <FeeRef file={store.getState().file} semwiseMap={semwiseMap}></FeeRef>
 
               {/*Semester and #copies for grade card */}
               <SemCheckboxes semester={semester}></SemCheckboxes>
 
               {/* Administrator Email Addition */}
-              {file === "transcript" ||
-              file === "rank card" ||
+              {store.getState().file === "transcript" ||
+              store.getState().file === "rank card" ||
               semwiseMap === true ? (
                 <></>
               ) : (
@@ -836,11 +843,11 @@ function Upload(props) {
               <br />
 
               {/* Purpose */}
-              <Purpose file={file} semwiseMap={semwiseMap}></Purpose>
+              <Purpose file={store.getState().file} semwiseMap={semwiseMap}></Purpose>
 
               {/* No of copies */}
 
-              <NoOfCopies file={file}></NoOfCopies>
+              <NoOfCopies file={store.getState().file}></NoOfCopies>
 
               {/* Certificate Addition */}
               <div className="form-group">
@@ -929,15 +936,15 @@ function Upload(props) {
                     }
                     if (!store.getState().purpose) {
                       if (
-                        file === "bonafide" ||
-                        file === "transcript" ||
-                        file === "rank card" ||
+                        store.getState().file === "bonafide" ||
+                        store.getState().file === "transcript" ||
+                        store.getState().file === "rank card" ||
                         semwiseMap === true
                       ) {
                         document.getElementById(
                           "purpose-error-message"
                         ).innerHTML = "Purpose field cannot be blank";
-                      } else if (file === "course de-registration") {
+                      } else if (store.getState().file === "course de-registration") {
                         document.getElementById(
                           "purpose-error-message"
                         ).innerHTML = "Enter reason for course de-registration";
@@ -960,7 +967,7 @@ function Upload(props) {
                       document.getElementById("file-error-message").innerHTML =
                         "";
                     }
-                    if (file === "bonafide") {
+                    if (store.getState().file === "bonafide") {
                       if (!store.getState().emailCount) {
                         document.getElementById(
                           "email-error-message"
@@ -972,11 +979,11 @@ function Upload(props) {
                         ).innerHTML = "";
                       }
                     } else if (
-                      file === "transcript" ||
+                      store.getState().file === "transcript" ||
                       semwiseMap === true ||
-                      file === "rank card"
+                      store.getState().file === "rank card"
                     ) {
-                      if (file === "transcript" || file === "rank card") {
+                      if (store.getState().file === "transcript" || store.getState().file === "rank card") {
                         if (store.getState().no_of_copies < 0) {
                           document.getElementById(
                             "no-of-copies-error-message"
@@ -1110,8 +1117,8 @@ function Upload(props) {
                         });
                       }
                     } else if (
-                      file === "course re-registration" ||
-                      file === "course de-registration"
+                      store.getState().file === "course re-registration" ||
+                      store.getState().file === "course de-registration"
                     ) {
                       if (!store.getState().emailCount) {
                         document.getElementById(
@@ -1228,9 +1235,9 @@ function Upload(props) {
                     {/* </div> */}
                     <li key={index} className="list-group-item gray">
                       {email}
-                      {file !== "transcript" &&
-                      file !== "rank card" &&
-                      file !== "grade card" ? (
+                      {store.getState().file !== "transcript" &&
+                      store.getState().file !== "rank card" &&
+                      store.getState().file !== "grade card" ? (
                         <button
                           className="btn btn-del"
                           onClick={(e) => {

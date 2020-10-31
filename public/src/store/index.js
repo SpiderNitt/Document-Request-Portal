@@ -19,6 +19,7 @@ const initalState = {
   contact: "",
   no_of_copies: 0,
   feeReceipt: "",
+  file:"bonafide",
 };
 const store = createStore(
   reducer,

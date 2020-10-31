@@ -1,5 +1,4 @@
 export default (state, action) => {
-  console.log(action);
   switch (action.type) {
     case "SET_INSTRUCTIONS_MODAL": {
       return {
@@ -108,6 +107,12 @@ export default (state, action) => {
         ...state,
         feeReceipt: action.payload.feeReceipt,
       };
+    }
+    case "SET_FILE":{
+      return {
+        ...state,
+        file:action.payload.file
+      }
     }
     default:
       return state;

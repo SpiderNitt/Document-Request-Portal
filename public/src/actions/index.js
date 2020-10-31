@@ -143,3 +143,11 @@ export function setNoOfCopies(url) {
     },
   };
 }
+export function setFile(file){
+  return {
+    type:"SET_FILE",
+    payload:{
+      file:file
+    }
+  }
+}

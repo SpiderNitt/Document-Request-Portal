@@ -1,0 +1,28 @@
+version: '3'
+services:
+    db:
+        image: mysql
+        environment: 
+            MYSQL_USER: 'root'
+            MYSQL_ROOT_PASSWORD: 'root'
+            MYSQL_DATABASE: 'bonafide'
+        ports:
+            - '3305:3306'
+        cap_add:
+            - SYS_NICE 
+        #can uncomment to persist data
+        # volumes: 
+        #     - ./data/:/var/lib/mysql
+
+    portal:
+        build: ./
+        ports:
+            - '3000:3000'
+            - '3001:3001'
+        depends_on: 
+            - db
+        stdin_open: true
+        # can uncomment volumes if changes to be reflected without rebuilding image
+        # volumes:
+        #     - ./:/usr/src/app
+        

@@ -1,17 +1,18 @@
 import React, { Component } from "react";
+import store from "../../../store";
 
 export class SemCheckboxes extends Component {
   render() {
     return (
       <>
-        {this.props.semwiseMap === true ? (
+        {store.getState().semwiseMap === true ? (
           <div className="semesters">
             <div className="form-group">
               <label htmlFor="semester">
                 Choose required semesters <span className="cmpl">*</span>
               </label>
               <div className="row mx-2">
-                {this.props.semester.map((sem) => {
+                {store.getState().semester.map((sem) => {
                   return (
                     <>
                       <div className="form-check col-sm-3 col-6">

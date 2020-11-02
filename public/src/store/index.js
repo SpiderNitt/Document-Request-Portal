@@ -1,5 +1,6 @@
 import { createStore } from "redux";
 import reducer from "../reducers/index";
+
 const initalState = {
   instructionsModal: true,
   signatoriesModal: false,
@@ -20,6 +21,12 @@ const initalState = {
   no_of_copies: 0,
   feeReceipt: "",
   file:"bonafide",
+  docId: [],
+  semwiseMap: false,
+  semester: [],
+  emailDel: "",
+  address: "",
+  preAddress: []
 };
 const store = createStore(
   reducer,

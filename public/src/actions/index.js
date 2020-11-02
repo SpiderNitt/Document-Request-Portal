@@ -151,3 +151,51 @@ export function setFile(file){
     }
   }
 }
+export function setDocId(id){
+  return {
+    type:"SET_DOC_ID",
+    payload:{
+      docId:id
+    }
+  }
+}
+export function setSemwiseMap(bool) {
+  return {
+    type: "SET_SEMWISE_MAP",
+    payload: {
+      semwiseMap: bool,
+    },
+  };
+}
+export function setSemester(sem) {
+  return {
+    type: "SET_SEMESTER",
+    payload: {
+      semester: sem,
+    },
+  };
+}
+export function setEmailDel(email) {
+  return {
+    type: "SET_EMAIL_DEL",
+    payload: {
+      emailDel: email,
+    },
+  };
+}
+export function setAddress(addr) {
+  return {
+    type: "SET_ADDRESS",
+    payload: {
+      address: addr,
+    },
+  };
+}
+export function setPreAddr(preaddr) {
+  return {
+    type: "SET_PRE_ADDRESS",
+    payload: {
+      preAddress: preaddr,
+    },
+  };
+}

@@ -114,6 +114,42 @@ export default (state, action) => {
         file:action.payload.file
       }
     }
+    case "SET_DOC_ID":{
+      return {
+        ...state,
+        docId:action.payload.docId
+      }
+    }
+    case "SET_SEMWISE_MAP":{
+      return {
+        ...state,
+        semwiseMap:action.payload.semwiseMap
+      }
+    }
+    case "SET_SEMESTER":{
+      return {
+        ...state,
+        semester:action.payload.semester
+      }
+    }
+    case "SET_EMAIL_DEL":{
+      return {
+        ...state,
+        emailDel:action.payload.emailDel
+      }
+    }
+    case "SET_ADDRESS":{
+      return {
+        ...state,
+        address:action.payload.address
+      }
+    }
+    case "SET_PRE_ADDRESS":{
+      return {
+        ...state,
+        preAddress:action.payload.preAddress
+      }
+    }
     default:
       return state;
   }

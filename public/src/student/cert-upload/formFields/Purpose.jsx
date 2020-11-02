@@ -7,10 +7,10 @@ export class Purpose extends Component {
     return (
       <>
         <div className="form-group">
-          {this.props.file === "bonafide" ||
-          this.props.file === "transcript" ||
-          this.props.semwiseMap === true ||
-          this.props.file === "rank card" ? (
+          {store.getState().file === "bonafide" ||
+          store.getState().file === "transcript" ||
+          store.getState().semwiseMap === true ||
+          store.getState().file === "rank card" ? (
             <>
               <label htmlFor="purpose">
                 Enter Purpose <span className="cmpl">*</span>
@@ -30,8 +30,8 @@ export class Purpose extends Component {
             </>
           ) : (
             <>
-              {this.props.file === "course de-registration" ||
-              this.props.file === "course re-registration" ? (
+              {store.getState().file === "course de-registration" ||
+              store.getState().file === "course re-registration" ? (
                 <>
                   Enter Reason <span className="cmpl">*</span>
                   <input
@@ -40,7 +40,7 @@ export class Purpose extends Component {
                     name="purpose"
                     id="purpose"
                     placeholder={
-                      this.props.file === "course de-registration"
+                      store.getState().file === "course de-registration"
                         ? "Reason for Course De-Registration"
                         : "Reason for Course Re-registration"
                     }

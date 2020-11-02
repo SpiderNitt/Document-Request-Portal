@@ -97,6 +97,7 @@ function Upload(props) {
   const statusCtx = useContext(StatusContext);
 
   useEffect(() => {
+    store.dispatch(setSemester(SemObj));
     spider
       .get("/api/student/certificate_types")
       .then((res) => {

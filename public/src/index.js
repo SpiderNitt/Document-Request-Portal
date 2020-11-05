@@ -4,8 +4,8 @@ import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { BrowserRouter as Router } from "react-router-dom";
-import store from './store';
-const render = ()=>{
+import store from "./store";
+const render = () => {
   ReactDOM.render(
     <React.StrictMode>
       <Router>
@@ -14,7 +14,7 @@ const render = ()=>{
     </React.StrictMode>,
     document.getElementById("root")
   );
-}
+};
 store.subscribe(render);
 render();
 

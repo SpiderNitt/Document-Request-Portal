@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import spider from "../../utils/API";
 import { StatusContext } from "../../contexts/StatusContext";
 import { ToastContainer } from "react-toastify";
@@ -10,12 +10,12 @@ import Purpose from "./formFields/Purpose";
 import Contact from "./formFields/Contact";
 import NoOfCopies from "./formFields/NoOfCopies";
 import FeeRef from "./formFields/FeeRef";
-import CertAddition from "./formFields/CertAddition"
-import CertType from "./formFields/CertType"
-import Delivery from "./formFields/Delivery"
-import AdminEmails from "./formFields/AdminEmails"
-import EmailChart from "./formFields/EmailChart"
-import FinalSubmitModal from "./formFields/FinalSubmitModal"
+import CertAddition from "./formFields/CertAddition";
+import CertType from "./formFields/CertType";
+import Delivery from "./formFields/Delivery";
+import AdminEmails from "./formFields/AdminEmails";
+import EmailChart from "./formFields/EmailChart";
+import FinalSubmitModal from "./formFields/FinalSubmitModal";
 //import Loader from "react-loader-spinner";
 import InstructionsModal from "../instructions-modal/instructions";
 import SignatoriesInstructionsModal from "../instructions-modal/signatories-instructions";
@@ -44,7 +44,13 @@ import {
   setSemester,
   setEmailDel,
   setAddress,
-  setPreAddr
+  setPreAddr,
+  setIdFileButton,
+  setAddressModal,
+  setFileModal,
+  setModal,
+  setLoading,
+  setCertFileButton,
 } from "../../actions";
 import "./cert-upl.css";
 import "react-toastify/dist/ReactToastify.min.css";
@@ -85,14 +91,14 @@ function Upload(props) {
 
   // MODAL AND LOADING VARIABLES
 
-  const [fileModal, setFileModal] = useState(false);
+  // const [fileModal, setFileModal] = useState(false); reduxed
   //const [instructionsModal, setInstructionsModal] = useState(true); reduxed
   //const [signatoriesModal, setSignatoriesModal] = useState(false); reduxed
-  const [addressModal, setAddressModal] = useState(false);
-  const [showModal, setModal] = useState(false);
-  const [isLoading, setLoading] = useState(false);
-  const [cert_fileButton, setCertFileButton] = useState("");
-  const [id_fileButton, setIdFileButton] = useState("");
+  // const [addressModal, setAddressModal] = useState(false); reduxed
+  // const [showModal, setModal] = useState(false); reduxed
+  // const [isLoading, setLoading] = useState(false); reduxed
+  // const [cert_fileButton, setCertFileButton] = useState("");
+  // const [id_fileButton, setIdFileButton] = useState(""); reduxed
 
   const statusCtx = useContext(StatusContext);
 
@@ -101,20 +107,20 @@ function Upload(props) {
     spider
       .get("/api/student/certificate_types")
       .then((res) => {
-        let docArr=[];
+        let docArr = [];
         res.data.forEach((add) => {
           //setDocId((p) => p.concat(add));
           docArr.push(add);
         });
         store.dispatch(setDocId(docArr));
       })
-      .catch((err) => {});
+      .catch((err) => {}); // eslint-disable-next-line
   }, []);
   useEffect(() => {
     spider
       .get("/api/student/address")
       .then((res) => {
-        let addrList=[]
+        let addrList = [];
         res.data.forEach((add) => {
           addrList.push(add);
         });
@@ -132,8 +138,8 @@ function Upload(props) {
     store.dispatch(setSemester(SemObj));
   };
 
-  const handleSubmitClose = () => setModal(false);
-  const handleAddressClose = () => setAddressModal(false);
+  const handleSubmitClose = () => store.dispatch(setModal(false));
+  const handleAddressClose = () => store.dispatch(setAddressModal(false));
 
   const handleCertFileUpload = (e) => {
     if (e.target.files[0]) {
@@ -146,12 +152,12 @@ function Upload(props) {
       } else {
         document.getElementById("file-error-message").innerHTML = "";
         store.dispatch(setCertPdf(URL.createObjectURL(e.target.files[0])));
-        setCertFileButton(true);
+        store.dispatch(setCertFileButton(true));
         store.dispatch(setCertFileName(e.target.files[0].name));
       }
     } else {
       store.dispatch(setCertFileName(null));
-      setCertFileButton(true);
+      store.dispatch(setCertFileButton(true));
     }
   };
 
@@ -166,17 +172,17 @@ function Upload(props) {
       } else {
         document.getElementById("file-error-message").innerHTML = "";
         store.dispatch(setIdPdf(URL.createObjectURL(e.target.files[0])));
-        setIdFileButton(true);
+        store.dispatch(setIdFileButton(true));
         store.dispatch(setIdFileName(e.target.files[0].name));
       }
     } else {
       store.dispatch(setIdFileName(null));
-      setIdFileButton(true);
+      store.dispatch(setIdFileButton(true));
     }
   };
 
-  const handleClose = () => setFileModal(false);
-  const handleFileOpen = () => setFileModal(true);
+  const handleClose = () => store.dispatch(setFileModal(false));
+  const handleFileOpen = () => store.dispatch(setFileModal(true));
 
   const handleInstructionsClose = () =>
     store.dispatch(setInstructionModal(false));
@@ -189,12 +195,16 @@ function Upload(props) {
 
   const certificateRequest = (e) => {
     e.preventDefault();
-    setLoading(true);
+    store.dispatch(setLoading(true));
     let fileUpload = document.getElementById("cert").files[0];
     let college_id = document.getElementById("college-id").files[0];
     let cd = new FormData();
     for (var i = 0; i < store.getState().docId.length; i++) {
-      if (store.getState().docId[i] && store.getState().docId[i].name.toLowerCase() === store.getState().file.toLowerCase()) {
+      if (
+        store.getState().docId[i] &&
+        store.getState().docId[i].name.toLowerCase() ===
+          store.getState().file.toLowerCase()
+      ) {
         cd.set("type", parseInt(store.getState().docId[i].id));
       }
     }
@@ -227,7 +237,7 @@ function Upload(props) {
       (store.getState().emailDel &&
         document.getElementById("email-sel").checked &&
         store.getState().file === "transcript") ||
-        store.getState().semwiseMap === true ||
+      store.getState().semwiseMap === true ||
       store.getState().file === "rank card"
     )
       cd.set("email", store.getState().emailDel);
@@ -235,7 +245,7 @@ function Upload(props) {
       (store.getState().address &&
         document.getElementById("postal-del").checked &&
         store.getState().file === "transcript") ||
-        store.getState().semwiseMap === true ||
+      store.getState().semwiseMap === true ||
       store.getState().file === "rank card"
     )
       cd.set("address", store.getState().address);
@@ -244,7 +254,10 @@ function Upload(props) {
     if (store.getState().contact) cd.set("contact", store.getState().contact);
     if (store.getState().purpose) cd.set("purpose", store.getState().purpose);
     if (store.getState().name) cd.set("name", store.getState().name);
-    if (store.getState().file === "transcript" || store.getState().file === "rank card") {
+    if (
+      store.getState().file === "transcript" ||
+      store.getState().file === "rank card"
+    ) {
       if (store.getState().no_of_copies)
         cd.set("no_copies", store.getState().no_of_copies);
     }
@@ -254,13 +267,13 @@ function Upload(props) {
     spider
       .post("api/student/certificate_request", cd)
       .then((res) => {
-        setModal(false);
-        setLoading(false);
+        store.dispatch(setModal(false));
+        store.dispatch(setLoading(false));
         store.dispatch(setEmailCount(0));
         store.dispatch(setEmails([]));
-        setCertFileButton(false);
-        setIdFileButton(false);
-        setFileModal(false);
+        store.dispatch(setCertFileButton(false));
+        store.dispatch(setIdFileButton(false));
+        store.dispatch(setFileModal(false));
         store.dispatch(setAddress(""));
         store.dispatch(setEmailDel(""));
         store.dispatch(setFee(""));
@@ -282,7 +295,7 @@ function Upload(props) {
         spider
           .get("/api/student/address")
           .then((res) => {
-            let addrList=[]
+            let addrList = [];
             res.data.forEach((add) => {
               addrList.push(add);
             });
@@ -378,7 +391,8 @@ function Upload(props) {
                 alignItems: "flex-end",
               }}
             >
-              {store.getState().file === "bonafide" || store.getState().file === "transcript" ? (
+              {store.getState().file === "bonafide" ||
+              store.getState().file === "transcript" ? (
                 <a
                   href="#!"
                   onClick={calculate_source}
@@ -395,7 +409,6 @@ function Upload(props) {
             </div>
 
             <form id="request-main">
-              
               {/*Certificate type */}
               <CertType
                 //setSemwiseMap={setSemwiseMap}
@@ -405,8 +418,7 @@ function Upload(props) {
               {/* Certificate Delivery */}
 
               <Delivery
-                addressModal={addressModal}
-                setAddressModal={setAddressModal}
+                addressModal={store.getState().addressModal}
                 handleAddressClose={handleAddressClose}
               ></Delivery>
 
@@ -444,11 +456,11 @@ function Upload(props) {
               <CertAddition
                 handleIdFileUpload={handleIdFileUpload}
                 handleCertFileUpload={handleCertFileUpload}
-                cert_fileButton={cert_fileButton}
-                id_fileButton={id_fileButton}
+                cert_fileButton={store.getState().cert_fileButton}
+                id_fileButton={store.getState().id_fileButton}
                 handleFileOpen={handleFileOpen}
               ></CertAddition>
-              
+
               {/* Submit button */}
               <div className="form-group text-center">
                 <br />
@@ -497,7 +509,9 @@ function Upload(props) {
                         document.getElementById(
                           "purpose-error-message"
                         ).innerHTML = "Purpose field cannot be blank";
-                      } else if (store.getState().file === "course de-registration") {
+                      } else if (
+                        store.getState().file === "course de-registration"
+                      ) {
                         document.getElementById(
                           "purpose-error-message"
                         ).innerHTML = "Enter reason for course de-registration";
@@ -536,7 +550,10 @@ function Upload(props) {
                       store.getState().semwiseMap === true ||
                       store.getState().file === "rank card"
                     ) {
-                      if (store.getState().file === "transcript" || store.getState().file === "rank card") {
+                      if (
+                        store.getState().file === "transcript" ||
+                        store.getState().file === "rank card"
+                      ) {
                         if (store.getState().no_of_copies < 0) {
                           document.getElementById(
                             "no-of-copies-error-message"
@@ -598,7 +615,9 @@ function Upload(props) {
                           error = 1;
                         } else {
                           let regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // eslint-disable-line
-                          if (!regex.test(store.getState().emailDel.toLowerCase())) {
+                          if (
+                            !regex.test(store.getState().emailDel.toLowerCase())
+                          ) {
                             document.getElementById(
                               "your-email-error-message"
                             ).innerHTML = "Enter a valid email";
@@ -695,7 +714,7 @@ function Upload(props) {
                       }
                     }
                     if (error === 0) {
-                      setModal(true);
+                      store.dispatch(setModal(true));
                     }
                   }}
                 >
@@ -706,21 +725,21 @@ function Upload(props) {
           </div>
 
           <FinalSubmitModal
-            showModal={showModal}
+            showModal={store.getState().showModal}
             handleSubmitClose={handleSubmitClose}
             user={user}
-            isLoading={isLoading}
+            isLoading={store.getState().isLoading}
             certificateRequest={certificateRequest}
           ></FinalSubmitModal>
-          
-          <EmailChart
-            user={user}
-          ></EmailChart>
 
+          <EmailChart user={user}></EmailChart>
         </div>
 
         {/* ID and certificate Modal*/}
-        <FilesModal fileModal={fileModal} handleClose={handleClose}>
+        <FilesModal
+          fileModal={store.getState().fileModal}
+          handleClose={handleClose}
+        >
           {" "}
         </FilesModal>
 

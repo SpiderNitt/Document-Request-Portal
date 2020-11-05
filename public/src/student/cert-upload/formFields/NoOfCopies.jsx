@@ -6,7 +6,8 @@ export class NoOfCopies extends Component {
   render() {
     return (
       <>
-        {store.getState().file === "transcript" || store.getState().file === "rank card" ? (
+        {store.getState().file === "transcript" ||
+        store.getState().file === "rank card" ? (
           <div className="form-group">
             <label htmlFor="no_of_copies">
               Enter Number of copies (if you opted by post){" "}

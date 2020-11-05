@@ -20,13 +20,16 @@ const initalState = {
   contact: "",
   no_of_copies: 0,
   feeReceipt: "",
-  file:"bonafide",
+  file: "bonafide",
   docId: [],
   semwiseMap: false,
   semester: [],
   emailDel: "",
   address: "",
-  preAddress: []
+  preAddress: [],
+  addressModal: false,
+  fileModal: false,
+  showModal: false,
 };
 const store = createStore(
   reducer,

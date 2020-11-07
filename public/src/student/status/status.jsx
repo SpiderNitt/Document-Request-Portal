@@ -6,6 +6,14 @@ import { FaDownload, FaHistory } from "react-icons/fa";
 import Loader from "react-loader-spinner";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import TimelineModal from "../timeline/TimelineModal";
+import store from "../../store";
+import {
+  setLoading,
+  setToggled,
+  setModalViewed
+
+
+} from '../../actions';
 
 const cert_mapping = {
   1: "Bonafide",
@@ -16,45 +24,50 @@ const cert_mapping = {
   6: "Grade Card",
 };
 
+
 export default class Status extends React.Component {
   state = {
-    loading: true,
-    toggled: [],
-    modalViewed: -1,
+  //  loading: true,
+  //  toggled: [],
+  //  modalViewed: -1,
     checkStatus1: false,
     checkStatus2: false,
   };
 
   handleToggle = (id) => {
-    let toggled = Object.assign([], this.state.toggled);
+    let toggled = Object.assign([], store.getState(setToggled));
     if (toggled.includes(id)) {
       for (let i = 0; i < toggled.length; i++) {
         if (toggled[i] === id) {
           toggled.splice(i, 1);
         }
       }
-      this.setState({ toggled });
+      //this.setState({ toggled });
+      store.dispatch({ toggled });
       // return false;
     } else {
       toggled.push(id);
-      this.setState({ toggled });
+      //this.setState({ toggled });
+      store.dispatch({ toggled });
       // return true;
     }
   };
-  setModalViewed = (id) => {
-    this.setState({
-      modalViewed: id,
-    });
-  };
+  
+  //setModalViewed = (id) => {
+  //  store.dispatch({
+  //       modalViewed: id,
+  //  });
+  //};
   hideModalViewed = () => {
-    this.setState({
+    store.dispatch({
       modalViewed: -1,
     });
   };
 
   componentDidMount = async () => {
     this.context.refreshCertData();
-    this.setState({ loading: false });
+    //this.setState({ loading: false });
+    store.dispatch(setLoading(false));
   };
 
   handleDownload = async (id, type, ext) => {
@@ -94,7 +107,7 @@ export default class Status extends React.Component {
                     Bonafide / Transcript Status
                   </h3>
                 </div>
-                {this.state.loading ? (
+                {store.getState(setLoading) ? (
                   <Loader
                     className="text-center"
                     type="Audio"
@@ -156,7 +169,7 @@ export default class Status extends React.Component {
                                       <FaHistory
                                         className="table-icons-item history"
                                         onClick={() => {
-                                          this.setModalViewed(data.id);
+                                          store.dispatch(setModalViewed(data.id));
                                         }}
                                       />
                                     </span>
@@ -164,7 +177,7 @@ export default class Status extends React.Component {
                                 </tr>
                                 <TimelineModal
                                   id={data.id}
-                                  show={this.state.modalViewed === data.id}
+                                  show={store.dispatch(setModalViewed(data.id))}
                                   hide={this.hideModalViewed}
                                   data={this.context.state.certHis[data.id]}
                                   email={data.email_status}
@@ -190,7 +203,7 @@ export default class Status extends React.Component {
                     Course Re / De-Registration Status
                   </h3>
                 </div>
-                {this.state.loading ? (
+                {store.getState(setLoading) ? (
                   <Loader
                     className="text-center"
                     type="Audio"
@@ -244,15 +257,15 @@ export default class Status extends React.Component {
                                       <FaHistory
                                         className="table-icons-item history"
                                         onClick={() => {
-                                          this.setModalViewed(data.id);
+                                          store.dispatch(setModalViewed(data.id));
                                         }}
                                       />
                                     </span>
                                   </td>
                                 </tr>
                                 <TimelineModal
-                                  id={data.id}
-                                  show={this.state.modalViewed === data.id}
+                                  id={data.id}  
+                                  show={store.dispatch(setModalViewed(data.id))}
                                   hide={this.hideModalViewed}
                                   data={this.context.state.certHis[data.id]}
                                 ></TimelineModal>
@@ -277,7 +290,7 @@ export default class Status extends React.Component {
                     Rank / Grade Card Status
                   </h3>
                 </div>
-                {this.state.loading ? (
+                {store.getState(setLoading) ? (
                   <Loader
                     className="text-center"
                     type="Audio"
@@ -347,7 +360,7 @@ export default class Status extends React.Component {
                                       <FaHistory
                                         className="table-icons-item history"
                                         onClick={() => {
-                                          this.setModalViewed(data.id);
+                                          store.dispatch(setModalViewed(data.id));
                                         }}
                                       />
                                     </span>
@@ -355,7 +368,7 @@ export default class Status extends React.Component {
                                 </tr>
                                 <TimelineModal
                                   id={data.id}
-                                  show={this.state.modalViewed === data.id}
+                                  show={store.dispatch(setModalViewed(data.id))}
                                   hide={this.hideModalViewed}
                                   data={this.context.state.certHis[data.id]}
                                   email={data.email_status}

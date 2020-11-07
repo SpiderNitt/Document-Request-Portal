@@ -27,7 +27,11 @@ import {
   SET_ADDRESS_MODAL,
   SET_FILE_MODAL,
   SET_MODAL,
+  SET_TOGGLED,
+  SET_MODAL_VIEWED,
 } from "../actions/types";
+
+// eslint-disable-next-line
 export default (state, action) => {
   switch (action.type) {
     case SET_INSTRUCTIONS_MODAL: {
@@ -196,6 +200,18 @@ export default (state, action) => {
       return {
         ...state,
         showModal: action.payload.showModal,
+      };
+    }
+    case SET_TOGGLED: {
+      return {
+        ...state,
+        toggled: action.payload.toggled,
+      };
+    }
+    case SET_MODAL_VIEWED: {
+      return {
+        ...state,
+        modalViewed: action.payload.modalViewed,
       };
     }
     default:

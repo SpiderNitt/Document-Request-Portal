@@ -27,6 +27,8 @@ import {
   SET_ADDRESS_MODAL,
   SET_FILE_MODAL,
   SET_MODAL,
+  SET_TOGGLED,
+  SET_MODAL_VIEWED,
 } from "./types";
 export function setInstructionModal(bool) {
   return {
@@ -65,6 +67,14 @@ export function setEmails(emails) {
     type: SET_EMAILS,
     payload: {
       emails: emails,
+    },
+  };
+}
+export function setToggled(toggled) {
+  return {
+    type: SET_TOGGLED,
+    payload: {
+      toggled: toggled,
     },
   };
 }
@@ -250,6 +260,14 @@ export function setModal(bool) {
     type: SET_MODAL,
     payload: {
       showModal: bool,
+    },
+  };
+}
+export function setModalViewed(id) {
+  return {
+    type: SET_MODAL_VIEWED,
+    payload: {
+      modalViewed: id,
     },
   };
 }

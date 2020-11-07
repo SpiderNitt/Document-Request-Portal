@@ -3,7 +3,9 @@ import { Modal } from "react-bootstrap";
 import Timeline from "../timeline/timeline";
 
 export default class TimelineModal extends React.Component {
+
   render(props) {
+
     console.log = console.warn = console.error = () => {};
     return (
       <Modal
@@ -28,3 +30,5 @@ export default class TimelineModal extends React.Component {
     );
   }
 }
+// handleview modal:
+//store.dispatch(updated)

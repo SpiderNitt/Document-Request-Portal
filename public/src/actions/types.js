@@ -26,3 +26,5 @@ export const SET_PRE_ADDRESS = "SET_PRE_ADDRESS";
 export const SET_ADDRESS_MODAL = "SET_ADDRESS_MODAL";
 export const SET_FILE_MODAL = "SET_FILE_MODAL";
 export const SET_MODAL = "SET_MODAL";
+export const SET_TOGGLED = "SET_TOGGLED";
+export const SET_MODAL_VIEWED="SET_MODAL_VIEWED"

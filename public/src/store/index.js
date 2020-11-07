@@ -7,6 +7,7 @@ const initalState = {
   isLoading: false,
   name: "",
   emails: [],
+  toggled:[],
   cert_pdf: null,
   emailCount: 0,
   id_pdf: null,
@@ -30,6 +31,7 @@ const initalState = {
   addressModal: false,
   fileModal: false,
   showModal: false,
+  modalViewed: -1
 };
 const store = createStore(
   reducer,

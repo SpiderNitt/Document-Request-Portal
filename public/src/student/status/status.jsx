@@ -11,8 +11,6 @@ import {
   setLoading,
   setToggled,
   setModalViewed,
-
-
 } from '../../actions';
 
 const cert_mapping = {

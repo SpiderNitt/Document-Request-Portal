@@ -29,6 +29,8 @@ import {
   SET_MODAL,
   SET_TOGGLED,
   SET_MODAL_VIEWED,
+  // SET_STATUS2,
+  // SET_STATUS1
 } from "../actions/types";
 
 // eslint-disable-next-line
@@ -214,6 +216,18 @@ export default (state, action) => {
         modalViewed: action.payload.modalViewed,
       };
     }
+    // case SET_STATUS1: {
+    //   return {
+    //     ...state,
+    //     status1: action.payload.status1
+    //   };
+    // }
+    // case SET_STATUS2: {
+    //   return {
+    //     ...state,
+    //     status2: action.payload.status2
+    //   };
+    // }
     default:
       return state;
   }

@@ -10,7 +10,7 @@ import store from "../../store";
 import {
   setLoading,
   setToggled,
-  setModalViewed
+  setModalViewed,
 
 
 } from '../../actions';
@@ -35,7 +35,7 @@ export default class Status extends React.Component {
   };
 
   handleToggle = (id) => {
-    let toggled = Object.assign([], store.getState(setToggled));
+    let toggled = Object.assign([], store.getState().setToggled);
     if (toggled.includes(id)) {
       for (let i = 0; i < toggled.length; i++) {
         if (toggled[i] === id) {
@@ -43,12 +43,12 @@ export default class Status extends React.Component {
         }
       }
       //this.setState({ toggled });
-      store.dispatch({ toggled });
+      store.dispatch(setToggled ({ toggled }));
       // return false;
     } else {
       toggled.push(id);
       //this.setState({ toggled });
-      store.dispatch({ toggled });
+      store.dispatch(setToggled ({ toggled }));
       // return true;
     }
   };
@@ -107,7 +107,7 @@ export default class Status extends React.Component {
                     Bonafide / Transcript Status
                   </h3>
                 </div>
-                {store.getState(setLoading) ? (
+                {store.getState().setLoading ? (
                   <Loader
                     className="text-center"
                     type="Audio"
@@ -203,7 +203,7 @@ export default class Status extends React.Component {
                     Course Re / De-Registration Status
                   </h3>
                 </div>
-                {store.getState(setLoading) ? (
+                {store.getState().setLoading ? (
                   <Loader
                     className="text-center"
                     type="Audio"
@@ -290,7 +290,7 @@ export default class Status extends React.Component {
                     Rank / Grade Card Status
                   </h3>
                 </div>
-                {store.getState(setLoading) ? (
+                {store.getState().setLoading ? (
                   <Loader
                     className="text-center"
                     type="Audio"

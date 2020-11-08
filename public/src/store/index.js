@@ -31,7 +31,9 @@ const initalState = {
   addressModal: false,
   fileModal: false,
   showModal: false,
-  modalViewed: -1
+  modalViewed: -1,
+  // status1: false,
+  // status2:false
 };
 const store = createStore(
   reducer,

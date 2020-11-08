@@ -29,6 +29,8 @@ import {
   SET_MODAL,
   SET_TOGGLED,
   SET_MODAL_VIEWED,
+  // SET_STATUS1,
+  // SET_STATUS2
 } from "./types";
 export function setInstructionModal(bool) {
   return {
@@ -271,3 +273,19 @@ export function setModalViewed(id) {
     },
   };
 }
+// export function checkStatus1(bool) {
+//   return {
+//     type: SET_STATUS1,
+//     payload: {
+//       status1:false,
+//     },
+//   };
+// }
+// export function checkStatus2(bool) {
+//   return {
+//     type: SET_STATUS2,
+//     payload: {
+//       status2:false,
+//     },
+//   };
+// }

@@ -30,6 +30,17 @@ const initalState = {
   addressModal: false,
   fileModal: false,
   showModal: false,
+  certTypes: [],
+  certReq: [],
+  isRefreshing: false,
+  loading: true,
+  length: 0,
+  showModalApprove: false,
+  fileStatus: false,
+  emailModel: false,
+  emailLoad: false,
+  postalModel: false,
+  rejectModel: false,
 };
 const store = createStore(
   reducer,

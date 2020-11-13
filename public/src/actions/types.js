@@ -26,3 +26,15 @@ export const SET_PRE_ADDRESS = "SET_PRE_ADDRESS";
 export const SET_ADDRESS_MODAL = "SET_ADDRESS_MODAL";
 export const SET_FILE_MODAL = "SET_FILE_MODAL";
 export const SET_MODAL = "SET_MODAL";
+
+export const SET_CERT_TYPE = "SET_CERT_TYPE";
+export const SET_REQ = "SET_REQ";
+export const SET_REFRESHING = "SET_REFRESHING";
+export const SET_LOAD = "SET_LOAD";
+export const SET_LENGTH = "SET_LENGTH";
+export const SET_APPROVE_MODEL = "SET_APPROVE_MODEL";
+export const SET_FILE_STATUS = "SET_FILE_STATUS";
+export const SET_EMAIL_MODEL = "SET_EMAIL_MODEL";
+export const SET_EMAIL_LOAD = "SET_EMAIL_LOAD";
+export const SET_POSTAL_MODEL = "SET_POSTAL_MODEL";
+export const SET_REJECT_MODEL = "SET_REJECT_MODEL";

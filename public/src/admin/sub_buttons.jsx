@@ -1,16 +1,28 @@
-import React, { useState } from "react";
+import React from "react";
 import spider from "../utils/API";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import Loader from "react-loader-spinner";
 import "./admin.css";
 import { Modal } from "react-bootstrap";
 
+import store from "../store/index";
+import { 
+  setApproveModel, 
+  setFilestatus, 
+  setEmailModel, 
+  setEmailLoad, 
+  setPostalModel, 
+  setRejectModel 
+} from "../actions/index";
+
 export const Approve = (props) => {
-  const [showModal, setModal] = useState(false);
-  const [fileStatus, setFileStatus] = useState(false);
+  //const [showModal, setModal] = useState(false);
+  const showModal = store.getState().showModalApprove;
+  //const [fileStatus, setFileStatus] = useState(false);
+  const fileStatus = store.getState().fileStatus;
   // const [, updateState] = useState();
 
-  const handleClose = () => setModal(false);
+  const handleClose = () => store.dispatch(setApproveModel(false));
 
   const approveHandler = (e) => {
     e.preventDefault();
@@ -30,7 +42,7 @@ export const Approve = (props) => {
     spider
       .post("api/admin/approve", cd)
       .then((res) => {
-        setModal(false);
+        store.dispatch(setApproveModel(false));
         props.refresh(true);
       })
       .catch((err) => {});
@@ -43,11 +55,17 @@ export const Approve = (props) => {
         width="50"
         type="button"
         onClick={(e) => {
-          setModal(true);
+          store.dispatch(setApproveModel(false));
           if (props.certType === "Bonafide") {
             let file = document.getElementById("myfile" + props.ID).files[0];
-            if (file) setFileStatus(true);
-            else setFileStatus(false);
+            if (file) { 
+              //setFileStatus(true);
+              store.dispatch(setFilestatus(true));
+            }
+            else {
+              //setFileStatus(false)
+              store.dispatch(setFilestatus(false));
+            };
           }
         }}
       >
@@ -100,14 +118,17 @@ export const Approve = (props) => {
 };
 
 export const AddEmailDetails = (props) => {
-  const [showModal, setModal] = useState(false);
-  const [isLoading, setLoading] = useState(false);
+  //const [showModal, setModal] = useState(false);
+  const showModal = store.getState().emailModel;
+  //const [isLoading, setLoading] = useState(false);
+  const isLoading = store.getState().emailLoad;
 
-  const handleClose = () => setModal(false);
+  const handleClose = () => store.dispatch(setEmailModel(false));
 
   const approveHandler = (e) => {
     e.preventDefault();
-    setLoading(true);
+    //setLoading(true);
+    store.dispatch(setEmailLoad(true));
     if (document.getElementById("upload-cert").files.length !== 0) {
       let data = new FormData();
       if (document.getElementById("upload-cert").files[0]) {
@@ -121,8 +142,10 @@ export const AddEmailDetails = (props) => {
         spider
           .post("/api/admin/email", data)
           .then((res) => {
-            setModal(false);
-            setLoading(false);
+            //setModel(false);
+            store.dispatch(setEmailModel(false));
+            //setLoading(false);
+            store.dispatch(setEmailLoad(false));
           })
           .catch((err) => {});
       }
@@ -137,7 +160,7 @@ export const AddEmailDetails = (props) => {
           width="50"
           type="button"
           onClick={(e) => {
-            setModal(true);
+            store.dispatch(setEmailModel(true));
           }}
         >
           <div>Email Sent</div>
@@ -148,7 +171,7 @@ export const AddEmailDetails = (props) => {
           width="50"
           type="button"
           onClick={(e) => {
-            setModal(true);
+            store.dispatch(setEmailModel(true));
           }}
         >
           <div>Send via Email</div>
@@ -206,9 +229,10 @@ export const AddEmailDetails = (props) => {
 };
 
 export const AddPostalDetails = (props) => {
-  const [showModal, setModal] = useState(false);
+  //const [showModal, setModal] = useState(false);
+  const showModal = store.getState().postalModel;
 
-  const handleClose = () => setModal(false);
+  const handleClose = () => store.dispatch(setPostalModel(false));     //setModal(false)
 
   const approveHandler = (e) => {
     e.preventDefault();
@@ -220,7 +244,8 @@ export const AddPostalDetails = (props) => {
           certificate_id: props.certId,
         })
         .then((res) => {
-          setModal(false);
+          //setModal(false);
+          store.dispatch(setPostalModel(false));
         })
         .catch((err) => {});
     }
@@ -234,7 +259,8 @@ export const AddPostalDetails = (props) => {
           width="50"
           type="button"
           onClick={(e) => {
-            setModal(true);
+            //setModal(true);
+            store.dispatch(setPostalModel(true))
           }}
         >
           Post Sent
@@ -245,7 +271,8 @@ export const AddPostalDetails = (props) => {
           width="50"
           type="button"
           onClick={(e) => {
-            setModal(true);
+            //setModal(true);
+            store.dispatch(setPostalModel(true))
           }}
         >
           Send via post
@@ -303,8 +330,9 @@ export const AddPostalDetails = (props) => {
 };
 
 export const Reject = (props) => {
-  const [showModal, setModal] = useState(false);
-  const handleClose = () => setModal(false);
+  //const [showModal, setModal] = useState(false);
+  const showModal = store.getState().rejectModel;
+  const handleClose = () => store.dispatch(setRejectModel(false));   //setModal(false)
   const declineHandler = (e) => {
     e.preventDefault();
     let comments = "";
@@ -317,7 +345,8 @@ export const Reject = (props) => {
         comments: comments,
       })
       .then((res) => {
-        setModal(false);
+        //setModal(false);
+        store.dispatch(setRejectModel(false));
         props.refresh(true);
         //window.location.reload();
       })
@@ -337,7 +366,8 @@ export const Reject = (props) => {
         width="50"
         type="button"
         onClick={() => {
-          setModal(true);
+          //setModal(true);
+          store.dispatch(setRejectModel(true));
         }}
       >
         Reject

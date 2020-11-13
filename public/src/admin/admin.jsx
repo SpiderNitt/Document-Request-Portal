@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import spider from "../utils/API";
 import NavBar from "../student/navbar/navbar";
 import {
@@ -21,13 +21,19 @@ import xlsExport from "xlsexport";
 
 import { FaListAlt } from "react-icons/fa";
 
-function Admin() {
-  const [certReq, setReq] = useState([]);
-  const [isLoading, setLoad] = useState(true);
-  const [certTypes, setTypes] = useState([]);
-  const [length, setLength] = useState(0);
-  const [isRefreshing, setRefreshing] = useState(false);
+import store from "../store/index";
+import { setCertType, setReq, setRefreshing, setLoad, setLength } from "../actions/index";
 
+function Admin() {
+  //const [certReq, setReq] = useState([]);
+  //const [isLoading, setLoad] = useState(true);
+  //const [certTypes, setTypes] = useState([]); redux
+  //const [length, setLength] = useState(0);
+  //const [isRefreshing, setRefreshing] = useState(false);
+  const certReq = store.getState().certReq;
+  const isRefreshing = store.getState().isRefreshing;
+  const isLoading = store.getState().loading;
+  const length = store.getState().length;
   useEffect(() => {
     spider
       .get("/api/student/certificate_types")
@@ -39,7 +45,9 @@ function Admin() {
           delete x.id;
           return true;
         });
-        setTypes(Object.assign(certTypes, res.data));
+        //setTypes(Object.assign(certTypes, res.data));
+        store.dispatch(setCertType(res.data))
+        //console.log(store.getState().certTypes)
       })
       .catch((err) => {});
     spider
@@ -72,7 +80,7 @@ function Admin() {
         }
         let merged = [];
 
-        certTypes.forEach((typ) => {
+        store.getState().certTypes.forEach((typ) => {
           let tempType = {
             certificate_type_id: typ.certificate_type_id,
             certificate_type: typ.certificate_type,
@@ -87,17 +95,21 @@ function Admin() {
           });
           merged.push(tempType);
         });
-        setReq(Object.assign(certReq, merged));
-        setLength(
-          certReq[0].certificates.length +
-            certReq[1].certificates.length +
-            certReq[2].certificates.length +
-            certReq[3].certificates.length +
-            certReq[4].certificates.length +
-            certReq[5].certificates.length
-        );
-        setRefreshing(false);
-        setLoad(false);
+        //setReq(Object.assign(certReq, merged));
+        store.dispatch(setReq(merged))
+        const certRequest = store.getState().certReq
+        store.dispatch(setLength(
+          certRequest[0].certificates.length +
+          certRequest[1].certificates.length +
+          certRequest[2].certificates.length +
+          certRequest[3].certificates.length +
+          certRequest[4].certificates.length +
+          certRequest[5].certificates.length
+        ));
+        //setRefreshing(false)
+        store.dispatch(setRefreshing(false));
+        //setLoad(false);
+        store.dispatch(setLoad(false));
       })
       .catch((err) => {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -212,7 +224,8 @@ function Admin() {
     }
   };
   const changeRefresh = (boolVal) => {
-    setRefreshing(boolVal);
+    //setRefreshing(boolVal);
+    store.dispatch(setRefreshing(boolVal));
   };
 
   return (

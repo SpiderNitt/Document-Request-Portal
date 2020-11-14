@@ -55,7 +55,7 @@ export const Approve = (props) => {
         width="50"
         type="button"
         onClick={(e) => {
-          store.dispatch(setApproveModel(false));
+          store.dispatch(setApproveModel(true));
           if (props.certType === "Bonafide") {
             let file = document.getElementById("myfile" + props.ID).files[0];
             if (file) { 

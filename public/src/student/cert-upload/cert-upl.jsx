@@ -3,7 +3,7 @@ import spider from "../../utils/API";
 import { StatusContext } from "../../contexts/StatusContext";
 import { ToastContainer } from "react-toastify";
 //import { Modal } from "react-bootstrap"; //eslint-disable-next-line
-//import CertificateTemplate from "../cert-templates/cert-temp";
+import Name from './formFields/Name'
 import SemCheckboxes from "./formFields/SemCheckboxes";
 import CourseDetails from "./formFields/CourseDetails";
 import Purpose from "./formFields/Purpose";
@@ -16,6 +16,7 @@ import Delivery from "./formFields/Delivery";
 import AdminEmails from "./formFields/AdminEmails";
 import EmailChart from "./formFields/EmailChart";
 import FinalSubmitModal from "./formFields/FinalSubmitModal";
+import SubmitBtn from './formFields/SubmitBtn';
 //import Loader from "react-loader-spinner";
 import InstructionsModal from "../instructions-modal/instructions";
 import SignatoriesInstructionsModal from "../instructions-modal/signatories-instructions";
@@ -71,35 +72,6 @@ function Upload(props) {
     { id: 10, sem: "s10", semName: "Sem 10", copies: 0 },
   ];
 
-  // UPLOAD DATA
-
-  // const [file, setFile] = useState("bonafide"); reduxed
-  //const [docId, setDocId] = useState([]); reduxed
-
-  //const [semester, setSemester] = useState(SemObj);
-  //const [semwiseMap, setSemwiseMap] = useState(false); reduxed
-
-  //const [feeReceipt, setFee] = useState(""); reduxed
-  //const [emailDel, setEmailDel] = useState(""); rdxd
-  //const [address, setAddress] = useState(""); rdxd
-  //const [preAddress, setPreAddr] = useState([]); rdxd
-  //const [contact, setContact] = useState(""); reduxed
-  //const [purpose, setPurpose] = useState(""); reduxed
-  //const [no_of_copies, setNoOfCopies] = useState(0); reduxed
-  //const [courseCode, setCode] = useState(""); reduxed
-  //const [course, setCourse] = useState(""); reduxed
-
-  // MODAL AND LOADING VARIABLES
-
-  // const [fileModal, setFileModal] = useState(false); reduxed
-  //const [instructionsModal, setInstructionsModal] = useState(true); reduxed
-  //const [signatoriesModal, setSignatoriesModal] = useState(false); reduxed
-  // const [addressModal, setAddressModal] = useState(false); reduxed
-  // const [showModal, setModal] = useState(false); reduxed
-  // const [isLoading, setLoading] = useState(false); reduxed
-  // const [cert_fileButton, setCertFileButton] = useState("");
-  // const [id_fileButton, setIdFileButton] = useState(""); reduxed
-
   const statusCtx = useContext(StatusContext);
 
   useEffect(() => {
@@ -132,6 +104,13 @@ function Upload(props) {
   const refreshStatus = () => {
     statusCtx.refreshCertData();
   };
+
+  const clearSemObj=()=>{
+    SemObj.forEach((obj) => {
+      obj.copies = 0;
+    });
+    store.dispatch(setSemester(SemObj));
+  }
 
   const setCopies = (semNo, noCopies) => {
     SemObj[semNo - 1].copies = noCopies;
@@ -363,25 +342,9 @@ function Upload(props) {
 
         <div className="row">
           <div className="col-md-6 form-left">
-            {/* Name */}
 
-            <div className="form-group">
-              <label htmlFor="username">
-                Enter your Name <span className="cmpl">*</span>
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                name="contact"
-                id="username"
-                placeholder="Name"
-                required
-                onChange={(e) => {
-                  store.dispatch(setName(e.target.value));
-                }}
-              />
-              <small id="name-error-message" className="error"></small>
-            </div>
+            {/* Name */}
+            <Name></Name>
 
             <div
               style={{
@@ -409,6 +372,7 @@ function Upload(props) {
             </div>
 
             <form id="request-main">
+
               {/*Certificate type */}
               <CertType
                 //setSemwiseMap={setSemwiseMap}
@@ -416,7 +380,6 @@ function Upload(props) {
               ></CertType>
 
               {/* Certificate Delivery */}
-
               <Delivery
                 addressModal={store.getState().addressModal}
                 handleAddressClose={handleAddressClose}
@@ -449,7 +412,6 @@ function Upload(props) {
               <Purpose></Purpose>
 
               {/* No of copies */}
-
               <NoOfCopies></NoOfCopies>
 
               {/* Certificate Addition */}
@@ -462,265 +424,12 @@ function Upload(props) {
               ></CertAddition>
 
               {/* Submit button */}
-              <div className="form-group text-center">
-                <br />
-                <button
-                  type="submit"
-                  className="btn btn-success"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    let fileUpload = document.getElementById("cert").files[0];
-                    let college_id = document.getElementById("college-id")
-                      .files[0];
-                    let error = 0;
-                    if (!store.getState().contact) {
-                      document.getElementById(
-                        "contact-error-message"
-                      ).innerHTML = "Contact field cannot be blank";
-                      error = 1;
-                    } else {
-                      // const re = /^\s*(?:\+?(\d{1,3}))?[- (]*(\d{3})[- )]*(\d{3})[- ]*(\d{4})(?: *[x/#]{1}(\d+))?\s*$/;
-                      if (store.getState().contact.length !== 10) {
-                        document.getElementById(
-                          "contact-error-message"
-                        ).innerHTML = "Enter a valid contact number";
-                        error = 1;
-                      } else {
-                        document.getElementById(
-                          "contact-error-message"
-                        ).innerHTML = "";
-                      }
-                    }
-                    if (!store.getState().name) {
-                      document.getElementById("name-error-message").innerHTML =
-                        "Name field cannot be blank";
-                      error = 1;
-                    } else {
-                      document.getElementById("name-error-message").innerHTML =
-                        "";
-                    }
-                    if (!store.getState().purpose) {
-                      if (
-                        store.getState().file === "bonafide" ||
-                        store.getState().file === "transcript" ||
-                        store.getState().file === "rank card" ||
-                        store.getState().semwiseMap === true
-                      ) {
-                        document.getElementById(
-                          "purpose-error-message"
-                        ).innerHTML = "Purpose field cannot be blank";
-                      } else if (
-                        store.getState().file === "course de-registration"
-                      ) {
-                        document.getElementById(
-                          "purpose-error-message"
-                        ).innerHTML = "Enter reason for course de-registration";
-                      } else {
-                        document.getElementById(
-                          "purpose-error-message"
-                        ).innerHTML = "Enter reason for course re-registration";
-                      }
-                      error = 1;
-                    } else {
-                      document.getElementById(
-                        "purpose-error-message"
-                      ).innerHTML = "";
-                    }
-                    if (!fileUpload || !college_id) {
-                      document.getElementById("file-error-message").innerHTML =
-                        "Upload both files";
-                      error = 1;
-                    } else {
-                      document.getElementById("file-error-message").innerHTML =
-                        "";
-                    }
-                    if (store.getState().file === "bonafide") {
-                      if (!store.getState().emailCount) {
-                        document.getElementById(
-                          "email-error-message"
-                        ).innerHTML = "Add email addresses";
-                        error = 1;
-                      } else {
-                        document.getElementById(
-                          "email-error-message"
-                        ).innerHTML = "";
-                      }
-                    } else if (
-                      store.getState().file === "transcript" ||
-                      store.getState().semwiseMap === true ||
-                      store.getState().file === "rank card"
-                    ) {
-                      if (
-                        store.getState().file === "transcript" ||
-                        store.getState().file === "rank card"
-                      ) {
-                        if (store.getState().no_of_copies < 0) {
-                          document.getElementById(
-                            "no-of-copies-error-message"
-                          ).innerHTML = "Number of copies cannot be negative";
-                          error = 1;
-                        } else {
-                          document.getElementById(
-                            "no-of-copies-error-message"
-                          ).innerHTML = "";
-                        }
-                        if (store.getState().address) {
-                          if (!store.getState().no_of_copies) {
-                            document.getElementById(
-                              "no-of-copies-error-message"
-                            ).innerHTML = "Enter the number of copies required";
-                            error = 1;
-                          } else if (store.getState().no_of_copies <= 0) {
-                            document.getElementById(
-                              "no-of-copies-error-message"
-                            ).innerHTML = "Enter the number of copies required";
-                            error = 1;
-                          } else {
-                            document.getElementById(
-                              "no-of-copies-error-message"
-                            ).innerHTML = "";
-                          }
-                        }
-                        if (!store.getState().feeReceipt) {
-                          document.getElementById(
-                            "fee-error-message"
-                          ).innerHTML = "Enter fee reference number";
-                          error = 1;
-                        } else {
-                          document.getElementById(
-                            "fee-error-message"
-                          ).innerHTML = "";
-                        }
-                      }
-                      if (
-                        !(
-                          document.getElementById("email-sel").checked ||
-                          document.getElementById("postal-del").checked
-                        )
-                      ) {
-                        document.getElementById(
-                          "select-delivery-type-error-message"
-                        ).innerHTML = "Select a delivery method";
-                        error = 1;
-                      } else {
-                        document.getElementById(
-                          "select-delivery-type-error-message"
-                        ).innerHTML = "";
-                      }
-                      if (document.getElementById("email-sel").checked) {
-                        if (!store.getState().emailDel) {
-                          document.getElementById(
-                            "your-email-error-message"
-                          ).innerHTML = "Enter your email address";
-                          error = 1;
-                        } else {
-                          let regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // eslint-disable-line
-                          if (
-                            !regex.test(store.getState().emailDel.toLowerCase())
-                          ) {
-                            document.getElementById(
-                              "your-email-error-message"
-                            ).innerHTML = "Enter a valid email";
-                            error = 1;
-                          } else {
-                            document.getElementById(
-                              "your-email-error-message"
-                            ).innerHTML = "";
-                          }
-                        }
-                      } else {
-                        store.dispatch(setEmailDel(""));
-                      }
-                      if (document.getElementById("postal-del").checked) {
-                        if (!store.getState().address) {
-                          document.getElementById(
-                            "your-postal-error-message"
-                          ).innerHTML = "Enter your postal address";
-                          error = 1;
-                        } else {
-                          document.getElementById(
-                            "your-postal-error-message"
-                          ).innerHTML = "";
-                        }
-                      } else {
-                        store.dispatch(setAddress(""));
-                      }
-                      if (store.getState().semwiseMap === true) {
-                        if (
-                          !(
-                            document.getElementById("check_s1").checked ||
-                            document.getElementById("check_s2").checked ||
-                            document.getElementById("check_s3").checked ||
-                            document.getElementById("check_s4").checked ||
-                            document.getElementById("check_s5").checked ||
-                            document.getElementById("check_s6").checked ||
-                            document.getElementById("check_s7").checked ||
-                            document.getElementById("check_s8").checked ||
-                            document.getElementById("check_s9").checked ||
-                            document.getElementById("check_s10").checked
-                          )
-                        ) {
-                          document.getElementById(
-                            "select-semester-error-message"
-                          ).innerHTML = "Select a semester";
-                          error = 1;
-                        } else {
-                          document.getElementById(
-                            "select-semester-error-message"
-                          ).innerHTML = "";
-                        }
+              <SubmitBtn
+                SemObj={SemObj}
+                clearSemObj={clearSemObj}
+                setCopies={setCopies}
+              ></SubmitBtn>
 
-                        SemObj.forEach((obj) => {
-                          obj.copies = 0;
-                        });
-                        store.dispatch(setSemester(SemObj));
-                        let copyInputNodes = document.querySelectorAll(
-                          ".copies-input"
-                        );
-                        copyInputNodes.forEach((node) => {
-                          if (node.value > 0)
-                            setCopies(parseInt(node.id.slice(14)), node.value);
-                          else {
-                            document.getElementById(
-                              "rc-gc-no-of-copies-error-message"
-                            ).innerHTML = "Enter valid no. of copies";
-                            error = 1;
-                          }
-                        });
-                      }
-                    } else if (
-                      store.getState().file === "course re-registration" ||
-                      store.getState().file === "course de-registration"
-                    ) {
-                      if (!store.getState().emailCount) {
-                        document.getElementById(
-                          "email-error-message"
-                        ).innerHTML = "Add email addresses";
-                        error = 1;
-                      } else {
-                        document.getElementById(
-                          "email-error-message"
-                        ).innerHTML = "";
-                      }
-                      if (!store.getState().courseCode) {
-                        document.getElementById(
-                          "ccode-error-message"
-                        ).innerHTML = "Enter your course code";
-                      }
-                      if (!store.getState().course) {
-                        document.getElementById(
-                          "cname-error-message"
-                        ).innerHTML = "Enter your course name";
-                      }
-                    }
-                    if (error === 0) {
-                      store.dispatch(setModal(true));
-                    }
-                  }}
-                >
-                  Submit
-                </button>
-              </div>
             </form>
           </div>
 

@@ -1,5 +1,10 @@
 import React, { Component } from "react";
 import store from "../../../store";
+import {
+  setEmailDel,
+  setAddress,
+  setModal,
+} from '../../../actions'
 
 export class SubmitBtn extends Component {
   render() {
@@ -91,7 +96,7 @@ export class SubmitBtn extends Component {
                       "no-of-copies-error-message"
                     ).innerHTML = "";
                   }
-                  if (address) {
+                  if (store.getState().address) {
                     if (!store.getState().no_of_copies) {
                       document.getElementById(
                         "no-of-copies-error-message"
@@ -132,14 +137,14 @@ export class SubmitBtn extends Component {
                   ).innerHTML = "";
                 }
                 if (document.getElementById("email-sel").checked) {
-                  if (!emailDel) {
+                  if (!store.getState().emailDel) {
                     document.getElementById(
                       "your-email-error-message"
                     ).innerHTML = "Enter your email address";
                     error = 1;
                   } else {
                     let regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // eslint-disable-line
-                    if (!regex.test(emailDel.toLowerCase())) {
+                    if (!regex.test(store.getState().emailDel.toLowerCase())) {
                       document.getElementById(
                         "your-email-error-message"
                       ).innerHTML = "Enter a valid email";
@@ -151,10 +156,10 @@ export class SubmitBtn extends Component {
                     }
                   }
                 } else {
-                  setEmailDel("");
+                  store.dispatch(setEmailDel(""));
                 }
                 if (document.getElementById("postal-del").checked) {
-                  if (!address) {
+                  if (!store.getState().address) {
                     document.getElementById(
                       "your-postal-error-message"
                     ).innerHTML = "Enter your postal address";
@@ -165,7 +170,7 @@ export class SubmitBtn extends Component {
                     ).innerHTML = "";
                   }
                 } else {
-                  setAddress("");
+                  store.dispatch(setAddress(""));
                 }
                 if (store.getState().semwiseMap === true) {
                   if (
@@ -192,16 +197,14 @@ export class SubmitBtn extends Component {
                     ).innerHTML = "";
                   }
 
-                  SemObj.forEach((obj) => {
-                    obj.copies = 0;
-                  });
-                  store.dispatch(setSemester(SemObj));
+                  this.props.clearSemObj();
+
                   let copyInputNodes = document.querySelectorAll(
                     ".copies-input"
                   );
                   copyInputNodes.forEach((node) => {
                     if (node.value > 0)
-                      setCopies(parseInt(node.id.slice(14)), node.value);
+                      this.props.setCopies(parseInt(node.id.slice(14)), node.value);
                     else {
                       document.getElementById(
                         "rc-gc-no-of-copies-error-message"
@@ -231,7 +234,7 @@ export class SubmitBtn extends Component {
                 }
               }
               if (error === 0) {
-                setModal(true);
+                store.dispatch(setModal(true));
               }
             }}
           >

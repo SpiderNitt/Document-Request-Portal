@@ -27,6 +27,17 @@ import {
   SET_ADDRESS_MODAL,
   SET_FILE_MODAL,
   SET_MODAL,
+  SET_CERT_TYPE,
+  SET_REQ,
+  SET_REFRESHING,
+  SET_LOAD,
+  SET_LENGTH,
+  SET_APPROVE_MODEL,
+  SET_FILE_STATUS,
+  SET_EMAIL_MODEL,
+  SET_EMAIL_LOAD,
+  SET_POSTAL_MODEL,
+  SET_REJECT_MODEL,
 } from "./types";
 export function setInstructionModal(bool) {
   return {
@@ -253,3 +264,93 @@ export function setModal(bool) {
     },
   };
 }
+export function setCertType(certTypes) {
+  return {
+    type: SET_CERT_TYPE,
+    payload: {
+      certTypes: certTypes,
+    },
+  };
+}
+export function setReq(certReq) {
+  return {
+    type: SET_REQ,
+    payload: {
+      certReq: certReq,
+    },
+  };
+}
+export function setRefreshing(isRefreshing) {
+  return {
+    type: SET_REFRESHING,
+    payload: {
+      isRefreshing: isRefreshing,
+    },
+  };
+}
+export function setLoad(loading) {
+  return {
+    type: SET_LOAD,
+    payload: {
+      loading: loading,
+    },
+  };
+}
+export function setLength(length) {
+  return {
+    type: SET_LENGTH,
+    payload: {
+      length: length,
+    },
+  };
+}
+export function setApproveModel(showModalApprove) {
+  return {
+    type: SET_APPROVE_MODEL,
+    payload: {
+      showModalApprove: showModalApprove,
+    },
+  };
+}
+export function setFilestatus(fileStatus) {
+  return {
+    type: SET_FILE_STATUS,
+    payload: {
+      fileStatus: fileStatus,
+    },
+  };
+}
+export function setEmailModel(emailModel) {
+  return {
+    type: SET_EMAIL_MODEL,
+    payload: {
+      emailModel: emailModel,
+    },
+  };
+}
+export function setEmailLoad(emailLoad) {
+  return {
+    type: SET_EMAIL_LOAD,
+    payload: {
+      emailLoad: emailLoad,
+    },
+  };
+}
+export function setPostalModel(postalModel) {
+  return {
+    type: SET_POSTAL_MODEL,
+    payload: {
+      postalModel: postalModel,
+    },
+  };
+}
+export function setRejectModel(rejectModel) {
+  return {
+    type: SET_REJECT_MODEL,
+    payload: {
+      rejectModel: rejectModel,
+    },
+  };
+}
+
+

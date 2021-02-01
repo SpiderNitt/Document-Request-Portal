@@ -27,6 +27,17 @@ import {
   SET_ADDRESS_MODAL,
   SET_FILE_MODAL,
   SET_MODAL,
+  SET_CERT_TYPE,
+  SET_REQ,
+  SET_REFRESHING,
+  SET_LOAD,
+  SET_LENGTH,
+  SET_APPROVE_MODEL,
+  SET_FILE_STATUS,
+  SET_EMAIL_MODEL,
+  SET_EMAIL_LOAD,
+  SET_POSTAL_MODEL,
+  SET_REJECT_MODEL,
 } from "../actions/types";
 export default (state, action) => {
   switch (action.type) {
@@ -197,6 +208,72 @@ export default (state, action) => {
         ...state,
         showModal: action.payload.showModal,
       };
+    }
+    case SET_CERT_TYPE: {
+      return {
+        ...state,
+        certTypes: action.payload.certTypes,
+      }
+    }
+    case SET_REQ: {
+      return {
+        ...state,
+        certReq: action.payload.certReq,
+      }
+    }
+    case SET_REFRESHING: {
+      return {
+        ...state,
+        isRefreshing: action.payload.isRefreshing,
+      }
+    }
+    case SET_LOAD: {
+      return {
+        ...state,
+        loading: action.payload.loading,
+      }
+    }
+    case SET_LENGTH: {
+      return {
+        ...state,
+        length: action.payload.length,
+      }
+    }
+    case SET_APPROVE_MODEL: {
+      return {
+        ...state,
+        showModalApprove: action.payload.showModalApprove,
+      }
+    }
+    case SET_FILE_STATUS: {
+      return {
+        ...state,
+        fileStatus: action.payload.fileStatus,
+      }
+    }
+    case SET_EMAIL_MODEL: {
+      return {
+        ...state,
+        emailModel: action.payload.emailModel,
+      }
+    }
+    case SET_EMAIL_LOAD: {
+      return {
+        ...state,
+        emailLoad: action.payload.emailLoad,
+      }
+    }
+    case SET_POSTAL_MODEL: {
+      return {
+        ...state,
+        postalModel: action.payload.postalModel,
+      }
+    }
+    case SET_REJECT_MODEL: {
+      return {
+        ...state,
+        rejectModel: action.payload.rejectModel,
+      }
     }
     default:
       return state;

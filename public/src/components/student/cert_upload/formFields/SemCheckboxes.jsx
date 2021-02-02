@@ -1,18 +1,18 @@
 import React, { Component } from "react";
-import store from "../../../store";
+import { getCert } from "../../../../actions/cert_upload";
 
 export class SemCheckboxes extends Component {
   render() {
     return (
       <>
-        {store.getState().semwiseMap === true ? (
+        {getCert().semwiseMap === true ? (
           <div className="semesters">
             <div className="form-group">
               <label htmlFor="semester">
                 Choose required semesters <span className="cmpl">*</span>
               </label>
               <div className="row mx-2">
-                {store.getState().semester.map((sem) => {
+                {getCert().semester.map((sem) => {
                   return (
                     <>
                       <div className="form-check col-sm-3 col-6">

@@ -1,13 +1,12 @@
 import React, { Component } from "react";
-import store from "../../../store";
-import { setEmailCount, setEmails } from "../../../actions";
+import { setEmailCount, setEmails, getCert } from "../../../../actions/cert_upload";
 import { MdHelp } from "react-icons/md";
 
 export class AdminEmails extends Component {
   render() {
-    return store.getState().file === "transcript" ||
-      store.getState().file === "rank card" ||
-      store.getState().semwiseMap === true ? (
+    return getCert().file === "transcript" ||
+      getCert().file === "rank card" ||
+      getCert().semwiseMap === true ? (
       <></>
     ) : (
       <>
@@ -56,16 +55,10 @@ export class AdminEmails extends Component {
                   if (student_webmail.test(emailValues.value) === true) {
                     alert("Cannot enter student webmail");
                   } else if (
-                    !store.getState().emails.includes(emailValues.value)
+                    !getCert().emails.includes(emailValues.value)
                   ) {
-                    store.dispatch(
-                      setEmailCount(store.getState().emailCount + 1)
-                    );
-                    store.dispatch(
-                      setEmails(
-                        store.getState().emails.concat(emailValues.value)
-                      )
-                    );
+                      setEmailCount(getCert().emailCount + 1)
+                      setEmails(getCert().emails.concat(emailValues.value));
                   } else {
                     alert("Duplicate entry!");
                   }

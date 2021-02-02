@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { MdHelp } from "react-icons/md";
-import store from "../../../store";
 import {
   setFile,
   setCourse,
@@ -8,7 +7,8 @@ import {
   setEmailCount,
   setEmails,
   setSemwiseMap,
-} from "../../../actions";
+  getCert,
+} from "../../../../actions/cert_upload";
 
 export class CertType extends Component {
   render() {
@@ -29,19 +29,19 @@ export class CertType extends Component {
             className="form-control"
             onChange={(e) => {
               let certType = e.target.value;
-              store.dispatch(setFile(certType));
-              store.getState().docId.forEach((type) => {
+              setFile(certType);
+              getCert().docId.forEach((type) => {
                 if (type.name.toLowerCase() === certType) {
                   if (type.semwise_mapping === true)
-                    store.dispatch(setSemwiseMap(true));
-                  else store.dispatch(setSemwiseMap(false));
+                    setSemwiseMap(true);
+                  else setSemwiseMap(false);
                 }
               });
               // setName("");
               // document.getElementById("username").value = "";
               if (
-                store.getState().file === "course de-registration" ||
-                store.getState().file === "course re-registration"
+                getCert().file === "course de-registration" ||
+                getCert().file === "course re-registration"
               ) {
                 if (
                   document.getElementById("course-code") &&
@@ -50,28 +50,33 @@ export class CertType extends Component {
                   document.getElementById("course-code").value = "";
                   document.getElementById("course-name").value = "";
                 }
-                store.dispatch(setCourse(""));
-                store.dispatch(setCode(""));
+                setCourse("");
+                setCode("");
               }
               if (
                 certType === "transcript" ||
                 certType === "rank card" ||
                 certType === "grade card"
               ) {
-                store.dispatch(setEmailCount(store.getState().emailCount + 1));
-                store.dispatch(setEmails(["transcript@nitt.edu"]));
-                document.getElementById("contact-error-message").innerHTML = "";
+                setEmailCount(getCert().emailCount + 1);
+                setEmails(["transcript@nitt.edu"]);
+                if(document.getElementById("contact-error-message"))
+                  document.getElementById("contact-error-message").innerHTML = "";
                 if (document.getElementById("purpose-error-message")) {
                   document.getElementById("purpose-error-message").innerHTML =
                     "";
                 }
-                document.getElementById("file-error-message").innerHTML = "";
+                if(document.getElementById("file-error-message"))
+                  document.getElementById("file-error-message").innerHTML = "";
               } else {
-                store.dispatch(setEmailCount(0));
-                store.dispatch(setEmails([]));
-                document.getElementById("contact-error-message").innerHTML = "";
-                document.getElementById("purpose-error-message").innerHTML = "";
-                document.getElementById("file-error-message").innerHTML = "";
+                setEmailCount(0);
+                setEmails([]);
+                if(document.getElementById("contact-error-message"))
+                  document.getElementById("contact-error-message").innerHTML = "";
+                if(document.getElementById("purpose-error-message"))
+                  document.getElementById("purpose-error-message").innerHTML = "";
+                if(document.getElementById("file-error-message"))
+                  document.getElementById("file-error-message").innerHTML = "";
                 if (document.getElementById("ccode-error-message")) {
                   document.getElementById("ccode-error-message").innerHTML = "";
                 }
@@ -84,7 +89,7 @@ export class CertType extends Component {
               }
             }}
           >
-            {store.getState().docId.map((id, index) => {
+            {getCert().docId.map((id, index) => {
               return (
                 <option key={index} value={id.name.toLowerCase()}>
                   {id.name}

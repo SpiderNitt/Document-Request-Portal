@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import store from "../../../store";
-import { setContact } from "../../../actions";
+import { setContact } from "../../../../actions/cert_upload";
 
 export class Contact extends Component {
   render() {
@@ -18,7 +17,7 @@ export class Contact extends Component {
             placeholder="Contact number"
             required
             onChange={(e) => {
-              store.dispatch(setContact(e.target.value));
+              setContact(e.target.value);
             }}
           />
           <small id="contact-error-message" className="error"></small>

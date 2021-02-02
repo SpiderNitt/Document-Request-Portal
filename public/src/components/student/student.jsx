@@ -1,9 +1,9 @@
 import React from "react";
-import Upload from "./cert-upload/cert-upl";
+import Upload from "./cert_upload/cert_upl";
 import NavBar from "./navbar/navbar";
 import Status from "./status/status";
 import { Provider } from "react-redux";
-import store from "../store";
+import store from "../../store";
 function Student() {
   return (
     <div>

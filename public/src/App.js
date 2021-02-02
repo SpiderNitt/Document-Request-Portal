@@ -1,11 +1,11 @@
 import React from "react";
 import "./App.css";
-import Login from "./login/login";
-import Footer from "./footer/footer";
-import Student from "./student/student";
-import Admin from "./admin/admin.jsx";
+import Login from "./components/login/login";
+import Footer from "./components/footer/footer";
+import Student from "./components/student/student";
+import Admin from "./components/admin/admin.jsx";
 import { StatusProvider } from "./contexts/StatusContext";
-import NotFound from "./404/404";
+import NotFound from "./components/404/404";
 import { Switch, Route, BrowserRouter as Router } from "react-router-dom";
 import { Redirect } from "react-router-dom/cjs/react-router-dom.min";
 

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Modal } from "react-bootstrap";
-import store from "../../../store";
+import { getCert } from "../../../../actions/cert_upload";
 
 export class FilesModal extends Component {
   render() {
@@ -17,24 +17,24 @@ export class FilesModal extends Component {
           <Modal.Header closeButton>
             <Modal.Title id="contained-modal-title-vcenter">
               Uploaded files: <br /> Certificate:{" "}
-              {store.getState().cert_fileName}
+              {getCert().cert_fileName}
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <embed
-              src={store.getState().cert_pdf}
+              src={getCert().cert_pdf}
               className="embed-modal"
               height={document.documentElement.clientHeight * 0.75}
             />
           </Modal.Body>
           <Modal.Header closeButton>
             <Modal.Title id="contained-modal-title-vcenter">
-              Uploaded files: <br /> Id file: {store.getState().id_fileName}
+              Uploaded files: <br /> Id file: {getCert().id_fileName}
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <embed
-              src={store.getState().id_pdf}
+              src={getCert().id_pdf}
               className="embed-modal"
               height={document.documentElement.clientHeight * 0.75}
             />

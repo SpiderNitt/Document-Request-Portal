@@ -1,14 +1,13 @@
 import React, { Component } from "react";
-import store from "../../../store";
-import { setFee } from "../../../actions";
+import { getCert, setFee } from "../../../../actions/cert_upload";
 
 export class FeeRef extends Component {
   render() {
     return (
       <div>
-        {store.getState().file === "transcript" ||
-        store.getState().file === "rank card" ||
-        store.getState().semwiseMap === true ? (
+        {getCert().file === "transcript" ||
+        getCert().file === "rank card" ||
+        getCert().semwiseMap === true ? (
           <div className="fee-receipt">
             <div className="form-group">
               <label htmlFor="feer">
@@ -22,7 +21,7 @@ export class FeeRef extends Component {
                 required
                 placeholder="Fee Reference ID"
                 onChange={(e) => {
-                  store.dispatch(setFee(e.target.value));
+                  setFee(e.target.value);
                 }}
               />
               <small id="fee-error-message" className="error"></small>

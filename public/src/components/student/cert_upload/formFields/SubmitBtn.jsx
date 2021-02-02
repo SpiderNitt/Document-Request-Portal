@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import store from "../../../store";
 import {
   setEmailDel,
   setAddress,
   setModal,
-} from '../../../actions'
+  getCert,
+} from '../../../../actions/cert_upload'
 
 export class SubmitBtn extends Component {
   render() {
@@ -20,13 +20,13 @@ export class SubmitBtn extends Component {
               let fileUpload = document.getElementById("cert").files[0];
               let college_id = document.getElementById("college-id").files[0];
               let error = 0;
-              if (!store.getState().contact) {
+              if (!getCert().contact) {
                 document.getElementById("contact-error-message").innerHTML =
                   "Contact field cannot be blank";
                 error = 1;
               } else {
                 // const re = /^\s*(?:\+?(\d{1,3}))?[- (]*(\d{3})[- )]*(\d{3})[- ]*(\d{4})(?: *[x/#]{1}(\d+))?\s*$/;
-                if (store.getState().contact.length !== 10) {
+                if (getCert().contact.length !== 10) {
                   document.getElementById("contact-error-message").innerHTML =
                     "Enter a valid contact number";
                   error = 1;
@@ -35,23 +35,23 @@ export class SubmitBtn extends Component {
                     "";
                 }
               }
-              if (!store.getState().name) {
+              if (!getCert().name) {
                 document.getElementById("name-error-message").innerHTML =
                   "Name field cannot be blank";
                 error = 1;
               } else {
                 document.getElementById("name-error-message").innerHTML = "";
               }
-              if (!store.getState().purpose) {
+              if (!getCert().purpose) {
                 if (
-                  store.getState().file === "bonafide" ||
-                  store.getState().file === "transcript" ||
-                  store.getState().file === "rank card" ||
-                  store.getState().semwiseMap === true
+                  getCert().file === "bonafide" ||
+                  getCert().file === "transcript" ||
+                  getCert().file === "rank card" ||
+                  getCert().semwiseMap === true
                 ) {
                   document.getElementById("purpose-error-message").innerHTML =
                     "Purpose field cannot be blank";
-                } else if (store.getState().file === "course de-registration") {
+                } else if (getCert().file === "course de-registration") {
                   document.getElementById("purpose-error-message").innerHTML =
                     "Enter reason for course de-registration";
                 } else {
@@ -69,8 +69,8 @@ export class SubmitBtn extends Component {
               } else {
                 document.getElementById("file-error-message").innerHTML = "";
               }
-              if (store.getState().file === "bonafide") {
-                if (!store.getState().emailCount) {
+              if (getCert().file === "bonafide") {
+                if (!getCert().emailCount) {
                   document.getElementById("email-error-message").innerHTML =
                     "Add email addresses";
                   error = 1;
@@ -78,15 +78,15 @@ export class SubmitBtn extends Component {
                   document.getElementById("email-error-message").innerHTML = "";
                 }
               } else if (
-                store.getState().file === "transcript" ||
-                store.getState().semwiseMap === true ||
-                store.getState().file === "rank card"
+                getCert().file === "transcript" ||
+                getCert().semwiseMap === true ||
+                getCert().file === "rank card"
               ) {
                 if (
-                  store.getState().file === "transcript" ||
-                  store.getState().file === "rank card"
+                  getCert().file === "transcript" ||
+                  getCert().file === "rank card"
                 ) {
-                  if (store.getState().no_of_copies < 0) {
+                  if (getCert().no_of_copies < 0) {
                     document.getElementById(
                       "no-of-copies-error-message"
                     ).innerHTML = "Number of copies cannot be negative";
@@ -96,13 +96,13 @@ export class SubmitBtn extends Component {
                       "no-of-copies-error-message"
                     ).innerHTML = "";
                   }
-                  if (store.getState().address) {
-                    if (!store.getState().no_of_copies) {
+                  if (getCert().address) {
+                    if (!getCert().no_of_copies) {
                       document.getElementById(
                         "no-of-copies-error-message"
                       ).innerHTML = "Enter the number of copies required";
                       error = 1;
-                    } else if (store.getState().no_of_copies <= 0) {
+                    } else if (getCert().no_of_copies <= 0) {
                       document.getElementById(
                         "no-of-copies-error-message"
                       ).innerHTML = "Enter the number of copies required";
@@ -113,7 +113,7 @@ export class SubmitBtn extends Component {
                       ).innerHTML = "";
                     }
                   }
-                  if (!store.getState().feeReceipt) {
+                  if (!getCert().feeReceipt) {
                     document.getElementById("fee-error-message").innerHTML =
                       "Enter fee reference number";
                     error = 1;
@@ -137,14 +137,14 @@ export class SubmitBtn extends Component {
                   ).innerHTML = "";
                 }
                 if (document.getElementById("email-sel").checked) {
-                  if (!store.getState().emailDel) {
+                  if (!getCert().emailDel) {
                     document.getElementById(
                       "your-email-error-message"
                     ).innerHTML = "Enter your email address";
                     error = 1;
                   } else {
                     let regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/; // eslint-disable-line
-                    if (!regex.test(store.getState().emailDel.toLowerCase())) {
+                    if (!regex.test(getCert().emailDel.toLowerCase())) {
                       document.getElementById(
                         "your-email-error-message"
                       ).innerHTML = "Enter a valid email";
@@ -156,10 +156,10 @@ export class SubmitBtn extends Component {
                     }
                   }
                 } else {
-                  store.dispatch(setEmailDel(""));
+                  setEmailDel("");
                 }
                 if (document.getElementById("postal-del").checked) {
-                  if (!store.getState().address) {
+                  if (!getCert().address) {
                     document.getElementById(
                       "your-postal-error-message"
                     ).innerHTML = "Enter your postal address";
@@ -170,9 +170,9 @@ export class SubmitBtn extends Component {
                     ).innerHTML = "";
                   }
                 } else {
-                  store.dispatch(setAddress(""));
+                  setAddress("");
                 }
-                if (store.getState().semwiseMap === true) {
+                if (getCert().semwiseMap === true) {
                   if (
                     !(
                       document.getElementById("check_s1").checked ||
@@ -214,27 +214,27 @@ export class SubmitBtn extends Component {
                   });
                 }
               } else if (
-                store.getState().file === "course re-registration" ||
-                store.getState().file === "course de-registration"
+                getCert().file === "course re-registration" ||
+                getCert().file === "course de-registration"
               ) {
-                if (!store.getState().emailCount) {
+                if (!getCert().emailCount) {
                   document.getElementById("email-error-message").innerHTML =
                     "Add email addresses";
                   error = 1;
                 } else {
                   document.getElementById("email-error-message").innerHTML = "";
                 }
-                if (!store.getState().courseCode) {
+                if (!getCert().courseCode) {
                   document.getElementById("ccode-error-message").innerHTML =
                     "Enter your course code";
                 }
-                if (!store.getState().course) {
+                if (!getCert().course) {
                   document.getElementById("cname-error-message").innerHTML =
                     "Enter your course name";
                 }
               }
               if (error === 0) {
-                store.dispatch(setModal(true));
+                setModal(true);
               }
             }}
           >

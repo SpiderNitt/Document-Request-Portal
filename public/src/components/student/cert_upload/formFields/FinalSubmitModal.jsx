@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import { Modal } from "react-bootstrap";
 import Loader from "react-loader-spinner";
-
-import store from "../../../store";
+import { getCert } from "../../../../actions/cert_upload";
 
 export class FinalSubmitModal extends Component {
   render() {
@@ -41,7 +40,7 @@ export class FinalSubmitModal extends Component {
                   <li className="modal-pop list-group-item">
                     {this.props.user + "@nitt.edu"}
                   </li>
-                  {store.getState().emails.map((email, index) => {
+                  {getCert().emails.map((email, index) => {
                     return (
                       <li key={index} className="modal-pop list-group-item">
                         <div className="d-block text-center">

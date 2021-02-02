@@ -1,6 +1,6 @@
 import React from "react";
-import spider from "../../utils/API";
-import { StatusContext } from "../../contexts/StatusContext";
+import spider from "../../../utils/API";
+import { StatusContext } from "../../../contexts/StatusContext";
 import "./status.css";
 import { FaDownload, FaHistory } from "react-icons/fa";
 import Loader from "react-loader-spinner";

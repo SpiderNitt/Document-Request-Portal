@@ -1,13 +1,12 @@
 import React, { Component } from "react";
-import store from "../../../store";
-import { setNoOfCopies } from "../../../actions";
+import { getCert, setNoOfCopies } from "../../../../actions/cert_upload";
 
 export class NoOfCopies extends Component {
   render() {
     return (
       <>
-        {store.getState().file === "transcript" ||
-        store.getState().file === "rank card" ? (
+        {getCert().file === "transcript" ||
+        getCert().file === "rank card" ? (
           <div className="form-group">
             <label htmlFor="no_of_copies">
               Enter Number of copies (if you opted by post){" "}
@@ -21,7 +20,7 @@ export class NoOfCopies extends Component {
               placeholder="Number of copies"
               required
               onChange={(e) => {
-                store.dispatch(setNoOfCopies(e.target.value));
+                setNoOfCopies(e.target.value);
               }}
               min="0"
             />

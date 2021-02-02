@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import store from "../../../store";
-import { setCode, setCourse } from "../../../actions";
+import { setCode, setCourse } from "../../../../actions/cert_upload";
 
 export class CourseDetails extends Component {
   render() {
@@ -18,7 +17,7 @@ export class CourseDetails extends Component {
             placeholder="Course code"
             required
             onChange={(e) => {
-              store.dispatch(setCode(e.target.value));
+              setCode(e.target.value);
             }}
           />
           <small id="ccode-error-message" className="error"></small>
@@ -35,7 +34,7 @@ export class CourseDetails extends Component {
             placeholder=" Course name"
             required
             onChange={(e) => {
-              store.dispatch(setCourse(e.target.value));
+              setCourse(e.target.value);
             }}
           />
           <small id="cname-error-message" className="error"></small>

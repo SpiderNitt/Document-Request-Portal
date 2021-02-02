@@ -1,13 +1,12 @@
 import React, { Component } from "react";
 import { Modal } from "react-bootstrap";
-import store from "../../../store";
-import { setEmailDel, setAddress, setAddressModal } from "../../../actions";
+import { setEmailDel, setAddress, setAddressModal, getCert } from "../../../../actions/cert_upload";
 
 export class Delivery extends Component {
   render() {
-    return store.getState().file === "transcript" ||
-      store.getState().file === "rank card" ||
-      store.getState().semwiseMap === true ? (
+    return getCert().file === "transcript" ||
+      getCert().file === "rank card" ||
+      getCert().semwiseMap === true ? (
       <>
         <div className="form-group">
           <label htmlFor="delivery-sel">
@@ -50,7 +49,7 @@ export class Delivery extends Component {
                   e.preventDefault();
                   let emailValues = document.getElementById("emaildel");
                   // if (emailValues.value !== "") {
-                  store.dispatch(setEmailDel(emailValues.value));
+                  setEmailDel(emailValues.value);
                   // }
                 }}
                 required
@@ -92,8 +91,8 @@ export class Delivery extends Component {
             <p id="emailHelp" className="form-text text-muted">
               Choose addresses from your previous entries:
             </p>
-            {store.getState().preAddress.length !== 0 ? (
-              store.getState().preAddress.map((addr, index) => {
+            {getCert().preAddress.length !== 0 ? (
+              getCert().preAddress.map((addr, index) => {
                 if (addr !== "" || addr !== " ")
                   return (
                     <div className="form-check" key={index}>
@@ -104,7 +103,7 @@ export class Delivery extends Component {
                         id={"radio" + index}
                         value={addr !== null ? addr : ""}
                         onChange={(e) => {
-                          store.dispatch(setAddress(e.target.value));
+                          setAddress(e.target.value);
                         }}
                       />
                       <label className="form-check-label" htmlFor="radio">
@@ -120,11 +119,11 @@ export class Delivery extends Component {
               </small>
             )}
             <br />
-            {store.getState().address ? (
+            {getCert().address ? (
               <>
                 <small className="form-text text-muted">
                   Address entered/selected:{" "}
-                  <strong>{store.getState().address}</strong>
+                  <strong>{getCert().address}</strong>
                 </small>
                 <br />
               </>
@@ -141,7 +140,7 @@ export class Delivery extends Component {
                 width="50"
                 type="button"
                 onClick={(e) => {
-                  store.dispatch(setAddressModal(true));
+                  setAddressModal(true);
                   Array.prototype.forEach.call(
                     document.getElementsByClassName("radio-addr"),
                     (el) => {
@@ -227,8 +226,8 @@ export class Delivery extends Component {
                       if (addr && pin) {
                         let addressText =
                           addr + " ," + pin + (landm ? " ," + landm : "");
-                        store.dispatch(setAddress(addressText));
-                        store.dispatch(setAddressModal(false));
+                        setAddress(addressText);
+                        setAddressModal(false);
                       }
                     }}
                   >

@@ -1,20 +1,18 @@
 import React from "react";
 import "./login.css";
-import spider from "../utils/API";
+import spider from "../../utils/API";
 import { useHistory } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import jwtHandler from "../utils/parsejwt";
+import jwtHandler from "../../utils/parsejwt";
 import Loader from "react-loader-spinner";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
-import store from "../store";
-import { setLoading } from "../actions";
+import { setLoading, isLoading } from "../../actions/utils";
 function Login(props) {
   const history = useHistory();
   const loginHandler = (e) => {
     e.preventDefault();
-    // document.getElementById("main-content").classList.add("blur");
-    store.dispatch(setLoading(true));
+    setLoading(true);
     let username = document.getElementById("rno").value;
     let password = document.getElementById("pass").value;
     const re = /\S+@nitt\.edu/;
@@ -31,7 +29,7 @@ function Login(props) {
             let user = jwtHandler(res.data.token);
             token.user = user.data.username;
             // document.getElementById("main-content").classList.remove("blur");
-            store.dispatch(setLoading(false));
+            setLoading(false);
             localStorage.setItem("bonafideNITT2020user", JSON.stringify(token));
             if (isNaN(username)) history.push("/admin");
             else history.push("/student");
@@ -39,7 +37,7 @@ function Login(props) {
           .catch((err) => {
             // document.getElementById("loginForm").reset();
             // document.getElementById("main-content").classList.remove("blur");
-            store.dispatch(setLoading(false));
+            setLoading(false);
             // if (err.status === 401) {
             //   document.getElementById("login-error-message").innerHTML =
             //     "Invalid Username or Password";
@@ -56,18 +54,14 @@ function Login(props) {
               document.getElementById("login-error-message").innerHTML =
                 "Service currently unavailable. Please try again later.";
             }
-            // if (err.status) setLoading(false);
           });
       } else {
-        // alert("Not @nitt");
-        // document.getElementById("main-content").classList.remove("blur");
-        store.dispatch(setLoading(false));
+        setLoading(false);
         document.getElementById("username-error-message").innerHTML =
           "Enter username without @nitt suffix";
       }
     } else {
-      // document.getElementById("main-content").classList.remove("blur");
-      store.dispatch(setLoading(false));
+      setLoading(false);
       document.getElementById("login-error-message").innerHTML =
         "Incomplete Username or Password";
       document.getElementById("loginForm").reset();
@@ -76,9 +70,6 @@ function Login(props) {
 
   return (
     <div className="container-fluid lmain" id="login-content">
-      {/* <div id="loader"> */}
-
-      {/* </div> */}
       <div id="main-content">
         <div className="row lmain-logo justify-content-center ">
           <img src="nitt-lr.png" alt="logo" />
@@ -88,7 +79,7 @@ function Login(props) {
           <h1>Document Requisition Portal</h1>
         </div>
         <br />
-        {store.getState().isLoading ? (
+        {isLoading() ? (
           <Loader
             className="text-center"
             type="Audio"

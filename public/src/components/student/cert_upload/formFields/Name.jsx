@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
-import store from "../../../store";
-import { setName } from '../../../actions'
+import { setName } from '../../../../actions/cert_upload'
 
 export class Name extends Component {
     render() {
@@ -17,7 +16,7 @@ export class Name extends Component {
                     placeholder="Name"
                     required
                     onChange={(e) => {
-                    store.dispatch(setName(e.target.value));
+                    setName(e.target.value);
                     }}
                 />
                 <small id="name-error-message" className="error"></small>

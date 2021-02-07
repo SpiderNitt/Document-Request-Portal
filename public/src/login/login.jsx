@@ -60,7 +60,6 @@ function Login(props) {
                   "Service currently unavailable. Please try again later.";
                 setLoading(false);
                 break;
-    
             }
           });
       } else {

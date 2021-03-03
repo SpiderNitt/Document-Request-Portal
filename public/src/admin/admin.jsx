@@ -49,25 +49,27 @@ function Admin() {
           window.location = "/";
         }
         let temp = [];
-        res.data.forEach((cc) => {
-          temp = Object.assign([], res.data);
-        });
+        temp = Object.assign([], res.data);
+        // res.data.forEach((val, index) => {
+        //     temp = Object.assign([], res.data);
+        // });
         for (let i = 0; i < temp.length; i++) {
-          let approval_list = [];
-          temp[i].approved = [];
-          let comment_list = [];
-          let res = await spider.get("/api/student/certificate_history", {
-            params: { id: temp[i].certificate_id },
-          });
-          res.data.forEach((t) => {
-            if (t.status === "APPROVED") {
-              comment_list.push(t.path_email + " - " + t.comments + "\n");
-              approval_list.push(t.path_email);
-              // comment_list.push(t.comments);
-            }
-          });
-          temp[i].approved = approval_list;
-          temp[i].comments = comment_list;
+          // let approval_list = [];
+          // temp[i].approved = [];
+          // let comment_list = [];
+          // let res;
+          // res = await spider.get("/api/student/certificate_history", {
+          //   params: { id: temp[i].certificate_id },
+          // });
+          // res.data.forEach((t) => {
+          //   if (t.status === "APPROVED") {
+          //     comment_list.push(t.path_email + " - " + t.comments + "\n");
+          //     approval_list.push(t.path_email);
+          //     // comment_list.push(t.comments);
+          //   }
+          // });
+          // temp[i].approved = approval_list;
+          // temp[i].comments = comment_list;
           temp[i].id = i + 1;
         }
         let merged = [];

@@ -141,7 +141,6 @@ function Login(props) {
             </div>
             <small id="login-error-message" className="error"></small>
             <br />
-            <br />
             <div className="row lmain-btn justify-content-center">
               <div className="col-md-12">
                 <button

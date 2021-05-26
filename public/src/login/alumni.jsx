@@ -1,20 +1,24 @@
 import React, { useState } from "react";
 import "./login.css";
 import spider from "../utils/API";
-import { useHistory, Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import jwtHandler from "../utils/parsejwt";
 import Loader from "react-loader-spinner";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 
-function Login(props) {
+function AlumniLogin(props) {
   const history = useHistory();
   const [isLoading, setLoading] = useState(false);
   const loginHandler = (e) => {
     e.preventDefault();
     // document.getElementById("main-content").classList.add("blur");
     setLoading(true);
+    let name = document.getElementById("name").value;
+    let roll = document.getElementById("roll").value;
+    let dept = document.getElementById("dept").value;
+    let email = document.getElementById("email").value;
     let username = document.getElementById("rno").value;
     let password = document.getElementById("pass").value;
     const re = /\S+@nitt\.edu/;
@@ -92,7 +96,7 @@ function Login(props) {
           <h1>Document Requisition Portal</h1>
         </div>
         <div className="row lmain-head justify-content-center">
-          <h4>(Student Login)</h4>
+          <h4>(Alumni Login)</h4>
         </div>
         <br />
         {isLoading ? (
@@ -107,15 +111,63 @@ function Login(props) {
           <form id="loginForm">
             <div className="row lmain-rno justify-content-center">
               <div className="col-12">
-                <label htmlFor="rno">
-                  <b>Roll Number / Username</b>
+                <label htmlFor="name">
+                  <b>Name</b>
                 </label>
               </div>
               <div className="col-12">
                 <input
                   type="text"
-                  name="rno"
-                  id="rno"
+                  name="name"
+                  id="name"
+                  required
+                  onChange={() => {
+                    document.getElementById("login-error-message").innerHTML =
+                      "";
+                    document.getElementById(
+                      "username-error-message"
+                    ).innerHTML = "";
+                  }}
+                />
+              </div>
+              <small id="username-error-message" className="error"></small>
+            </div>
+            <br />
+            <div className="row lmain-rno justify-content-center">
+              <div className="col-12">
+                <label htmlFor="roll">
+                  <b>Roll Number</b>
+                </label>
+              </div>
+              <div className="col-12">
+                <input
+                  type="number"
+                  name="roll"
+                  id="roll"
+                  required
+                  onChange={() => {
+                    document.getElementById("login-error-message").innerHTML =
+                      "";
+                    document.getElementById(
+                      "username-error-message"
+                    ).innerHTML = "";
+                  }}
+                />
+              </div>
+              <small id="username-error-message" className="error"></small>
+            </div>
+            <br />
+            <div className="row lmain-rno justify-content-center">
+              <div className="col-12">
+                <label htmlFor="dept">
+                  <b>Department</b>
+                </label>
+              </div>
+              <div className="col-12">
+                <input
+                  type="text"
+                  name="dept"
+                  id="dept"
                   required
                   onChange={() => {
                     document.getElementById("login-error-message").innerHTML =
@@ -131,12 +183,12 @@ function Login(props) {
             <br />
             <div className="row lmain-pass justify-content-center">
               <div className="col-12">
-                <label htmlFor="pass">
-                  <b>Password</b>
+                <label htmlFor="email">
+                  <b>Email</b>
                 </label>
               </div>
               <div className="col-12">
-                <input type="password" name="pass" id="pass" required />
+                <input type="email" name="email" id="email" required />
               </div>
             </div>
             <small id="login-error-message" className="error"></small>
@@ -152,10 +204,6 @@ function Login(props) {
                   Login
                 </button>
               </div>
-            </div>
-            <br />
-            <div className="row lmain-btn justify-content-center">
-              <b> Passed out? </b> <Link to="/alumni"> <b> &nbsp;Login </b> </Link>
             </div>
           </form>
         )}
@@ -175,4 +223,4 @@ function Login(props) {
   );
 }
 
-export default Login;
+export default AlumniLogin;

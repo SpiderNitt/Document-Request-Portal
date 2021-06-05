@@ -49,25 +49,8 @@ function Admin() {
           window.location = "/";
         }
         let temp = [];
-        res.data.forEach((cc) => {
-          temp = Object.assign([], res.data);
-        });
+        temp = Object.assign([], res.data);
         for (let i = 0; i < temp.length; i++) {
-          let approval_list = [];
-          temp[i].approved = [];
-          let comment_list = [];
-          let res = await spider.get("/api/student/certificate_history", {
-            params: { id: temp[i].certificate_id },
-          });
-          res.data.forEach((t) => {
-            if (t.status === "APPROVED") {
-              comment_list.push(t.path_email + " - " + t.comments + "\n");
-              approval_list.push(t.path_email);
-              // comment_list.push(t.comments);
-            }
-          });
-          temp[i].approved = approval_list;
-          temp[i].comments = comment_list;
           temp[i].id = i + 1;
         }
         let merged = [];
@@ -132,9 +115,8 @@ function Admin() {
     if (certreq.certificate_type === "Bonafide") {
       certreq.certificates.map((cert) => {
         let temp = {};
-        index = index + 1;
-        if (document.getElementById(cert.id).checked === true) {
-          temp["S.No"] = index;
+        if (document.getElementById("export" + cert.id) && document.getElementById(cert.id).checked === true) {
+          temp["S.No"] = ++index;
           temp["Document Type"] = certreq.certificate_type;
           temp["Roll number"] = cert["applier_roll"];
           temp["Purpose"] = cert["purpose"];
@@ -151,9 +133,8 @@ function Admin() {
     ) {
       certreq.certificates.map((cert) => {
         let temp = {};
-        index = index + 1;
-        if (document.getElementById(cert.id).checked === true) {
-          temp["S.No"] = index;
+        if (document.getElementById("export" + cert.id) && document.getElementById(cert.id).checked === true) {
+          temp["S.No"] = ++index;
           temp["Document Type"] = certreq.certificate_type;
           temp["Roll number"] = cert["applier_roll"];
           temp["Purpose"] = cert["purpose"];
@@ -169,9 +150,8 @@ function Admin() {
     } else {
       certreq.certificates.map((cert) => {
         let temp = {};
-        index = index + 1;
-        if (document.getElementById(cert.id).checked === true) {
-          temp["S.No"] = index;
+        if (document.getElementById("export" + cert.id) && document.getElementById("export" + cert.id).checked === true) {
+          temp["S.No"] = ++index;
           temp["Document Type"] = certreq.certificate_type;
           temp["Roll number"] = cert["applier_roll"];
           temp["Address"] = cert["address"];
@@ -229,8 +209,7 @@ function Admin() {
         ) : length ? (
           <div>
             {certReq.map((cert, index) => {
-              let pending = 0,
-                approved = 0;
+              let pending = 0, approved = 0, pending_index = 0, approved_index = 0;
               cert.certificates.forEach((certificate) => {
                 if (certificate.status.includes("APPROVED")) {
                   approved = approved + 1;
@@ -403,7 +382,7 @@ function Admin() {
                                               }
                                               return (
                                                 <tr key={index + 1}>
-                                                  <th>{index + 1}</th>
+                                                  <th>{++pending_index}</th>
                                                   <td>
                                                     {data.name} (
                                                     {data.applier_roll})
@@ -549,7 +528,7 @@ function Admin() {
 
                                                   <td>
                                                     <input
-                                                      id={data.id}
+                                                      id={"export" + data.id}
                                                       type="checkbox"
                                                       defaultChecked="true"
                                                     />
@@ -686,7 +665,7 @@ function Admin() {
                                               }
                                               return (
                                                 <tr key={index + 1}>
-                                                  <th>{index + 1}</th>
+                                                  <th>{++approved_index}</th>
                                                   <td>
                                                     {data.name} (
                                                     {data.applier_roll})
@@ -856,7 +835,7 @@ function Admin() {
                                                   )}
                                                   <td>
                                                     <input
-                                                      id={data.id}
+                                                      id={"export" + data.id}
                                                       type="checkbox"
                                                       defaultChecked="true"
                                                     />

@@ -338,6 +338,21 @@ admin.get("/", async function (req, res) {
           }
         }
 
+        approval_list = []
+        comment_list = []
+        let rows = await database.CertificatePaths.findAll({
+          attributes: ["path_email", "comments"],
+          where: {
+            certificate_id: certificate_id,
+            status: "APPROVED"
+          },
+        });
+        rows.forEach(function (ele) {
+          const {path_email, comments} = helper.wrapper(ele);
+          approval_list.push(path_email);
+          comment_list.push(path_email + " - " + comments + "\n");
+        });
+
         response_json.push({
           id_extension: id_file.split(".").splice(-1)[0],
           certificate_extension: file.split(".").splice(-1)[0],
@@ -357,6 +372,8 @@ admin.get("/", async function (req, res) {
           no_copies,
           response_rank_grade_rows,
           name,
+          approved: approval_list,
+          comments: comment_list
         });
       }
     }

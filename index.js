@@ -19,6 +19,9 @@ const fs = require("fs");
 
 const apiRouter = require("./routers/api");
 const loginRouter = require("./routers/login");
+const alumniRouter = require("./routers/alumni");
+
+
 const { exit } = require("process");
 
 app.use(cors());
@@ -28,6 +31,8 @@ app.use(express.static("public/build"));
 
 app.use("/api", apiRouter);
 app.use("/login", loginRouter);
+app.use("/alumni", alumniRouter);
+
 
 app.use(function (req, res) {
   res.sendFile("public/build/index.html", { root: __dirname });

@@ -20,9 +20,18 @@ const mailTransporter = nodemailer.createTransport({
   },
 });
 
-const responseHandle = (status_code, message, res) => {
+const otpTransporter = nodemailer.createTransport({
+  host: "webmail.nitt.edu",
+  port: 465,
+  secure: true,
+  auth: {
+    user: process.env.EMAIL,
+    pass: process.env.EMAIL_PASS,
+  },
+});
+const responseHandle = (status_code, message, res, errors = {}) => {
   let success = status_code == 200 ? true : false;
-  return res.status(status_code).json({ success, message });
+  return res.status(status_code).json({ success, message, errors });
 };
 
 function renameFile(oldPath, newPath) {
@@ -45,6 +54,17 @@ function validate_mail(path) {
     if (words[words.length - 1] != "nitt.edu") return false;
   }
   return true;
+}
+
+function validateOrdinaryMail(email) {
+  const re = /\S+@\S+\.\S+/;
+  return re.test(String(email).toLowerCase());
+}
+
+function validateRoll(roll){
+  const re = /^\d+$/;
+  return re.test(String(roll).toLowerCase());
+
 }
 
 // Determines whether admin can actually approve/decline
@@ -117,6 +137,14 @@ const storage = multer.diskStorage({
   },
 });
 
+function generateOTP(digits = 6) {
+  const allDigits = "0123456789";
+  let otp = "";
+  for (let i = 0; i < digits; i++) {
+    otp += allDigits[Math.floor(Math.random() * 10)];
+  }
+  return otp;
+}
 //wrapper using row.getDataValue(attribute)
 function wrapper(row) {
   let attributes = Object.keys(row.dataValues);
@@ -169,8 +197,12 @@ module.exports = {
   renameFile,
   mailTransporter,
   check_compulsory,
+  generateOTP,
+  validateOrdinaryMail,
+  otpTransporter,
   wrapper,
   determine_pending,
   responseHandle,
   handle_defaults,
+  validateRoll
 };

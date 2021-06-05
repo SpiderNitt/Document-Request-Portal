@@ -34,6 +34,14 @@ const response_messages = {
   CERTIFICATE_DECLINE: "Document declined successfully",
   POSTAL_STATUS_UPDATE: "Postal status updated successfully",
   MAIL_SENT: "Mail sent successfully",
+
+  EMAIL_ALREADY_REGISTERED: "Email already registered. Try logging in.",
+  ALUMNI_REGISTERED: "Registered successfully, OTP sent to registered mail.",
+  ALUMNI_EMAIL_NOT_EXIST: "Email does not exist. Register first.",
+  OTP_SENT: "OTP sent to registered mail.",
+  INVALID_OTP: "Invalid OTP",
+  OTP_RETRY_1: "OTP can be resent only after ",
+  OTP_RETRY_2: " seconds",
 };
 
 module.exports = response_messages;

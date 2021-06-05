@@ -245,8 +245,57 @@ const CertificatePaths = sequelize.define(
   }
 );
 
+const Alumni = sequelize.define(
+  "alumni",
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      allowNull: false,
+      autoIncrement: true,
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    roll_no: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    department: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      primaryKey: true,
+
+    },
+    mobile: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    otp: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    last_otp_sent: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    last_login: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+  },
+  {
+    freezeTableName: true,
+  }
+);
+
 async function test_conn() {
-  await sequelize.sync({ alter: true });
+  await sequelize.sync({ force: true });
   console.log("All models were synchronized successfully.");
 }
 
@@ -260,6 +309,7 @@ module.exports = {
   History,
   CertificatePaths,
   CertificateType,
+  Alumni,
   RankGradeCard,
   test_conn,
 };

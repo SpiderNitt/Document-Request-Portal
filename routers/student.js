@@ -135,7 +135,7 @@ student.post("/certificate_request", async function (req, res) {
           fs.unlinkSync(id_final_dest);
           return;
         }
-        console.log(type, all_certs[type]);
+        // console.log(type, all_certs[type]);
         path = helper.handle_defaults(path, all_certs[type]);
         logger.info(path);
 

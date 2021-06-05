@@ -167,7 +167,7 @@ alumni.post("/verify_otp", async function (req, res) {
       const token = jwt.sign(
         {
           exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30, // 1 month
-          data: { email },
+          data: { username: email },
         },
         process.env.JWT_SECRET
       );

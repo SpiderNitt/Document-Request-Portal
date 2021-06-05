@@ -6,6 +6,11 @@ const database = require("../database/database");
 const fs = require("fs");
 const nodemailer = require("nodemailer");
 const MulterError = multer.MulterError;
+const pino = require("pino");
+const logger = pino({
+  level: process.env.LOG_LEVEL || "info",
+  prettyPrint: process.env.ENV === "DEV",
+});
 
 const mailTransporter = nodemailer.createTransport({
   service: "gmail",
@@ -46,13 +51,22 @@ function validate_mail(path) {
   }
   return true;
 }
-
 function validateOrdinaryMail(email) {
     const re = /\S+@\S+\.\S+/;
     return re.test(String(email).toLowerCase());
 }
 
-async function approve_decline_rights(req, res, certificate_id) {
+// Determines whether admin can actually approve/decline
+// If admin before current admin has declined (or)
+// if admin after current admin has approved
+// THen the current status of admin for a certificate
+// should not be changed, as it might introduce inconsistency.
+
+// AN admin can approve or decline a ceritificate if:
+// Any admin before current admin SHOULD NOT HAVE PENDING
+// All admin after current admin SHOULD HAVE PENDING
+
+async function approve_decline_rights(req, certificate_id) {
   let rollno = req.jwt_payload.username;
   let path_ids = await database.CertificatePaths.findAll({
     attributes: ["path_email", "path_no", "status"],
@@ -73,27 +87,19 @@ async function approve_decline_rights(req, res, certificate_id) {
   let current_verified = -1;
   path_array.forEach(function (ele) {
     if (ele.email == rollno + "@nitt.edu") {
-      flag = true;
       current_verified = ele.no;
     }
   });
 
-  if (!flag) {
-    res.status(401).json({ message: "You do not have appropriate permissions to approve or reject this certificate" });
-    return false;
-  }
-
   path_array.forEach(function (ele) {
-    if (ele.no < current_verified && ele.status.includes("PENDING")) flag = false;
+    // for path_no less than current, if the status is PENDING, then current admin cant approve
+    if (ele.no < current_verified && ele.status.includes("PENDING"))
+      return false;
   });
 
-  if (!flag) {
-    res.status(400).json({ message: "Faculty before you has not approved/rejected." });
-    return false;
-  }
   path_array.forEach(function (ele) {
+    // for path_no > current, if the status iS NOT PENDING, then current admin cannot approve
     if (ele.no > current_verified && !ele.status.includes("PENDING")) {
-      res.status(400).json({ message: "Faculty after you have already approved/declined." });
       return false;
     }
   });
@@ -107,7 +113,6 @@ function get_extension(file) {
 
 function check_compulsory(dict, keys) {
   for (const key of keys) {
-    console.log(key);
     if (!dict[key]) return false;
   }
   return true;
@@ -130,6 +135,49 @@ function generateOTP( digits = 6) {
     }
     return otp;
 }
+//wrapper using row.getDataValue(attribute)
+function wrapper(row) {
+  let attributes = Object.keys(row.dataValues);
+  const object = {};
+  attributes.forEach((attribute) => {
+    if (row.getDataValue(attribute)) {
+      object[attribute] = row.getDataValue(attribute);
+    } else {
+      object[attribute] = null;
+    }
+  });
+  return object;
+}
+
+async function determine_pending({ path_no, certificate_id, status }) {
+  if (status !== "PENDING") return false;
+  if (path_no === 1) return true;
+  const row = await database.CertificatePaths.findOne({
+    where: {
+      path_no: path_no - 1,
+      status: "APPROVED",
+      certificate_id,
+    },
+  });
+  if (row) return true;
+  return false;
+}
+
+function handle_defaults(path, name) {
+  path = path.map((ele) => ele.trim());
+  if (name.toLowerCase().includes("bonafide")) {
+    if (!path.includes("adsw@nitt.edu")) path.push("adsw@nitt.edu");
+    if (!path.includes("swoffice@nitt.edu")) path.push("swoffice@nitt.edu");
+  } else if (name.toLowerCase().includes("registration")) {
+    if (!path.includes("ugacad@nitt.edu")) path.push("ugacad@nitt.edu");
+    if (!path.includes("ugsection@nitt.edu")) path.push("ugsection@nitt.edu");
+  } else if (
+    name.toLowerCase().includes("transcript") ||
+    name.toLowerCase().includes("card")
+  )
+    path = ["transcript@nitt.edu"];
+  return path;
+}
 
 module.exports = {
   docFilter,
@@ -142,4 +190,8 @@ module.exports = {
   generateOTP,
   validateOrdinaryMail,
   otpTransporter
+  wrapper,
+  determine_pending,
+  responseHandle,
+  handle_defaults,
 };

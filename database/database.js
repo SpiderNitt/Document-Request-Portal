@@ -2,14 +2,19 @@ require("dotenv").config({ path: "../env/.env" });
 
 const { Sequelize, DataTypes } = require("sequelize");
 
-const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, {
-  define: {
-    freezeTableName: true,
-  },
-  host: process.env.DB_HOST,
-  dialect: "mysql" /* one of 'mysql' | 'mariadb' | 'postgres' | 'mssql' */,
-  logging: process.env.ENV === "DEV" ? console.log : false,
-});
+const sequelize = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASS,
+  {
+    define: {
+      freezeTableName: true,
+    },
+    host: process.env.DB_HOST,
+    dialect: "mysql" /* one of 'mysql' | 'mariadb' | 'postgres' | 'mssql' */,
+    logging: process.env.ENV === "DEV" ? console.log : false,
+  }
+);
 
 const CertificateType = sequelize.define(
   "certificate_types",
@@ -27,6 +32,11 @@ const CertificateType = sequelize.define(
     created_by: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    semwise_mapping: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: 0,
     },
   },
   {
@@ -106,6 +116,14 @@ const Certificate = sequelize.define(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    no_copies: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   {
     freezeTableName: true,
@@ -134,6 +152,49 @@ const History = sequelize.define(
     },
     time: {
       type: DataTypes.DATE,
+      allowNull: false,
+    },
+  },
+  {
+    freezeTableName: true,
+  }
+);
+
+const RankGradeCard = sequelize.define(
+  "rank_grade_card",
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      allowNull: false,
+      autoIncrement: true,
+    },
+    certificate_id: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: "certificates",
+        key: "id",
+      },
+      allowNull: false,
+    },
+    applier_roll: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    certificate_type: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: "certificate_types",
+        key: "id",
+      },
+      allowNull: false,
+    },
+    semester_no: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    no_copies: {
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
   },
@@ -249,5 +310,6 @@ module.exports = {
   CertificatePaths,
   CertificateType,
   Alumni,
+  RankGradeCard,
   test_conn,
 };

@@ -70,9 +70,8 @@ alumni.post("/register", async function (req, res) {
       html: "The OTP for login is: <b>" + otp + "</b>",
     };
 
-    // TODO: SEND MAIL
-    // let info = await otpTransporter.sendMail(mailOptions);
-    // logger.info("Message ID: " + info.messageId)
+    let info = await otpTransporter.sendMail(mailOptions);
+    logger.info("Mail sent to " + email + ". Message ID: " + info.messageId);
 
     // PUT IN DATABASE
     await database.Alumni.create({
@@ -117,9 +116,8 @@ alumni.post("/login", async function (req, res) {
       html: "The OTP for login is: <b>" + otp + "</b>",
     };
 
-    // TODO: SEND MAIL
-    // let info = await otpTransporter.sendMail(mailOptions);
-    // logger.info("Message ID: " + info.messageId)
+    let info = await otpTransporter.sendMail(mailOptions);
+    logger.info("Mail sent to " + email + ". Message ID: " + info.messageId);
 
     // UPDATE IN DATABASE
     await database.Alumni.update(
@@ -232,9 +230,9 @@ alumni.post("/resend_otp", async function (req, res) {
         subject: "Document Requisition OTP",
         html: "The OTP for login is: <b>" + otp + "</b>",
       };
-      // TODO: Send mail
-      // let info = await otpTransporter.sendMail(mailOptions);
-      // logger.info("Message ID: " + info.messageId)
+
+      let info = await otpTransporter.sendMail(mailOptions);
+      logger.info("Mail sent to " + email + ". Message ID: " + info.messageId);
 
       await database.Alumni.update(
         { otp, last_otp_sent },

@@ -1,7 +1,8 @@
 import React from "react";
 import "./App.css";
 import Login from "./login/login";
-import AlumniLogin from "./login/alumni";
+import AlumniRegister from "./login/alumni";
+import AlumniLogin from "./login/alumni-login";
 import Footer from "./footer/footer";
 import Student from "./student/student";
 import Admin from "./admin/admin.jsx";
@@ -43,9 +44,14 @@ function App() {
                 <Login />
               </div>
             </Route>
-            <Route path="/alumni">
+            <Route exact path="/alumni/login">
               <div className="row justify-content-center">
                 <AlumniLogin />
+              </div>
+            </Route>
+            <Route exact path="/alumni/register">
+              <div className="row justify-content-center">
+                <AlumniRegister />
               </div>
             </Route>
             <MainRoutes />

@@ -21,9 +21,10 @@ const mailTransporter = nodemailer.createTransport({
 });
 
 const otpTransporter = nodemailer.createTransport({
-  host: "webmail.nitt.edu",
-  port: 465,
-  secure: true,
+  service: "gmail",
+  // host: "webmail.nitt.edu",
+  // port: 465,
+  // secure: true,
   auth: {
     user: process.env.EMAIL,
     pass: process.env.EMAIL_PASS,

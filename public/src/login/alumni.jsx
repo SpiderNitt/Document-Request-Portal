@@ -1,56 +1,49 @@
 import React, { useState } from "react";
 import "./login.css";
 import spider from "../utils/API";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import jwtHandler from "../utils/parsejwt";
 import Loader from "react-loader-spinner";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 
-function AlumniLogin(props) {
+function AlumniRegister(props) {
   const history = useHistory();
   const [isLoading, setLoading] = useState(false);
-  const loginHandler = (e) => {
+  const regHandler = (e) => {
     e.preventDefault();
-    // document.getElementById("main-content").classList.add("blur");
     setLoading(true);
     let name = document.getElementById("name").value;
-    let roll = document.getElementById("roll").value;
-    let dept = document.getElementById("dept").value;
+    let roll_no = document.getElementById("roll").value;
+    let department = document.getElementById("dept").value;
     let email = document.getElementById("email").value;
-    let username = document.getElementById("rno").value;
-    let password = document.getElementById("pass").value;
-    const re = /\S+@nitt\.edu/;
-    if (username.length && password.length) {
-      if (re.test(username) === false) {
+    let mobile = document.getElementById("mobile").value;
+    if (name.length && roll_no.length && department.length && email.length && mobile.length) {
         spider
-          .post("/login", {
-            username: username.trim(),
-            password: password,
+          .post("/api/alumni/register", {
+            name: name,
+            roll_no: roll_no,
+            department: department,
+            email: email,
+            mobile: mobile
           })
           .then((res, err) => {
-            const token = {};
-            token.jwt = res.data.token;
-            let user = jwtHandler(res.data.token);
-            token.user = user.data.username;
-            // document.getElementById("main-content").classList.remove("blur");
-            setLoading(false);
-            localStorage.setItem("bonafideNITT2020user", JSON.stringify(token));
-            if (isNaN(username)) history.push("/admin");
-            else history.push("/student");
+            // const token = {};
+            // token.jwt = res.data.token;
+            // let user = jwtHandler(res.data.token);
+            // token.user = user.data.username;
+            // setLoading(false);
+            // localStorage.setItem("bonafideNITT2020user", JSON.stringify(token));
+            // if (isNaN(username)) history.push("/admin");
+            // else history.push("/student");
+
+            //TODO: IF SUCCESS
+            //history.push("/alumni/login");
+            //ELSE SEND RESPONSE ERROR FROM BACKEND
           })
           .catch((err) => {
-            // document.getElementById("loginForm").reset();
-            // document.getElementById("main-content").classList.remove("blur");
             setLoading(false);
-            // if (err.status === 401) {
-            //   document.getElementById("login-error-message").innerHTML =
-            //     "Invalid Username or Password";
-            // if (err.status === 500) {
-            //   document.getElementById("login-error-message").innerHTML =
-            //     "Internal Server Error. Please try again later.";
-
             switch (err.response.status) {
               case 400:
               case 401:
@@ -66,37 +59,26 @@ function AlumniLogin(props) {
                 break;
             }
           });
-      } else {
-        // alert("Not @nitt");
-        // document.getElementById("main-content").classList.remove("blur");
-        setLoading(false);
-        document.getElementById("username-error-message").innerHTML =
-          "Enter username without @nitt suffix";
-      }
     } else {
-      // document.getElementById("main-content").classList.remove("blur");
       setLoading(false);
       document.getElementById("login-error-message").innerHTML =
-        "Incomplete Username or Password";
+        "Fill all the fields!";
       document.getElementById("loginForm").reset();
     }
   };
 
   return (
     <div className="container-fluid lmain" id="login-content">
-      {/* <div id="loader"> */}
-
-      {/* </div> */}
       <div id="main-content">
         <div className="row lmain-logo justify-content-center ">
-          <img src="nitt-lr.png" alt="logo" />
+          <img src="../nitt-lr.png" alt="logo" />
         </div>
         <br />
         <div className="row lmain-head justify-content-center">
           <h1>Document Requisition Portal</h1>
         </div>
         <div className="row lmain-head justify-content-center">
-          <h4>(Alumni Login)</h4>
+          <h4>(Alumni Registration)</h4>
         </div>
         <br />
         {isLoading ? (
@@ -191,19 +173,45 @@ function AlumniLogin(props) {
                 <input type="email" name="email" id="email" required />
               </div>
             </div>
-            <small id="login-error-message" className="error"></small>
             <br />
+            <div className="row lmain-rno justify-content-center">
+              <div className="col-12">
+                <label htmlFor="mobile">
+                  <b>Mobile Number</b>
+                </label>
+              </div>
+              <div className="col-12">
+                <input
+                  type="number"
+                  name="mobile"
+                  id="mobile"
+                  required
+                  onChange={() => {
+                    document.getElementById("login-error-message").innerHTML =
+                      "";
+                    document.getElementById(
+                      "username-error-message"
+                    ).innerHTML = "";
+                  }}
+                />
+              </div>
+              <small id="login-error-message" className="error"></small>
+            </div>
             <br />
             <div className="row lmain-btn justify-content-center">
               <div className="col-md-12">
                 <button
                   type="submit"
-                  onClick={loginHandler}
+                  onClick={regHandler}
                   className="btn btn-primary"
                 >
-                  Login
+                  Register
                 </button>
               </div>
+            </div>
+            <br />
+            <div className="row lmain-btn justify-content-center">
+              <b> Already registered? </b> <Link to="/alumni/login"> <b> &nbsp;Login </b>  </Link> <b> &nbsp;here. </b>
             </div>
           </form>
         )}
@@ -223,4 +231,4 @@ function AlumniLogin(props) {
   );
 }
 
-export default AlumniLogin;
+export default AlumniRegister;

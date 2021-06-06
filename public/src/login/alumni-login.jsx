@@ -8,31 +8,30 @@ import jwtHandler from "../utils/parsejwt";
 import Loader from "react-loader-spinner";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 
-function Login(props) {
+function AlumniLogin(props) {
   const history = useHistory();
   const [isLoading, setLoading] = useState(false);
   const loginHandler = (e) => {
     e.preventDefault();
     setLoading(true);
-    let username = document.getElementById("rno").value;
-    let password = document.getElementById("pass").value;
-    const re = /\S+@nitt\.edu/;
-    if (username.length && password.length) {
-      if (re.test(username) === false) {
+    let email = document.getElementById("email").value;
+    if (email.length) {
         spider
           .post("/login", {
-            username: username.trim(),
-            password: password,
+            email: email
           })
           .then((res, err) => {
-            const token = {};
-            token.jwt = res.data.token;
-            let user = jwtHandler(res.data.token);
-            token.user = user.data.username;
-            setLoading(false);
-            localStorage.setItem("bonafideNITT2020user", JSON.stringify(token));
-            if (isNaN(username)) history.push("/admin");
-            else history.push("/student");
+            // const token = {};
+            // token.jwt = res.data.token;
+            // let user = jwtHandler(res.data.token);
+            // token.user = user.data.username;
+            // setLoading(false);
+            // localStorage.setItem("bonafideNITT2020user", JSON.stringify(token));
+            // if (isNaN(username)) history.push("/admin");
+            // else history.push("/student");
+
+            //TODO: IF THE EMAIL ID IS REGISTERED, NEED TO SHOW THE SCREEN TO INPUT OTP
+            //ELSE RESPONSE ERROR FROM BACKEND
           })
           .catch((err) => {
             setLoading(false);
@@ -51,15 +50,10 @@ function Login(props) {
                 break;
             }
           });
-      } else {
-        setLoading(false);
-        document.getElementById("username-error-message").innerHTML =
-          "Enter username without @nitt suffix";
-      }
     } else {
       setLoading(false);
       document.getElementById("login-error-message").innerHTML =
-        "Incomplete Username or Password";
+        "Fill all the fields!";
       document.getElementById("loginForm").reset();
     }
   };
@@ -68,14 +62,14 @@ function Login(props) {
     <div className="container-fluid lmain" id="login-content">
       <div id="main-content">
         <div className="row lmain-logo justify-content-center ">
-          <img src="nitt-lr.png" alt="logo" />
+          <img src="../nitt-lr.png" alt="logo" />
         </div>
         <br />
         <div className="row lmain-head justify-content-center">
           <h1>Document Requisition Portal</h1>
         </div>
         <div className="row lmain-head justify-content-center">
-          <h4>(Student Login)</h4>
+          <h4>(Alumni Login)</h4>
         </div>
         <br />
         {isLoading ? (
@@ -88,41 +82,18 @@ function Login(props) {
           />
         ) : (
           <form id="loginForm">
-            <div className="row lmain-rno justify-content-center">
-              <div className="col-12">
-                <label htmlFor="rno">
-                  <b>Roll Number / Username</b>
-                </label>
-              </div>
-              <div className="col-12">
-                <input
-                  type="text"
-                  name="rno"
-                  id="rno"
-                  required
-                  onChange={() => {
-                    document.getElementById("login-error-message").innerHTML =
-                      "";
-                    document.getElementById(
-                      "username-error-message"
-                    ).innerHTML = "";
-                  }}
-                />
-              </div>
-              <small id="username-error-message" className="error"></small>
-            </div>
-            <br />
             <div className="row lmain-pass justify-content-center">
               <div className="col-12">
-                <label htmlFor="pass">
-                  <b>Password</b>
+                <label htmlFor="email">
+                  <b>Email</b>
                 </label>
               </div>
               <div className="col-12">
-                <input type="password" name="pass" id="pass" required />
+                <input type="email" name="email" id="email" required />
               </div>
             </div>
             <small id="login-error-message" className="error"></small>
+            <br />
             <br />
             <div className="row lmain-btn justify-content-center">
               <div className="col-md-12">
@@ -137,7 +108,7 @@ function Login(props) {
             </div>
             <br />
             <div className="row lmain-btn justify-content-center">
-              <b> Passed out? </b> <Link to="/alumni/register"> <b> &nbsp;Register </b> </Link> <b> &nbsp;here. </b>
+              <b> Not registered yet? </b> <Link to="/alumni/register"> <b> &nbsp;Register </b>  </Link> <b> &nbsp;here. </b>
             </div>
           </form>
         )}
@@ -157,4 +128,4 @@ function Login(props) {
   );
 }
 
-export default Login;
+export default AlumniLogin;

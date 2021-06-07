@@ -261,6 +261,7 @@ const Alumni = sequelize.define(
     roll_no: {
       type: DataTypes.STRING,
       allowNull: false,
+      primaryKey: true,
     },
     department: {
       type: DataTypes.STRING,
@@ -270,7 +271,6 @@ const Alumni = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
       primaryKey: true,
-
     },
     mobile: {
       type: DataTypes.STRING,

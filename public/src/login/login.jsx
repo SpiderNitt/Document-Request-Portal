@@ -137,7 +137,7 @@ function Login(props) {
             </div>
             <br />
             <div className="row lmain-btn justify-content-center">
-              <b> Passed out? </b> <Link to="/alumni/register"> <b> &nbsp;Register </b> </Link> <b> &nbsp;here. </b>
+              <b> Are you an alumni? </b> <b>&nbsp;Click </b>  &nbsp;<Link to="/alumni"><b>here. </b></Link>
             </div>
           </form>
         )}

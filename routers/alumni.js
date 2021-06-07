@@ -160,12 +160,17 @@ alumni.post("/verify_otp", async function (req, res) {
       },
     });
     let { otp } = helpers.wrapper(row);
-
+    let rollNo = await database.Alumni.findOne({
+      attributes: ["roll_no", "email"],
+      where: {
+        email,
+      },
+    });
     if (otp === received_otp) {
       const token = jwt.sign(
         {
           exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30, // 1 month
-          data: { username: email },
+          data: { username: rollNo },
         },
         process.env.JWT_SECRET
       );

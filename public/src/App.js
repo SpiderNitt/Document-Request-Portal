@@ -1,8 +1,7 @@
 import React from "react";
 import "./App.css";
 import Login from "./login/login";
-import AlumniRegister from "./login/alumni";
-import AlumniLogin from "./login/alumni-login";
+import Alumni from "./login/alumni";
 import Footer from "./footer/footer";
 import Student from "./student/student";
 import Admin from "./admin/admin.jsx";
@@ -18,7 +17,9 @@ const MainRoutes = () => {
   ) {
     let token = JSON.parse(localStorage.getItem("bonafideNITT2020user"));
     if (token) {
-      if (isNaN(token.user)) {
+      if (token.alumni) {
+        return <Redirect to="/student" />;
+      } else if (isNaN(token.user)) {
         if (window.location.pathname === "/student")
           return <Redirect to="/admin" />;
         return <Route component={Admin} path="/admin" exact />;
@@ -44,14 +45,9 @@ function App() {
                 <Login />
               </div>
             </Route>
-            <Route exact path="/alumni/login">
+            <Route exact path="/alumni">
               <div className="row justify-content-center">
-                <AlumniLogin />
-              </div>
-            </Route>
-            <Route exact path="/alumni/register">
-              <div className="row justify-content-center">
-                <AlumniRegister />
+                <Alumni />
               </div>
             </Route>
             <MainRoutes />

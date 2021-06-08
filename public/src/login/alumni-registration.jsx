@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./login.css";
 import spider from "../utils/API";
 import TextField from "@material-ui/core/TextField";
-import { useHistory, Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import jwtHandler from "../utils/parsejwt";
@@ -83,7 +83,7 @@ function AlumniRegister(props) {
           });
       } else {
         setLoading(false);
-        document.getElementById("username-error-message").innerHTML =
+        document.getElementById("login-error-message").innerHTML =
           "Invalid email id";
       }
     } else {
@@ -120,6 +120,10 @@ function AlumniRegister(props) {
             setLoading(false);
             switch (err.response.status) {
               case 400:
+                console.log(err.response);
+                document.getElementById("email-error-message").innerHTML = err.response.data.errors.email;
+                document.getElementById("roll-no-error-message").innerHTML = err.response.data.errors.roll;
+                document.getElementById("mobile-error-message").innerHTML = err.response.data.errors.mobile;
               case 401:
               case 404:
               case 409:
@@ -181,9 +185,6 @@ function AlumniRegister(props) {
                   onChange={() => {
                     document.getElementById("login-error-message").innerHTML =
                       "";
-                    document.getElementById(
-                      "username-error-message"
-                    ).innerHTML = "";
                   }}
                 />
               </div>
@@ -206,12 +207,12 @@ function AlumniRegister(props) {
                     document.getElementById("login-error-message").innerHTML =
                       "";
                     document.getElementById(
-                      "username-error-message"
+                      "roll-no-error-message"
                     ).innerHTML = "";
                   }}
                 />
               </div>
-              <small id="username-error-message" className="error"></small>
+              <small id="roll-no-error-message" className="error"></small>
             </div>
             <br />
             <div className="row lmain-rno justify-content-center">
@@ -229,9 +230,6 @@ function AlumniRegister(props) {
                   onChange={() => {
                     document.getElementById("login-error-message").innerHTML =
                       "";
-                    document.getElementById(
-                      "username-error-message"
-                    ).innerHTML = "";
                   }}
                 />
               </div>
@@ -245,8 +243,21 @@ function AlumniRegister(props) {
                 </label>
               </div>
               <div className="col-12">
-                <input type="email" name="email" id="email" required />
+                <input 
+                  type="email" 
+                  name="email" 
+                  id="email" 
+                  required
+                  onChange={() => {
+                    document.getElementById("login-error-message").innerHTML =
+                      "";
+                    document.getElementById(
+                      "email-error-message"
+                    ).innerHTML = "";
+                  }}
+                />
               </div>
+              <small id="email-error-message" className="error"></small>
             </div>
             <br />
             <div className="row lmain-rno justify-content-center">
@@ -265,13 +276,14 @@ function AlumniRegister(props) {
                     document.getElementById("login-error-message").innerHTML =
                       "";
                     document.getElementById(
-                      "username-error-message"
+                      "mobile-error-message"
                     ).innerHTML = "";
                   }}
                 />
               </div>
-              <small id="login-error-message" className="error"></small>
+              <small id="mobile-error-message" className="error"></small>
             </div>
+            <small id="login-error-message" className="error"></small>
             <br />
             <div className="row lmain-btn justify-content-center">
               <div className="col-md-12">
@@ -298,11 +310,12 @@ function AlumniRegister(props) {
           pauseOnHover
         />
         <>
-        <Modal show={otpVerify} onHide={handleClose} >
-          <Modal.Header  closeButton>
+        <Modal show={otpVerify} onHide={handleClose} backdrop="static">
+          <Modal.Header>
             <Modal.Title>Verify OTP</Modal.Title>
           </Modal.Header>
           <Modal.Body>
+          <div className="mb-3">The OTP is sent to your email ID.</div>
           <form noValidate autoComplete="off">
                 <TextField
                   id="otp"

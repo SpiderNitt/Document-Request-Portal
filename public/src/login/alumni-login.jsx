@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./login.css";
 import spider from "../utils/API";
-import { useHistory, Link } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import TextField from "@material-ui/core/TextField";
 import "react-toastify/dist/ReactToastify.css";
@@ -90,6 +90,7 @@ function AlumniLogin(props) {
             case 400:
             case 401:
             case 404:
+            case 409:
             case 500:
             case 503:
               document.getElementById("login-error-message").innerHTML = "";
@@ -171,11 +172,12 @@ function AlumniLogin(props) {
           pauseOnHover
         />
         <>
-          <Modal show={otpVerify} onHide={handleClose}>
-            <Modal.Header closeButton>
-              <Modal.Title>OTP Verification</Modal.Title>
+          <Modal show={otpVerify} onHide={handleClose} backdrop="static">
+            <Modal.Header>
+              <Modal.Title>Verify OTP</Modal.Title>
             </Modal.Header>
             <Modal.Body>
+              <div className="mb-3">The OTP is sent to your email ID.</div>
               <form noValidate autoComplete="off">
                 <TextField
                   id="otp"

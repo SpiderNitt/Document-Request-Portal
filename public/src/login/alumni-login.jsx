@@ -3,13 +3,12 @@ import "./login.css";
 import spider from "../utils/API";
 import { useHistory } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import TextField from "@material-ui/core/TextField";
 import "react-toastify/dist/ReactToastify.css";
 import jwtHandler from "../utils/parsejwt";
 import Loader from "react-loader-spinner";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Button, Modal } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 function AlumniLogin(props) {
   const history = useHistory();
   const [isLoading, setLoading] = useState(false);
@@ -65,7 +64,7 @@ function AlumniLogin(props) {
     } else {
       setLoading(false);
       document.getElementById("login-error-message").innerHTML =
-        "Incomplete Username or Password";
+        "Invalid OTP";
       document.getElementById("loginForm").reset();
     }
   }
@@ -124,42 +123,78 @@ function AlumniLogin(props) {
           <h4>(Alumni Login)</h4>
         </div>
         <br />
-        {isLoading ? (
-          <Loader
-            className="text-center"
-            type="Audio"
-            color="rgb(13, 19, 41)"
-            height={100}
-            width={100}
-          />
-        ) : (
-          <form id="loginForm">
-            <div className="row lmain-pass justify-content-center">
-              <div className="col-12">
-                <label htmlFor="email">
-                  <b>Email</b>
-                </label>
-              </div>
-              <div className="col-12">
-                <input type="email" name="email" id="email" required />
-              </div>
+        <form id="loginForm">
+          <div className="row lmain-pass justify-content-center">
+            <div className="col-12">
+              <label htmlFor="email">
+                <b>Email</b>
+              </label>
             </div>
-            <small id="login-error-message" className="error"></small>
-            <br />
-            <br />
+            <div className="col-12">
+              <input 
+                  type="email" 
+                  name="email" 
+                  id="email" 
+                  required
+                  onChange={() => {
+                    document.getElementById("login-error-message").innerHTML =
+                      "";
+                  }} 
+              />
+            </div>
+          </div>
+          <small id="login-error-message" className="error"></small>
+          <br />
+          <br />
+          {isLoading ? (
+            <Loader
+              className="text-center"
+              type="Audio"
+              color="rgb(13, 19, 41)"
+              height={100}
+              width={100}
+            />
+          ) : (
             <div className="row lmain-btn justify-content-center">
-              <div className="col-md-12">
-                <button
-                  type="submit"
-                  onClick={loginHandler}
-                  className="btn btn-primary"
-                >
-                  Send OTP
-                </button>
-              </div>
+              {otpVerify ? (
+                <div className="row lmain-rno justify-content-center">
+                  <div className="col-12">
+                    <label htmlFor="otp">
+                      <b>Enter OTP</b>
+                    </label>
+                  </div>
+                  <div className="col-12">
+                    <input
+                      type="number"
+                      name="otp"
+                      id="otp"
+                      required
+                      maxLength="6"
+                    /> 
+                  </div>
+                  <div className="mt-3">
+                    <Button variant="secondary" onClick={loginHandler}>
+                      Resend OTP
+                    </Button>
+                    <Button variant="primary" className="ml-2" onClick={otpSubmit}>
+                      Submit
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="col-md-12">
+                  <button
+                    type="submit"
+                    onClick={loginHandler}
+                    className="btn btn-primary"
+                  >
+                    Send OTP
+                  </button>
+                </div>
+              )}
             </div>
-          </form>
-        )}
+          )}
+        </form>
         <ToastContainer
           position="top-center"
           autoClose={2000}
@@ -172,32 +207,6 @@ function AlumniLogin(props) {
           pauseOnHover
         />
         <>
-          <Modal show={otpVerify} onHide={handleClose} backdrop="static">
-            <Modal.Header>
-              <Modal.Title>Verify OTP</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <div className="mb-3">The OTP is sent to your email ID.</div>
-              <form noValidate autoComplete="off">
-                <TextField
-                  id="otp"
-                  label="Enter OTP"
-                  type="number"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                />
-              </form>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={loginHandler}>
-                Resend OTP
-              </Button>
-              <Button variant="primary" onClick={otpSubmit}>
-                Submit
-              </Button>
-            </Modal.Footer>
-          </Modal>
         </>
       </div>
     </div>

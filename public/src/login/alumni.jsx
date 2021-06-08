@@ -1,5 +1,4 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import AlumniLogin from './alumni-login';
@@ -15,11 +14,11 @@ export default function SimpleBottomNavigation() {
       value={value}
       onChange={(event, newValue) => {
         setValue(newValue);
-        if(newValue==1){
+        if(newValue === 1){
             registerBool(true);
             loginBool(false);
         }
-        if(newValue==0){
+        if(newValue === 0){
             registerBool(false);
             loginBool(true);
         }

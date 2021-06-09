@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import "./login.css";
 import spider from "../utils/API";
 import { useHistory } from "react-router-dom";
@@ -12,9 +12,24 @@ import { Button } from "react-bootstrap";
 function AlumniLogin(props) {
   const history = useHistory();
   const [isLoading, setLoading] = useState(false);
+  const [seconds, setSeconds] = useState(0);
   const [emailId, setEmail] = useState("");
   const [otpVerify, otpVerifyBox] = useState(false);
-  const handleClose = () => otpVerifyBox(false);
+  useEffect(()=>{
+    if(otpVerify){
+      if(seconds>0){
+        setTimeout(()=>{
+          setSeconds(seconds-1);
+        },1000);
+        document.getElementById("resOtp").innerHTML=`Resend OTP in ${Math.floor(seconds/60)}:${Math.floor((seconds%60)/10)}${Math.floor(seconds%10)}`;
+        document.getElementById("resOtp").disabled = true;
+      }
+      else{
+        document.getElementById("resOtp").innerHTML=`Resend OTP`;
+        document.getElementById("resOtp").disabled = false;
+      }
+    }
+  })
   const otpSubmit = (e) => {
     otpVerifyBox(false);
     e.preventDefault();
@@ -69,6 +84,7 @@ function AlumniLogin(props) {
     }
   }
   const loginHandler = (e) => {
+    otpVerifyBox(false);
     setLoading(true);
     e.preventDefault();
     let email = document.getElementById("email").value||emailId;
@@ -79,9 +95,11 @@ function AlumniLogin(props) {
           email: email,
         })
         .then((res,err) => {
+          console.log(res);
           setLoading(false);
           document.getElementById("login-error-message").innerHTML = "";
           otpVerifyBox(true);
+          setSeconds(10);
         })
         .catch((err) => {
           setLoading(false);
@@ -125,12 +143,12 @@ function AlumniLogin(props) {
         <br />
         <form id="loginForm">
           <div className="row lmain-pass justify-content-center">
-            <div className="col-12">
+            <div className="col-6">
               <label htmlFor="email">
                 <b>Email</b>
               </label>
             </div>
-            <div className="col-12">
+            <div className="col-6">
               <input 
                   type="email" 
                   name="email" 
@@ -173,7 +191,7 @@ function AlumniLogin(props) {
                     /> 
                   </div>
                   <div className="mt-3">
-                    <Button variant="secondary" onClick={loginHandler}>
+                    <Button variant="secondary" onClick={loginHandler} id="resOtp">
                       Resend OTP
                     </Button>
                     <Button variant="primary" className="ml-2" onClick={otpSubmit}>

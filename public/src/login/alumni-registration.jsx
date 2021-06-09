@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./login.css";
 import spider from "../utils/API";
 import TextField from "@material-ui/core/TextField";
@@ -13,9 +13,25 @@ import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 function AlumniRegister(props) {
   const history = useHistory();
   const [otpVerify, otpVerifyBox] = useState(false);
+  const [seconds, setSeconds] = useState(0);
   const [emailId, setEmail] = useState("");
   const handleClose = () => otpVerifyBox(false);
   const [isLoading, setLoading] = useState(false);
+  useEffect(()=>{
+    if(otpVerify){
+      if(seconds>0){
+        setTimeout(()=>{
+          setSeconds(seconds-1);
+        },1000);
+        document.getElementById("resOtp").innerHTML=`Resend OTP in ${Math.floor(seconds/60)}:${Math.floor((seconds%60)/10)}${Math.floor(seconds%10)}`;
+        document.getElementById("resOtp").disabled = true;
+      }
+      else{
+        document.getElementById("resOtp").innerHTML=`Resend OTP`;
+        document.getElementById("resOtp").disabled = false;
+      }
+    }
+  })
   const resendOtp = (e) => {
     e.preventDefault();
     setLoading(true);
@@ -30,8 +46,12 @@ function AlumniRegister(props) {
       setLoading(false);
       switch (err.response.status) {
         case 400:
-          document.getElementById("login-error-message").innerHTML = "Unable to send OTP";
+          document.getElementById("login-error-message").innerHTML ="";
           break;
+        case 401:
+        case 404:
+        case 409:
+        case 500:
         default:
           document.getElementById("login-error-message").innerHTML =
             "Service currently unavailable. Please try again later.";
@@ -115,6 +135,7 @@ function AlumniRegister(props) {
             setLoading(false);
             document.getElementById("login-error-message").innerHTML = "";
             otpVerifyBox(true);
+            setSeconds(10);
           })
           .catch((err) => {
             setLoading(false);
@@ -328,7 +349,7 @@ function AlumniRegister(props) {
               </form>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={resendOtp}>
+            <Button variant="secondary" onClick={resendOtp} id="resOtp">
               Resend OTP
             </Button>
             <Button variant="primary" onClick={otpSubmit}>

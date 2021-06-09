@@ -36,6 +36,7 @@ const response_messages = {
   MAIL_SENT: "Mail sent successfully",
 
   EMAIL_ALREADY_REGISTERED: "Email already registered. Try logging in.",
+  ROLLNO_ALREADY_REGISTERED: "Roll No already registered. Try logging in.",
   ALUMNI_REGISTERED: "Registered successfully, OTP sent to registered mail.",
   ALUMNI_EMAIL_NOT_EXIST: "Email does not exist. Register first.",
   OTP_SENT: "OTP sent to registered mail.",

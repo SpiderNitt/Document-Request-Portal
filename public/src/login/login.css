@@ -50,10 +50,12 @@ body,
   width: 18vh;
   height: 18vh;
 }
+
 .alumni{
   width:100%;
   height: 100;
 }
+
 .topBar{
   width: 100;
   margin: auto;
@@ -70,7 +72,13 @@ body,
   -moz-box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
     0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
+
 .otp{
   font-family: sans-serif;
   text-align: center;
+}
+
+.Mui-selected {
+  color: #ffffff !important;
+  background-color: #007bff !important;
 }

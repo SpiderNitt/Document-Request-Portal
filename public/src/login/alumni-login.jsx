@@ -95,7 +95,6 @@ function AlumniLogin(props) {
           email: email,
         })
         .then((res,err) => {
-          console.log(res);
           setLoading(false);
           document.getElementById("login-error-message").innerHTML = "";
           otpVerifyBox(true);
@@ -177,12 +176,12 @@ function AlumniLogin(props) {
         <br />
         <form id="loginForm">
           <div className="row lmain-pass justify-content-center">
-            <div className="col-6">
+            <div className="col-1">
               <label htmlFor="email">
                 <b>Email</b>
               </label>
             </div>
-            <div className="col-6">
+            <div className="col-4">
               <input 
                   type="email" 
                   name="email" 

@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 
 const spider = axios.create({
   // baseURL: "/",
-  baseURL: "https://spider.nitt.edu/bonafide-test/",
+  baseURL: "https://spider.nitt.edu/bonafide/",
   // baseURL: "http://localhost:3001/",
 });
 
@@ -36,8 +36,6 @@ spider.interceptors.response.use(
     return res;
   },
   (err) => {
-    // console.log("toast");
-    // if (err.status === 400)
     toast.error(err.response.data.message, {
       position: "top-center",
       autoClose: 2000,
@@ -47,8 +45,6 @@ spider.interceptors.response.use(
       draggable: true,
       progress: undefined,
     });
-    // },
-    // (err) => {
     if (err.response && err.response.status === 403) {
       localStorage.removeItem("bonafideNITT2020user");
       window.location.replace("/");

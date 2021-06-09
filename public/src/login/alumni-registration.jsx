@@ -141,10 +141,13 @@ function AlumniRegister(props) {
             setLoading(false);
             switch (err.response.status) {
               case 400:
-                console.log(err.response);
-                document.getElementById("email-error-message").innerHTML = err.response.data.errors.email;
-                document.getElementById("roll-no-error-message").innerHTML = err.response.data.errors.roll;
-                document.getElementById("mobile-error-message").innerHTML = err.response.data.errors.mobile;
+                if(err.response.data.errors.email)
+                  document.getElementById("email-error-message").innerHTML = err.response.data.errors.email;
+                if(err.response.data.errors.roll)
+                  document.getElementById("roll-no-error-message").innerHTML = err.response.data.errors.roll;
+                if(err.response.data.errors.mobile)
+                  document.getElementById("mobile-error-message").innerHTML = err.response.data.errors.mobile;
+                break;
               case 401:
               case 404:
               case 409:

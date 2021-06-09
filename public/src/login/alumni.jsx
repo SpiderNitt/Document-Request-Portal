@@ -1,15 +1,16 @@
-import React from 'react';
-import BottomNavigation from '@material-ui/core/BottomNavigation';
-import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
-import AlumniLogin from './alumni-login';
-import AlumniRegister from './alumni-registration';
+import React, { useState } from "react";
+import "./login.css";
+import BottomNavigation from "@material-ui/core/BottomNavigation";
+import BottomNavigationAction from "@material-ui/core/BottomNavigationAction";
+import AlumniLogin from "./alumni-login";
+import AlumniRegister from "./alumni-registration";
 
 export default function SimpleBottomNavigation() {
-  const [value, setValue] = React.useState(0);
-  const [login, loginBool] = React.useState(true);
-  const [register, registerBool] = React.useState(false);
+  const [value, setValue] = useState(0);
+  const [login, loginBool] = useState(true);
+  const [register, registerBool] = useState(false);
   return (
-    <div className='alumni'>
+    <div className="alumni">
     <BottomNavigation
       value={value}
       onChange={(event, newValue) => {
@@ -24,7 +25,7 @@ export default function SimpleBottomNavigation() {
         }
       }}
       showLabels
-      className='topBar'
+      className="topBar"
     >
       <BottomNavigationAction label="Login"  />
       <BottomNavigationAction label="Register" />
@@ -33,6 +34,5 @@ export default function SimpleBottomNavigation() {
     {login && <AlumniLogin/>}
     {register && <AlumniRegister/>} 
     </div>
-
   );
 }

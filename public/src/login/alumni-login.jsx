@@ -87,7 +87,7 @@ function AlumniLogin(props) {
     otpVerifyBox(false);
     setLoading(true);
     e.preventDefault();
-    let email = document.getElementById("email").value||emailId;
+    let email = document.getElementById("email").value;
     setEmail(email);
     if (email.length) {
       spider
@@ -99,7 +99,7 @@ function AlumniLogin(props) {
           setLoading(false);
           document.getElementById("login-error-message").innerHTML = "";
           otpVerifyBox(true);
-          setSeconds(10);
+          setSeconds(100);
         })
         .catch((err) => {
           setLoading(false);
@@ -126,6 +126,40 @@ function AlumniLogin(props) {
       document.getElementById("loginForm").reset();
     }
   };
+  const resendOtp=(e)=>{
+    otpVerifyBox(false);
+    setLoading(true);
+    e.preventDefault();
+    let email = emailId;
+      spider
+        .post("/alumni/resend_otp", {
+          email: email,
+        })
+        .then((res,err) => {
+          setLoading(false);
+          otpVerifyBox(true);
+          document.getElementById("login-error-message").innerHTML = "";
+          setSeconds(100);  
+        })
+        .catch((err) => {
+          setLoading(false);
+          switch (err.response.status) {
+            case 400:
+              document.getElementById("login-error-message").innerHTML = "";
+              break;
+            case 401:
+            case 404:
+            case 409:
+            case 500:
+            case 503:
+            default:
+              setLoading(false);
+              document.getElementById("login-error-message").innerHTML =
+                "Service currently unavailable. Please try again later.";
+              break;
+          }
+        });
+ }
 
   return (
     <div className="container-fluid lmain" id="login-content">
@@ -191,7 +225,7 @@ function AlumniLogin(props) {
                     /> 
                   </div>
                   <div className="mt-3">
-                    <Button variant="secondary" onClick={loginHandler} id="resOtp">
+                    <Button variant="secondary" onClick={resendOtp} id="resOtp">
                       Resend OTP
                     </Button>
                     <Button variant="primary" className="ml-2" onClick={otpSubmit}>

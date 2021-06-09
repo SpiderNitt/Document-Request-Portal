@@ -135,7 +135,7 @@ function AlumniRegister(props) {
             setLoading(false);
             document.getElementById("login-error-message").innerHTML = "";
             otpVerifyBox(true);
-            setSeconds(10);
+            setSeconds(100);
           })
           .catch((err) => {
             setLoading(false);
@@ -150,8 +150,6 @@ function AlumniRegister(props) {
               case 409:
               case 500:
               case 503:
-                document.getElementById("login-error-message").innerHTML = "";
-                break;
               default:
                 document.getElementById("login-error-message").innerHTML =
                   "Service currently unavailable. Please try again later.";

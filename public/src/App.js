@@ -18,7 +18,7 @@ const MainRoutes = () => {
     let token = JSON.parse(localStorage.getItem("bonafideNITT2020user"));
     if (token) {
       if (token.alumni) {
-        return <Redirect to="/student" />;
+        return <Route component={Student} path="/student" exact />;
       } else if (isNaN(token.user)) {
         if (window.location.pathname === "/student")
           return <Redirect to="/admin" />;

@@ -45,7 +45,7 @@ alumni.post("/register", async function (req, res) {
     let rollno_exists = await database.Alumni.findOne({
       attributes: ["id", "roll_no"],
       where: {
-        email,
+        roll_no,
       },
     });
     if (rollno_exists) {

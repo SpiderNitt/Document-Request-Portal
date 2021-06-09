@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 
 const spider = axios.create({
   // baseURL: "/",
-  baseURL: "https://spider.nitt.edu/bonafide/",
+  baseURL: "https://spider.nitt.edu/bonafide-test/",
   // baseURL: "http://localhost:3001/",
 });
 

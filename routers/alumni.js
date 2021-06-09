@@ -42,7 +42,19 @@ alumni.post("/register", async function (req, res) {
         errors
       );
     }
-
+    let rollno_exists = await database.Alumni.findOne({
+      attributes: ["id", "roll_no"],
+      where: {
+        email,
+      },
+    });
+    if (rollno_exists) {
+      return helpers.responseHandle(
+        409,
+        responseMessages.ROLLNO_ALREADY_REGISTERED,
+        res
+      );
+    }
     // check if email is already in db
     let email_exists = await database.Alumni.findOne({
       attributes: ["id", "email"],

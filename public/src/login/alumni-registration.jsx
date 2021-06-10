@@ -151,6 +151,8 @@ function AlumniRegister(props) {
               case 401:
               case 404:
               case 409:
+                document.getElementById("login-error-message").innerHTML = "";
+                break;
               case 500:
               case 503:
               default:

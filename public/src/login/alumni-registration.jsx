@@ -13,6 +13,9 @@ import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 function AlumniRegister(props) {
   const history = useHistory();
   const [otpVerify, otpVerifyBox] = useState(false);
+  const [rollNo, setRollNo] = useState("");
+  const [mobileNo, setMobileNo] = useState("");
+  const [otpNo,setOtpNo] = useState("");
   const [seconds, setSeconds] = useState(0);
   const [emailId, setEmail] = useState("");
   const handleClose = () => otpVerifyBox(false);
@@ -223,9 +226,10 @@ function AlumniRegister(props) {
               </div>
               <div className="col-12">
                 <input
-                  type="number"
+                  type="text"
                   name="roll"
                   id="roll"
+                  maxLength="9"
                   required
                   onChange={() => {
                     document.getElementById("login-error-message").innerHTML =
@@ -233,6 +237,12 @@ function AlumniRegister(props) {
                     document.getElementById(
                       "roll-no-error-message"
                     ).innerHTML = "";
+                    if(isNaN(document.getElementById("roll").value)){
+                      document.getElementById("roll").value = rollNo;
+                    }
+                    else {
+                      setRollNo(document.getElementById("roll").value);
+                    }
                   }}
                 />
               </div>
@@ -292,7 +302,7 @@ function AlumniRegister(props) {
               </div>
               <div className="col-12">
                 <input
-                  type="number"
+                  type="text"
                   name="mobile"
                   id="mobile"
                   required
@@ -302,6 +312,12 @@ function AlumniRegister(props) {
                     document.getElementById(
                       "mobile-error-message"
                     ).innerHTML = "";
+                    if(isNaN(document.getElementById("mobile").value)){
+                      document.getElementById("mobile").value = mobileNo;
+                    }
+                    else {
+                      setMobileNo(document.getElementById("mobile").value);
+                    }
                   }}
                 />
               </div>
@@ -344,9 +360,17 @@ function AlumniRegister(props) {
                 <TextField
                   id="otp"
                   label="Enter OTP"
-                  type="number"
+                  type="text"
                   InputLabelProps={{
                     shrink: true,
+                  }}
+                  onChange={()=>{
+                    if(isNaN(document.getElementById("otp").value)){
+                      document.getElementById("otp").value = otpNo;
+                    }
+                    else {
+                      setOtpNo(document.getElementById("otp").value);
+                    }
                   }}
                 />
               </form>

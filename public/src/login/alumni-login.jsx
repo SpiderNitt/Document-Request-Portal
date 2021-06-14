@@ -13,6 +13,7 @@ function AlumniLogin(props) {
   const history = useHistory();
   const [isLoading, setLoading] = useState(false);
   const [seconds, setSeconds] = useState(0);
+  const [otpNo, setOtpNo] = useState("");
   const [emailId, setEmail] = useState("");
   const [otpVerify, otpVerifyBox] = useState(false);
   useEffect(()=>{
@@ -216,11 +217,18 @@ function AlumniLogin(props) {
                   </div>
                   <div className="col-12">
                     <input
-                      type="number"
+                      type="text"
                       name="otp"
                       id="otp"
                       required
                       maxLength="6"
+                      onChange={() => {
+                        if(isNaN(document.getElementById("otp").value)){
+                          document.getElementById("otp").value = otpNo;
+                        }
+                        else 
+                        setOtpNo(document.getElementById("otp").value);
+                      }} 
                     /> 
                   </div>
                   <div className="mt-3">

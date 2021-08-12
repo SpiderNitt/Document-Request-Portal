@@ -11,6 +11,7 @@ import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 function Login(props) {
   const history = useHistory();
   const [isLoading, setLoading] = useState(false);
+  const [loginErrorCount, setErrorCount] = useState(1);
   const loginHandler = (e) => {
     e.preventDefault();
     // document.getElementById("main-content").classList.add("blur");
@@ -32,6 +33,7 @@ function Login(props) {
             token.user = user.data.username;
             // document.getElementById("main-content").classList.remove("blur");
             setLoading(false);
+            setErrorCount(1);
             localStorage.setItem("bonafideNITT2020user", JSON.stringify(token));
             if (isNaN(username)) history.push("/admin");
             else history.push("/student");
@@ -40,6 +42,10 @@ function Login(props) {
             // document.getElementById("loginForm").reset();
             // document.getElementById("main-content").classList.remove("blur");
             setLoading(false);
+            setErrorCount(loginErrorCount + 1);
+            if(loginErrorCount > 3) {
+              window.location = "https://students.nitt.edu/authpass/";
+            }
             // if (err.status === 401) {
             //   document.getElementById("login-error-message").innerHTML =
             //     "Invalid Username or Password";
@@ -149,6 +155,12 @@ function Login(props) {
                 >
                   Login
                 </button>
+              </div>
+              <br></br>
+              <br></br>
+              <br></br>
+              <div className="col-md-12">
+                <a href="https://students.nitt.edu/authpass/">Forgot Password? </a>&nbsp; <span>(Click to reset password, Your IP will be blocked after few incorrect attempts)</span>
               </div>
             </div>
           </form>

@@ -137,6 +137,10 @@ function Login(props) {
             </div>
             <br />
             <div className="row lmain-btn justify-content-center">
+              <a href="https://students.nitt.edu/authpass/">Forgot Password? </a>&nbsp; <span>(Click to reset password, Your IP will be blocked after few incorrect attempts)</span>
+            </div>
+            <br></br>
+            <div className="row lmain-btn justify-content-center">
               <b> Are you an alumni? </b> <b>&nbsp;Click </b>  &nbsp;<Link to="/alumni"><b>here. </b></Link>
             </div>
           </form>

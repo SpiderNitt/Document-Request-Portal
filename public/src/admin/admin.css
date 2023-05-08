@@ -72,3 +72,16 @@
   position: relative;
   /* float: right; */
 }
+
+.navbar {
+  margin: 0.3em;
+}
+
+.end{
+  width : 100px;
+  margin: 10px;
+}
+.end::file-selector-button{
+  width : 100px;
+  height: 35px;
+}

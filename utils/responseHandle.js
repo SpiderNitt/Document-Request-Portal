@@ -43,6 +43,7 @@ const response_messages = {
   INVALID_OTP: "Invalid OTP",
   OTP_RETRY_1: "OTP can be resent only after ",
   OTP_RETRY_2: " seconds",
+  FILE_SIZE_EXCESS:"File size must be less than 50kb",
 };
 
 module.exports = response_messages;

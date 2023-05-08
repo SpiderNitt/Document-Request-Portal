@@ -5,6 +5,8 @@ const helper = require("../utils/helper");
 const fs = require("fs");
 const sequelize = require("sequelize");
 const responseMessages = require("../utils/responseHandle");
+const uuid = require("uuid");
+const helpers = require("../utils/helper");
 
 const pino = require("pino");
 const logger = pino({
@@ -17,6 +19,7 @@ const logger = pino({
 // 1st file: Necessary document
 // 2nd file: ID proof
 student.post("/certificate_request", async function (req, res) {
+  try{
   // File upload. Note multer().array for multiple file uploads
   const upload = multer({
     storage: helper.storage,
@@ -80,7 +83,6 @@ student.post("/certificate_request", async function (req, res) {
       if (
         !helper.check_compulsory(req.body, [
           "type",
-          "path",
           "purpose",
           "contact",
           "name",
@@ -112,6 +114,12 @@ student.post("/certificate_request", async function (req, res) {
         semester_no,
         rank_grade_card_copies,
         name,
+        addr,
+        fname,
+        dob,
+        sd,
+        year,
+        sem
       } = req.body;
       let all_certs_from_db = await database.CertificateType.findAll();
       all_certs = {};
@@ -125,10 +133,10 @@ student.post("/certificate_request", async function (req, res) {
         sem_nos = semester_no.split(",");
         card_copies = rank_grade_card_copies.split(",");
       }
-      path = path.split(",");
+      if(path) path = path.split(",");
       let status = "PENDING VERIFICATION";
       try {
-        if (!helper.validate_mail(path)) {
+        if (path&&!helper.validate_mail(path)) {
           //res.status(400).json({ 'message': 'All mail IDs must end with nitt.edu' })
           helper.responseHandle(400, responseMessages.INVALID_MAILID, res);
           fs.unlinkSync(cert_final_dest);
@@ -136,8 +144,17 @@ student.post("/certificate_request", async function (req, res) {
           return;
         }
         // console.log(type, all_certs[type]);
-        path = helper.handle_defaults(path, all_certs[type]);
-        logger.info(path);
+        let student = await database.Student.findOne({where:{name:applier_roll}});
+        student = helpers.wrapper(student);
+        photo = student.photo;
+        department = student.department;
+        if(!path)
+          console.log("path is null");
+          path=[]
+        path = helper.handle_defaults(path, all_certs[type], department);
+        console.log(path);
+        
+        course = student.course;
 
         let response = await database.Certificate.create({
           type,
@@ -155,6 +172,15 @@ student.post("/certificate_request", async function (req, res) {
           course_name,
           no_copies,
           name,
+          photo,
+          dob,
+          fname,
+          address:addr,
+          stayDate:sd,
+          department,
+          course,
+          year,
+          semester:sem
         });
 
         let certificate_id = response.getDataValue("id");
@@ -212,6 +238,10 @@ student.post("/certificate_request", async function (req, res) {
       }
     }
   });
+} catch(err) {
+  logger.error(err)
+  return helper.responseHandle(500, responseMessages.DEFAULT_500,res)
+}
 });
 
 student.get("/certificate_download", async function (req, res) {
@@ -392,6 +422,15 @@ student.get("/address", async function (req, res) {
 
 student.get("/certificate_types", async function (req, res) {
   try {
+    let photo
+    if(!isNaN(req.jwt_payload.username)){
+    const studentFetch = await database.Student.findOne({
+      where: { name: req.jwt_payload.username },
+    });
+    const studentDetail = helpers.wrapper(studentFetch);
+    photo = studentDetail.photo;
+    if (photo) photo = photo.toString("base64");
+  }
     let rows = await database.CertificateType.findAll();
     let response_json = [];
     rows.forEach(function (ele) {
@@ -402,6 +441,9 @@ student.get("/certificate_types", async function (req, res) {
         semwise_mapping,
       });
     });
+    if(!isNaN(req.jwt_payload.username))
+    res.status(200).json({certificate_type:response_json,photo});
+    else
     res.status(200).json(response_json);
   } catch (err) {
     logger.error(err);
@@ -517,4 +559,69 @@ student.get("/certificate_history", async function (req, res) {
   }
 });
 
+student.post("/photo_upload", async function (req, res) {
+  const student = req.jwt_payload.username;
+  const student_details = helper.wrapper(
+    await database.Student.findOne({ name: student })
+  );
+  if (student_details == null) {
+    return helper.responseHandle(403, responseMessages.ACCESS_DENIED, res);
+  }
+  // File upload. Note multer().array for multiple file uploads
+  const upload = multer({
+    fileFilter: helper.imgFilter,
+  }).single("image");
+  upload(req, res, async function (err) {
+    try {
+      if (err) {
+        // problem with file upload
+        logger.error(err);
+        return helper.responseHandle(
+          400,
+          responseMessages.FILE_SIZE_EXCESS,
+          res
+        );
+      } else if (!req.file) {
+        // if no file uploaded or exactly 2 files arent uploaded
+        return helper.responseHandle(
+          400,
+          responseMessages.UPLOAD_ONLY_REQUIRED,
+          res
+        );
+      } else {
+        // get necessary data from req payload to add to database
+        let img = req.file.buffer;
+
+        try {
+          // add to database
+          await database.Student.update(
+            { photo: img },
+            {
+              where: {
+                name: student,
+              },
+            }
+          );
+          return helper.responseHandle(
+            200,
+            responseMessages.UPLOAD_SUCCESS,
+            res
+          );
+        } catch (err) {
+          logger.error(err);
+
+          return helper.responseHandle(
+            400,
+            responseMessages.FILE_SIZE_EXCESS,
+            res
+          );
+        }
+      }
+    } catch (err) {
+      logger.error(err);
+
+      return helper.responseHandle(500, responseMessages.DEFAULT_500, res);
+    }
+  });
+});
 module.exports = student;

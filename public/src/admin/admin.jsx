@@ -9,11 +9,12 @@ import {
   DownloadStudentId,
   AddEmailDetails,
   AddPostalDetails,
+  ImgUpload,
 } from "./sub_buttons";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Accordion from "react-bootstrap/Accordion";
-import { Card } from "react-bootstrap";
+import { Card, Container, Row, Col } from "react-bootstrap";
 import Loader from "react-loader-spinner";
 import "./admin.css";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
@@ -27,6 +28,7 @@ function Admin() {
   const [certTypes, setTypes] = useState([]);
   const [length, setLength] = useState(0);
   const [isRefreshing, setRefreshing] = useState(false);
+  const [sign, setSign] = useState("");
 
   useEffect(() => {
     spider
@@ -48,8 +50,12 @@ function Admin() {
         if (res === undefined) {
           window.location = "/";
         }
+        setSign(res.data.sign);
+        if (!res.data.sign) {
+          toast.warning("Please upload your signature");
+        }
         let temp = [];
-        temp = Object.assign([], res.data);
+        temp = Object.assign([], res.data.certificate);
         for (let i = 0; i < temp.length; i++) {
           temp[i].id = i + 1;
         }
@@ -61,6 +67,7 @@ function Admin() {
             certificate_type: typ.certificate_type,
             certificates: [],
           };
+
           temp.map((c) => {
             if (c.certificate_type === typ.certificate_type_id) {
               delete c.certificate_type;
@@ -115,7 +122,10 @@ function Admin() {
     if (certreq.certificate_type === "Bonafide") {
       certreq.certificates.map((cert) => {
         let temp = {};
-        if (document.getElementById("export" + cert.id) && document.getElementById(cert.id).checked === true) {
+        if (
+          document.getElementById("export" + cert.id) &&
+          document.getElementById(cert.id).checked === true
+        ) {
           temp["S.No"] = ++index;
           temp["Document Type"] = certreq.certificate_type;
           temp["Roll number"] = cert["applier_roll"];
@@ -133,7 +143,10 @@ function Admin() {
     ) {
       certreq.certificates.map((cert) => {
         let temp = {};
-        if (document.getElementById("export" + cert.id) && document.getElementById(cert.id).checked === true) {
+        if (
+          document.getElementById("export" + cert.id) &&
+          document.getElementById(cert.id).checked === true
+        ) {
           temp["S.No"] = ++index;
           temp["Document Type"] = certreq.certificate_type;
           temp["Roll number"] = cert["applier_roll"];
@@ -150,7 +163,10 @@ function Admin() {
     } else {
       certreq.certificates.map((cert) => {
         let temp = {};
-        if (document.getElementById("export" + cert.id) && document.getElementById("export" + cert.id).checked === true) {
+        if (
+          document.getElementById("export" + cert.id) &&
+          document.getElementById("export" + cert.id).checked === true
+        ) {
           temp["S.No"] = ++index;
           temp["Document Type"] = certreq.certificate_type;
           temp["Roll number"] = cert["applier_roll"];
@@ -193,8 +209,19 @@ function Admin() {
 
   return (
     <>
-      <NavBar screen={1} />
-      <h1 className="text-center cert-upl-head">Admin Document Portal</h1>
+      <NavBar screen={1} admin={1} />
+
+      <Container fluid>
+        <Row className="navbar">
+          <Col />
+          <Col md="auto">
+            <h1 className="text-center cert-upl-head">Admin Document Portal</h1>
+          </Col>
+          <Col>
+            <ImgUpload image={sign} admin={true} />
+          </Col>
+        </Row>
+      </Container>
       <div className="container-fluid admin">
         <br />
         {isLoading ? (
@@ -209,7 +236,10 @@ function Admin() {
         ) : length ? (
           <div>
             {certReq.map((cert, index) => {
-              let pending = 0, approved = 0, pending_index = 0, approved_index = 0;
+              let pending = 0,
+                approved = 0,
+                pending_index = 0,
+                approved_index = 0;
               cert.certificates.forEach((certificate) => {
                 if (certificate.status.includes("APPROVED")) {
                   approved = approved + 1;
@@ -308,7 +338,13 @@ function Admin() {
                                           <th scope="col">Student ID</th>
                                           {cert.certificate_type ===
                                           "Bonafide" ? (
-                                            <th scope="col">Upload Document</th>
+                                            <>
+                                              <th scope="col">
+                                                Upload Document
+                                              </th>
+                                              <th scope="col">Semester</th>
+                                              <th scope="col">Department</th>
+                                            </>
                                           ) : (
                                             <></>
                                           )}
@@ -458,21 +494,29 @@ function Admin() {
                                                   )}
                                                   {cert.certificate_type ===
                                                   "Bonafide" ? (
-                                                    <td>
-                                                      <Upload
-                                                        ID={index}
-                                                        roll={data.applier_roll}
-                                                        certType={
-                                                          cert.certificate_type
-                                                        }
-                                                      />
-                                                      <span
-                                                        className="cancel-btn"
-                                                        id={
-                                                          "cancel-btn" + index
-                                                        }
-                                                      ></span>
-                                                    </td>
+                                                    <>
+                                                      <td>
+                                                        <Upload
+                                                          ID={index}
+                                                          roll={
+                                                            data.applier_roll
+                                                          }
+                                                          certType={
+                                                            cert.certificate_type
+                                                          }
+                                                        />
+                                                        <span
+                                                          className="cancel-btn"
+                                                          id={
+                                                            "cancel-btn" + index
+                                                          }
+                                                        ></span>
+                                                      </td>
+                                                      <td>
+                                                        Semester {data.semester} (Year {data.year})
+                                                      </td>
+                                                      <td>{data.department}</td>
+                                                    </>
                                                   ) : (
                                                     <></>
                                                   )}
@@ -511,6 +555,7 @@ function Admin() {
                                                       certType={
                                                         cert.certificate_type
                                                       }
+                                                      sign={sign ? true : false}
                                                       refresh={changeRefresh}
                                                     />{" "}
                                                     <Reject

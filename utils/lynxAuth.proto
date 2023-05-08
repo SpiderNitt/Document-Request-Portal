@@ -1,0 +1,31 @@
+syntax = "proto3";
+package authentication;
+option go_package = ".";
+import "google/protobuf/struct.proto";
+
+message GenerateOTPRequest {
+    string clientID = 1;
+    string clientSecret = 2;
+    int32 rollNo = 3;
+}
+
+message GenerateOTPResponse {
+    string message = 1;
+}
+
+message VerifyOTPRequest {
+    string clientID = 1;
+    string clientSecret = 2;
+    int32 rollNo = 3;
+    int32 otp = 4;
+}
+
+message VerifyOTPResponse {
+    string message = 1;
+    google.protobuf.Struct Details = 2;
+}
+
+service Authentication {
+    rpc GenerateOTP(GenerateOTPRequest) returns (GenerateOTPResponse);
+    rpc VerifyOTP(VerifyOTPRequest) returns (VerifyOTPResponse);
+}

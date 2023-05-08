@@ -11,6 +11,8 @@ const logger = pino({
   level: process.env.LOG_LEVEL || "info",
   prettyPrint: process.env.ENV === "DEV",
 });
+const axios = require("axios");
+const {departmentEmail} = require("./emailList")
 
 const mailTransporter = nodemailer.createTransport({
   service: "gmail",
@@ -45,6 +47,14 @@ const docFilter = function (req, file, cb) {
   if (!file.originalname.match(/\.(docx|DOCX|doc|DOC|pdf|PDF)$/)) {
     req.fileValidationError = "Only pdf and doc files are allowed!";
     cb(new MulterError("Only pdf and doc files allowed"), false);
+  }
+  cb(null, true);
+};
+
+const imgFilter = function (req, file, cb) {
+  if (!file.originalname.match(/\.(png|jpg|jpeg|JPG|JPEG|PNG)$/)) {
+    req.fileValidationError = "Only images are allowed!";
+    cb(new MulterError("Only images allowed"), false);
   }
   cb(null, true);
 };
@@ -174,9 +184,10 @@ async function determine_pending({ path_no, certificate_id, status }) {
   return false;
 }
 
-function handle_defaults(path, name) {
+function handle_defaults(path, name, department) {
   path = path.map((ele) => ele.trim());
   if (name.toLowerCase().includes("bonafide")) {
+    if (!path.includes(departmentEmail[department])) path.push(departmentEmail[department]);
     if (!path.includes("swoffice@nitt.edu")) path.push("swoffice@nitt.edu");
     if (!path.includes("adsw@nitt.edu")) path.push("adsw@nitt.edu");
   } else if (name.toLowerCase().includes("registration")) {
@@ -190,6 +201,31 @@ function handle_defaults(path, name) {
   return path;
 }
 
+const validateHuman = async (req, res, next) => {
+  try {
+    let { recaptcha } = req.body;
+    if(recaptcha == undefined || recaptcha == null)
+    {
+      recaptcha = req.headers.recaptcha;
+    }
+    const secret = process.env.RECAPTCHA_SECRET;
+    const url = `https://www.google.com/recaptcha/api/siteverify?secret=${secret}&response=${recaptcha}`;
+
+    const result = await axios.post(url);
+
+    if (result.data.success) {
+      return next();
+    } else {
+      return res.status(402).json({ message: "Failed captcha verification" });
+    }
+  } catch (err) {
+    logger.error(err.message);
+    return res.status(500).json({ message: "Server Error. Try agin later!" });
+  }
+};
+
+
+
 module.exports = {
   docFilter,
   storage,
@@ -200,10 +236,12 @@ module.exports = {
   check_compulsory,
   generateOTP,
   validateOrdinaryMail,
+  validateHuman,
   otpTransporter,
   wrapper,
   determine_pending,
   responseHandle,
   handle_defaults,
-  validateRoll
+  validateRoll,
+  imgFilter,
 };

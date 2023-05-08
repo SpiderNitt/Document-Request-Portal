@@ -4,7 +4,7 @@ const admin = require("express").Router();
 const multer = require("multer");
 const fs = require("fs");
 const nodemailer = require("nodemailer");
-
+const uuid = require("uuid");
 const sgMail = require("@sendgrid/mail");
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
@@ -14,6 +14,7 @@ const logger = pino({
   level: process.env.LOG_LEVEL || "info",
   prettyPrint: process.env.ENV === "DEV",
 });
+const documentGenerator = require("../utils/documentGenerator");
 
 const middlewares = require("../utils/middlewares");
 const database = require("../database/database");
@@ -23,140 +24,227 @@ const helper = require("../utils/helper");
 
 admin.use("/", middlewares.is_admin);
 
+admin.post("/approvebonafide", async function (req, res) {
+  let { certificate_id, comments } = req.body;
+  if (!certificate_id)
+    helpers.responseHandle(400, responseMessages.DEFAULT_400, res);
+  let certificatePath = await database.CertificatePaths.findAll({
+    where: { certificate_id: certificate_id, status: "APPROVED" },
+  });
+  let certificateDetails = await database.Certificate.findOne({
+    where: { id: certificate_id },
+  });
+  let certificateDetail 
+  if(certificateDetails)
+  certificateDetail = helpers.wrapper(certificateDetails);
+  console.log(certificateDetail)
+  const fileName = uuid.v4() + ".pdf";
+  let fileLocation =
+    appRoot + "/uploads/" + certificateDetail.applier_roll + "/" + fileName;
+  signImages = [];
+  const photo = certificateDetail.photo;
+
+  const photob64 = photo.toString("base64");
+  for (let i = 0; i < certificatePath.length; i++) {
+    path = helpers.wrapper(certificatePath[i]);
+    const signTemp = await database.Admin.findOne({
+      where: { name: path.path_name.replace("@nitt.edu", "") },
+    });
+    if(!signTemp) continue;
+    const { sign } = helpers.wrapper(signTemp);
+    const signb64 = sign.toString("base64");
+    signImages.push(signb64);
+  }
+  const rollNo = req.jwt_payload.username;
+  const signTemp = await database.Admin.findOne({ where: { name: rollNo } });
+  if(signTemp) {
+  const { sign } = helpers.wrapper(signTemp);
+  const signb64 = sign.toString("base64");
+  signImages.push(signb64);
+  }
+  while (signImages.length < 5) {
+    signImages.push("");
+  }
+
+  const transcript = {
+    fileLocation,
+    signImages,
+    photob64,
+    certificateDetail
+  };
+  documentGenerator.generateTranscript(transcript);
+
+  // flow of control reaches here irrespective of whether file is uplooaded or not
+  // In Certificate Paths table, update the correspending admin row's status
+
+  await database.CertificatePaths.update(
+    { status: "APPROVED", comments },
+    {
+      where: {
+        certificate_id,
+        path_email: rollNo + "@nitt.edu",
+      },
+    }
+  );
+  // In Cerificate table, update status. If a file existed, this will just overwrite with the same value.
+  // If a file did not exist, this will update the status alone.
+  await database.Certificate.update(
+    { status: rollNo + "@nitt.edu APPROVED", file: fileName },
+    {
+      where: {
+        id: certificate_id,
+      },
+    }
+  );
+  // Add an entry in History table.
+  // TODO: Use triggers instead of script
+  await database.History.create({
+    certificate_id,
+    status: rollNo + "@nitt.edu APPROVED",
+    time: new Date(Date.now()).toISOString(),
+  });
+
+  helpers.responseHandle(200, responseMessages.CERTIFICATE_APPROVE, res);
+});
 // Approve a certificate with an optional file
 admin.post("/approve", async function (req, res) {
-  // mutler file upload. Note that its SINGLE
-  const upload = multer({
-    storage: helpers.storage,
-    fileFilter: helpers.docFilter,
-  }).single("certificate");
+  try {
+    // mutler file upload. Note that its SINGLE
+    const upload = multer({
+      storage: helpers.storage,
+      fileFilter: helpers.docFilter,
+    }).single("certificate");
 
-  upload(req, res, async function (err) {
-    if (err) {
-      // If error in file upload
-      logger.error(err);
-      return helpers.responseHandle(
-        400,
-        responseMessages.VALIDATION_ERROR,
-        res
-      );
-    } else {
-      // If there is no error in file upload
-      // Get the necessary details from the reqeust body
+    upload(req, res, async function (err) {
+      if (err) {
+        // If error in file upload
+        logger.error(err);
+        return helpers.responseHandle(
+          400,
+          responseMessages.VALIDATION_ERROR,
+          res
+        );
+      } else {
+        // If there is no error in file upload
+        // Get the necessary details from the reqeust body
 
-      let { certificate_id, comments } = req.body;
-      let rollno = req.jwt_payload.username;
+        let { certificate_id, comments } = req.body;
+        let rollno = req.jwt_payload.username;
 
-      // Determine if anyone after current admin has approved (or) anyone before current admin has declined
-      let flag = await helpers.approve_decline_rights(req, certificate_id);
+        // Determine if anyone after current admin has approved (or) anyone before current admin has declined
+        let flag = await helpers.approve_decline_rights(req, certificate_id);
 
-      if (req.file) {
-        // if req.file exists, get filename, path, replace old file by admin file, update database with new file name.
-        // initial dest: the upload into temp folder
-        // final_dest: the path for uploads/roll_no/ with the filename
-        let { filename } = req.file;
-        let filepath = req.file.path;
-        let initial_dest = appRoot + "/" + filepath;
-        if (!flag) {
-          // if admin cannot approve or decline, delete temp file.
+        if (req.file) {
+          // if req.file exists, get filename, path, replace old file by admin file, update database with new file name.
+          // initial dest: the upload into temp folder
+          // final_dest: the path for uploads/roll_no/ with the filename
+          let { filename } = req.file;
+          let filepath = req.file.path;
+          let initial_dest = appRoot + "/" + filepath;
+          if (!flag) {
+            // if admin cannot approve or decline, delete temp file.
 
-          fs.unlinkSync(initial_dest);
-          return helpers.responseHandle(
-            401,
-            responseMessages.CANNOT_APPROVE_DECLINE,
-            res
-          );
-        } else {
-          // admin can actually approve.
-          // populate necessary tables
-          let status = rollno + "@nitt.edu APPROVED";
-          try {
-            let row = await database.Certificate.findOne({
-              attributes: ["file", "applier_roll"],
-              where: {
-                id: certificate_id,
-              },
-            });
-            let { file: old_filename, applier_roll } = helpers.wrapper(row);
-
-            let final_dest =
-              appRoot + "/uploads/" + applier_roll + "/" + filename;
-
+            fs.unlinkSync(initial_dest);
+            return helpers.responseHandle(
+              401,
+              responseMessages.CANNOT_APPROVE_DECLINE,
+              res
+            );
+          } else {
+            // admin can actually approve.
+            // populate necessary tables
+            let status = rollno + "@nitt.edu APPROVED";
             try {
-              // delete preexisting file and move current file there.
-              // Here, moving will not replace since the filename is different.
-              // The preexisting file is deleted because its name is not stored in the database anymore
+              let row = await database.Certificate.findOne({
+                attributes: ["file", "applier_roll"],
+                where: {
+                  id: certificate_id,
+                },
+              });
+              let { file: old_filename, applier_roll } = helpers.wrapper(row);
 
-              fs.unlinkSync(
-                appRoot + "/uploads/" + applier_roll + "/" + old_filename
+              let final_dest =
+                appRoot + "/uploads/" + applier_roll + "/" + filename;
+
+              try {
+                // delete preexisting file and move current file there.
+                // Here, moving will not replace since the filename is different.
+                // The preexisting file is deleted because its name is not stored in the database anymore
+
+                fs.unlinkSync(
+                  appRoot + "/uploads/" + applier_roll + "/" + old_filename
+                );
+                helpers.renameFile(initial_dest, final_dest);
+              } catch (err) {
+                // if there is any error deleting/moving files, remove the file in temp/ and ask user to try again
+                fs.unlinkSync(initial_dest);
+                logger.error(err);
+                return helpers.responseHandle(
+                  500,
+                  responseMessages.FILE_UPLOAD,
+                  res
+                );
+              }
+
+              // Add necessary database entries
+
+              // Update the entry with new filename and status in Certificates table
+              await database.Certificate.update(
+                { file: filename, status },
+                {
+                  where: {
+                    id: certificate_id,
+                  },
+                }
               );
-              helpers.renameFile(initial_dest, final_dest);
             } catch (err) {
-              // if there is any error deleting/moving files, remove the file in temp/ and ask user to try again
-              fs.unlinkSync(initial_dest);
+              // If any error, delete temp/ file and ask user to try again.
               logger.error(err);
+              fs.unlinkSync(initial_dest);
               return helpers.responseHandle(
                 500,
                 responseMessages.FILE_UPLOAD,
                 res
               );
             }
-
-            // Add necessary database entries
-
-            // Update the entry with new filename and status in Certificates table
-            await database.Certificate.update(
-              { file: filename, status },
-              {
-                where: {
-                  id: certificate_id,
-                },
-              }
-            );
-          } catch (err) {
-            // If any error, delete temp/ file and ask user to try again.
-            logger.error(err);
-            fs.unlinkSync(initial_dest);
-            return helpers.responseHandle(
-              500,
-              responseMessages.FILE_UPLOAD,
-              res
-            );
           }
         }
-      }
-      // flow of control reaches here irrespective of whether file is uplooaded or not
-      // In Certificate Paths table, update the correspending admin row's status
-      await database.CertificatePaths.update(
-        { status: "APPROVED", comments },
-        {
-          where: {
-            certificate_id,
-            path_email: rollno + "@nitt.edu",
-          },
-        }
-      );
-      // In Cerificate table, update status. If a file existed, this will just overwrite with the same value.
-      // If a file did not exist, this will update the status alone.
-      await database.Certificate.update(
-        { status: rollno + "@nitt.edu APPROVED" },
-        {
-          where: {
-            id: certificate_id,
-          },
-        }
-      );
-      // Add an entry in History table.
-      // TODO: Use triggers instead of script
-      await database.History.create({
-        certificate_id,
-        status: rollno + "@nitt.edu APPROVED",
-        time: new Date(Date.now()).toISOString(),
-      });
+        // flow of control reaches here irrespective of whether file is uplooaded or not
+        // In Certificate Paths table, update the correspending admin row's status
+        await database.CertificatePaths.update(
+          { status: "APPROVED", comments },
+          {
+            where: {
+              certificate_id,
+              path_email: rollno + "@nitt.edu",
+            },
+          }
+        );
+        // In Cerificate table, update status. If a file existed, this will just overwrite with the same value.
+        // If a file did not exist, this will update the status alone.
+        await database.Certificate.update(
+          { status: rollno + "@nitt.edu APPROVED" },
+          {
+            where: {
+              id: certificate_id,
+            },
+          }
+        );
+        // Add an entry in History table.
+        // TODO: Use triggers instead of script
+        await database.History.create({
+          certificate_id,
+          status: rollno + "@nitt.edu APPROVED",
+          time: new Date(Date.now()).toISOString(),
+        });
 
-      helpers.responseHandle(200, responseMessages.CERTIFICATE_APPROVE, res);
-    }
-  });
+        helpers.responseHandle(200, responseMessages.CERTIFICATE_APPROVE, res);
+      }
+    });
+  } catch (err) {
+    logger.error(err);
+    helpers.responseHandle(500, responseMessages.DEFAULT_500, res);
+  }
 });
 
 // Decline a document by admin without any file upload
@@ -237,6 +325,12 @@ admin.get("/", async function (req, res) {
         semwise_mapping: 1,
       },
     });
+    const adminFetch = await database.Admin.findOne({
+      where: { name: rollno },
+    });
+    const adminDetail = helpers.wrapper(adminFetch);
+    let sign = adminDetail.sign;
+    if (sign) sign = sign.toString("base64");
     certTypes.forEach((cert) => {
       if (cert.length !== 0) {
         cert_id_sem_copies_mapping.push(cert.getDataValue("id"));
@@ -296,6 +390,9 @@ admin.get("/", async function (req, res) {
             "status",
             "id_file",
             "file",
+            "semester",
+            "department",
+            "year"
           ],
           where: {
             id: certificate_id,
@@ -317,6 +414,9 @@ admin.get("/", async function (req, res) {
           no_copies,
           id_file,
           file,
+          semester,
+          department,
+          year
         } = helpers.wrapper(ele);
 
         let response_rank_grade_rows = [];
@@ -373,11 +473,14 @@ admin.get("/", async function (req, res) {
           response_rank_grade_rows,
           name,
           approved: approval_list,
-          comments: comment_list
+          comments: comment_list,
+          semester,
+          department,
+          year
         });
       }
     }
-    return res.status(200).json(response_json);
+    return res.status(200).json({ certificate: response_json, sign });
   } catch (err) {
     logger.error(err);
     return helpers.responseHandle(500, responseMessages.DEFAULT_500, res);
@@ -546,4 +649,69 @@ admin.post("/email", async function (req, res) {
   });
 });
 
+admin.post("/sign_upload", async function (req, res) {
+  const admin = req.jwt_payload.username;
+  const admin_details = helper.wrapper(
+    await database.Admin.findOne({ name: admin })
+  );
+  if (admin_details == null) {
+    return helper.responseHandle(403, responseMessages.ACCESS_DENIED, res);
+  }
+  // File upload. Note multer().array for multiple file uploads
+  const upload = multer({
+    fileFilter: helper.imgFilter,
+  }).single("image");
+  upload(req, res, async function (err) {
+    try {
+      if (err) {
+        // problem with file upload
+        logger.error(err);
+        return helper.responseHandle(
+          400,
+          responseMessages.FILE_SIZE_EXCESS,
+          res
+        );
+      } else if (!req.file) {
+        // if no file uploaded or exactly 2 files arent uploaded
+        return helper.responseHandle(
+          400,
+          responseMessages.UPLOAD_ONLY_REQUIRED,
+          res
+        );
+      } else {
+        // get necessary data from req payload to add to database
+        let img = req.file.buffer;
+
+        try {
+          // add to database
+          await database.Admin.update(
+            { sign: img },
+            {
+              where: {
+                name: admin,
+              },
+            }
+          );
+          return helper.responseHandle(
+            200,
+            responseMessages.UPLOAD_SUCCESS,
+            res
+          );
+        } catch (err) {
+          logger.error(err);
+
+          return helper.responseHandle(
+            400,
+            responseMessages.FILE_SIZE_EXCESS,
+            res
+          );
+        }
+      }
+    } catch (err) {
+      logger.error(err);
+
+      return helper.responseHandle(500, responseMessages.DEFAULT_500, res);
+    }
+  });
+});
 module.exports = admin;

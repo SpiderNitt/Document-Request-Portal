@@ -44,6 +44,64 @@ const CertificateType = sequelize.define(
   }
 );
 
+const Admin = sequelize.define(
+  "admin",
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    
+    sign: {
+      type: DataTypes.BLOB,
+    },
+    otp: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    }
+  },
+  {
+    freezeTableName: true,
+  }
+);
+const Student = sequelize.define(
+  "student",
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    department: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    course: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    
+    photo: {
+      type: DataTypes.BLOB,
+    },
+  },
+  {
+    freezeTableName: true,
+  }
+);
+
+
 const Certificate = sequelize.define(
   "certificates",
   {
@@ -121,6 +179,38 @@ const Certificate = sequelize.define(
       allowNull: true,
     },
     name: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    photo: {
+      type: DataTypes.BLOB,
+      allowNull: true,
+    },
+    fname: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    dob: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    stayDate: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    year: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    semester: {
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    department: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    course: {
       type: DataTypes.STRING,
       allowNull: true,
     },
@@ -312,4 +402,6 @@ module.exports = {
   Alumni,
   RankGradeCard,
   test_conn,
+  Admin,
+  Student,
 };

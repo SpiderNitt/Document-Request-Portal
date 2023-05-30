@@ -1,6 +1,7 @@
 import React from "react";
 import "./App.css";
 import Login from "./login/login";
+import OtpVerify from "./login/otpVerify";
 import Alumni from "./login/alumni";
 import Footer from "./footer/footer";
 import Student from "./student/student";
@@ -43,6 +44,11 @@ function App() {
             <Route exact path="/">
               <div className="row justify-content-center">
                 <Login />
+              </div>
+            </Route>
+            <Route exact path="/verifyOTP">
+              <div className="row justify-content-center">
+                <OtpVerify/>
               </div>
             </Route>
             <Route exact path="/alumni">

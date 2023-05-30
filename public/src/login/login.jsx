@@ -13,6 +13,8 @@ import {
   GoogleReCaptchaProvider,
 } from "react-google-recaptcha-v3";
 import { LynxLoginAPICall, AdminAPICall } from "../utils/lynxAuthApi";
+import { BrowserRouter as Router, Route } from "react-router-dom/cjs/react-router-dom.min";
+import OtpVerify from "./otpVerify";
 
 function Login(props) {
   const SITE_KEY = process.env.REACT_APP_SITE_KEY;
@@ -241,7 +243,7 @@ function Login(props) {
                   className="btn btn-primary"
                 >
                    
-                  {otp?"Submit":<><Badge><Image src="icons/lynx.png" width='50' height='50' /></Badge>Login with LYNX Auth/Send OTP to Webmail</>}
+                  {otp?"Submit": <Link to="/verifyOTP"><><Badge><Image src="icons/lynx.png" width='50' height='50' /></Badge><span style={{color:"white"}}>Login with LYNX Auth/Send OTP to Webmail</span></></Link>}
                 </button>
             </div>
             <small id="login-error-message" className="error"></small>

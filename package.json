@@ -19,14 +19,16 @@
     "express": "^4.17.1",
     "express-pino-logger": "^5.0.0",
     "jsonwebtoken": "^8.5.1",
+    "jspdf": "^2.5.1",
     "morgan": "^1.10.0",
     "multer": "^1.4.2",
     "mysql2": "^2.1.0",
     "node-cron": "^2.0.3",
     "nodemailer": "^6.6.1",
+    "pdf-creator-node": "^2.3.5",
     "pino": "^6.7.0",
     "sequelize": "^6.3.4",
-    "uuid": "^8.3.0"
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "pino-pretty": "^4.3.0",

@@ -3,7 +3,9 @@ import spider from "../utils/API";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import Loader from "react-loader-spinner";
 import "./admin.css";
-import { Modal } from "react-bootstrap";
+import { Container, Modal } from "react-bootstrap";
+import { Card, Button, Row, Col,Image } from "react-bootstrap";
+import { toast } from "react-toastify";
 
 export const Approve = (props) => {
   const [showModal, setModal] = useState(false);
@@ -14,18 +16,20 @@ export const Approve = (props) => {
 
   const approveHandler = (e) => {
     e.preventDefault();
-    let cd = new FormData();
-    if (props.certType === "Bonafide") {
-      if (fileStatus) {
-        cd.append(
-          "certificate",
-          document.getElementById("myfile" + props.ID).files[0]
-        );
+    if(props.certType === "Bonafide"){
+    spider
+      .post("api/admin/approveBonafide", {certificate_id:parseInt(props.certId),comments:document.getElementById("comments-app").value})
+      .then((res) => {
+        setModal(false);
+        props.refresh(true);
+      })
+      .catch((err) => {});
+    }
+    else{  
+      let cd = new FormData();
+      if (document.getElementById("comments-app").value) {
+        cd.set("comments", document.getElementById("comments-app").value);
       }
-    }
-    if (document.getElementById("comments-app").value) {
-      cd.set("comments", document.getElementById("comments-app").value);
-    }
     cd.set("certificate_id", parseInt(props.certId));
     spider
       .post("api/admin/approve", cd)
@@ -34,6 +38,7 @@ export const Approve = (props) => {
         props.refresh(true);
       })
       .catch((err) => {});
+    }
   };
 
   return (
@@ -89,6 +94,7 @@ export const Approve = (props) => {
               type="submit"
               className="btn btn-success"
               onClick={approveHandler}
+              disabled={!props.sign}
             >
               Approve
             </button>
@@ -398,6 +404,62 @@ export const Upload = (props) => {
           };
         }}
       />
+    </>
+  );
+};
+export const ImgUpload = (props) => {
+  const imgUpload = (e) => {
+    e.preventDefault();
+    let cd = new FormData();
+    console.log(document.getElementById("img").files[0])
+    cd.append("image", document.getElementById("img").files[0]);
+    console.log(cd)
+    if(props.admin){
+    spider
+      .post("api/admin/sign_upload", cd)
+      .then((res) => {
+        console.log(res);        
+        window.location.reload(false);
+        toast.success("Sign Uploaded Successfully");
+      })
+      .catch((err) => {console.log(err)});
+    }
+      else{
+    spider
+      .post("api/student/photo_upload", cd)
+      .then((res) => {
+        console.log(res);        
+        window.location.reload(false);
+        toast.success("Sign Uploaded Successfully");
+      })
+      .catch((err) => {});
+    }
+  };
+  return (
+    <>
+      <Row className="justify-content-end">
+            {props.admin?<Image
+              height={"90px"}
+              width={"360px"}
+              src={`data:image/png;base64,${props.image}`}
+            />:<Image
+            height={"150px"}
+            width={"120px"}
+            src={`data:image/png;base64,${props.image}`}
+          />}
+            
+      </Row>
+      <Row className="justify-content-end">
+             
+            <input type="file" id="img" name="img" className="end" />
+            
+            
+            
+            <Button type="submit" value="Submit" onClick={imgUpload} className="end">
+              Submit{" "}
+            </Button>
+            
+      </Row>
     </>
   );
 };

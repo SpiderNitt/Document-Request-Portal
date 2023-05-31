@@ -1,0 +1,45 @@
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* input[type=number]{
+    -moz-appearance: textfield;
+} */
+.otp-group {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    /* max-width: 360px; */
+    column-gap: 10px;
+    justify-content: center;
+}
+  
+.otp-input {
+    width: 60px;
+    height: 60px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 32px;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.filled{
+    border: 1px solid blue;
+}
+
+.verify-resend-button{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    margin-top: 10vh;
+    margin-bottom: 5vh;
+}
+
+.resend-timer{
+    color: blue;
+}
+

@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useContext } from "react";
 import spider from "../../utils/API";
 import { StatusContext } from "../../contexts/StatusContext";
-import { ToastContainer } from "react-toastify";
-import { Modal } from "react-bootstrap";
+import { ToastContainer,toast } from "react-toastify";
+import { Modal, Container,Row,Col } from "react-bootstrap";
 import CertificateTemplate from "../cert-templates/cert-temp";
 import Loader from "react-loader-spinner";
 import InstructionsModal from "../instructions-modal/instructions";
 import SignatoriesInstructionsModal from "../instructions-modal/signatories-instructions";
 import { MdHelp } from "react-icons/md";
-
+import { ImgUpload } from "../../admin/sub_buttons";
 import "./cert-upl.css";
 import "react-toastify/dist/ReactToastify.min.css";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
@@ -27,9 +27,17 @@ function Upload(props) {
     { id: 9, sem: "s9", semName: "Sem 9", copies: 0 },
     { id: 10, sem: "s10", semName: "Sem 10", copies: 0 },
   ];
+
+  const [sem,setSem]=useState("")
+  const [addr,setAddr] = useState("")
+  const [year,setYear] = useState("")
+  const [dob, setDob] = useState("")
+  const [stayDate,setStayDate] = useState("")
+  const [fname,setFName] = useState("");
   const [name, setName] = useState("");
   const [emailCount, setCount] = useState(0);
   const [emails, setEmails] = useState([]);
+  const [photo, setPhoto] = useState("");
 
   const [cert_pdf, setCertPdf] = useState(null);
   const [id_pdf, setIdPdf] = useState(null);
@@ -69,7 +77,11 @@ function Upload(props) {
     spider
       .get("/api/student/certificate_types")
       .then((res) => {
-        res.data.forEach((add) => {
+        setPhoto(res.data.photo)
+        if(photo === null){
+          toast.warning("Please upload your photo")
+        }
+        res.data.certificate_type.forEach((add) => {
           setDocId((p) => p.concat(add));
         });
       })
@@ -203,6 +215,12 @@ function Upload(props) {
     if (contact) cd.set("contact", contact);
     if (purpose) cd.set("purpose", purpose);
     if (name) cd.set("name", name);
+    if(fname) cd.set("fname",fname);
+    if (addr) cd.set("addr",addr)
+    if(dob) cd.set("dob",dob)
+    if(stayDate)cd.set("sd",stayDate)
+    if(year) cd.set("year",year)
+    if(sem) cd.set("sem",sem)
     if (file === "transcript" || file === "rank card") {
       if (no_of_copies) cd.set("no_copies", no_of_copies);
     }
@@ -234,6 +252,10 @@ function Upload(props) {
         setCourse("");
         setCode("");
         setName("");
+        setFName("");
+        setAddr("");
+        setDob("");        
+        setStayDate("");
         SemObj.forEach((obj) => {
           obj.copies = 0;
         });
@@ -273,7 +295,8 @@ function Upload(props) {
         setFile("bonafide");
         setSemwiseMap(false);
       })
-      .catch((err) => {});
+      .catch((err) => {console.log(err);
+         setLoading(false)});
   };
   const calculate_source = () => {
     let anch = document.getElementById("anchorClick");
@@ -290,10 +313,16 @@ function Upload(props) {
   return (
     <>
       <div className="container" id="cert-upl">
-        <h2 className="text-center cert-upl-head">
-          Document Requisition Portal
-        </h2>
-
+      
+        <Row className="navbar">
+          <Col />
+          <Col md="auto">
+            <h1 className="text-center cert-upl-head">Document Requisition Portal</h1>
+          </Col >
+          <Col>
+            <ImgUpload image={photo} admin={false}/>
+          </Col>
+        </Row>
         <ToastContainer
           position="top-center"
           autoClose={2000}
@@ -327,6 +356,138 @@ function Upload(props) {
               />
               <small id="name-error-message" className="error"></small>
             </div>
+            
+            {file==='bonafide'&&<>
+            <div className="form-group">
+              <label htmlFor="fname">
+                Enter your Father's Name/ Mother's Name <span className="cmpl">*</span>
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                name="fname"
+                id="fname"
+                placeholder="Father's Name"
+                required
+                onChange={(e) => {
+                  setFName(e.target.value);
+                }}
+              />
+              <small id="fname-error-message" className="error"></small>
+            </div>
+            <div className="form-group">
+            <label htmlFor="addr">
+              Enter your Hostel Name <span className="cmpl">*</span>
+            </label>
+            <input
+                type="text"
+                className="form-control"
+                name="addr"
+                id="addr"
+                placeholder="Hostel Name"
+                required
+                onChange={(e) => {
+                  setAddr(e.target.value);
+                }}
+              />
+            <small id="addr-error-message" className="error"></small>
+          </div>
+          <div className="form-group">
+            <label htmlFor="dob">
+              Enter your Date of Birth <span className="cmpl">*</span>
+            </label>
+            <input 
+              type="date"
+              className="form-control"
+              name="dob"
+              id="dob"
+              placeholder="Date Of Birth"
+              required
+              onChange={(e) => {
+                setDob(e.target.value);
+              }}
+            />
+            <small id="dob-error-message" className="error"></small>
+          </div>
+          <div className="form-group">
+            <label htmlFor="stayDate">
+              Date of joining the hostel <span className="cmpl">*</span>
+            </label>
+            <input 
+              type="date"
+              className="form-control"
+              name="stayDate"
+              id="stayDate"
+              placeholder="Stay Date"
+              required
+              onChange={(e) => {
+                setStayDate(e.target.value);
+              }}
+            />
+            <small id="stayDate-error-message" className="error"></small>
+          </div>
+          
+          <div className="form-group">
+            <label htmlFor="year">
+              Year of Study <span className="cmpl">*</span>
+            </label>
+            <select
+              className="form-control"
+              name="year"
+              id="year"
+              placeholder="Year"
+              required
+              onChange={(e) => {
+                setYear(e.target.value);
+              }}
+            >
+              <option default> Select Year</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>              
+              <option value="4">4</option>
+            </select>
+            <small id="year-error-message" className="error"></small>
+          </div>
+
+
+                        <div className="form-group">
+                    <label htmlFor="year">
+              Semester <span className="cmpl">*</span>
+            </label>
+            <select
+              className="form-control"
+              name="sem"
+              id="sem"
+              placeholder="Semester"
+              required
+              onChange={(e) => {
+                setSem(e.target.value);
+              }}
+            >
+              <option default> Select Semester</option>
+                      {semester.map((sem) => {
+                        return (
+                          <>
+                              <option value={sem.id}>{sem.semName}</option>
+                          </>
+                        );
+                      })}
+                      </select>
+                    <small
+                      id="semester-error-message"
+                      className="error"
+                    ></small>
+                  </div>
+              
+
+
+
+          
+          </>
+              
+            
+          }
 
             {/* Certificate Type */}
 
@@ -874,6 +1035,7 @@ function Upload(props) {
               {/* Administrator Email Addition */}
               {file === "transcript" ||
               file === "rank card" ||
+              file === "bonafide" ||
               semwiseMap == true ? (
                 <></>
               ) : (
@@ -959,17 +1121,21 @@ function Upload(props) {
                     <label htmlFor="purpose">
                       Enter Purpose <span className="cmpl">*</span>
                     </label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="purpose"
+                    <select name="purpose"
+                     className="form-control"
                       id="purpose"
                       placeholder="Purpose for document requisition"
                       required
                       onChange={(e) => {
                         setPurpose(e.target.value);
                       }}
-                    />
+                    >
+                      <option>Purpose for document requisition</option>
+                      <option value="Education Loan">Education Loan</option>                      
+                      <option value="Address Proof">Address Proof</option>
+                      </select>
+                
+                      
                     <small id="purpose-error-message" className="error"></small>
                   </>
                 ) : (
@@ -1128,6 +1294,52 @@ function Upload(props) {
                       document.getElementById("name-error-message").innerHTML =
                         "";
                     }
+                    if(!fname&&file==="bonafide"){
+                      document.getElementById("fname-error-message").innerHTML = "Father's name cannot be left blank"
+                      error=1
+                    }else {
+                      document.getElementById("fname-error-message").innerHTML =
+                        "";
+                    }
+                    if(!sem&&file==="bonafide"){
+                      document.getElementById("semester-error-message").innerHTML = "Semester cannot be left blank"
+                      error=1
+                    }else {
+                      document.getElementById("semester-error-message").innerHTML =
+                        "";
+                    }
+                    if(!addr&&file==="bonafide"){
+                      document.getElementById("addr-error-message").innerHTML = "Address cannot be left blank"
+                      error=1
+                    }else {
+                      document.getElementById("addr-error-message").innerHTML =
+                        "";
+                    }
+                    if(!dob&&file==="bonafide"){
+                      document.getElementById("dob-error-message").innerHTML = "Date of Birth cannot be left blank"
+                      error=1
+                    }else {
+                      document.getElementById("dob-error-message").innerHTML =
+                        "";
+                    }
+                    if(!stayDate&&file==="bonafide"){
+                      document.getElementById("stayDate-error-message").innerHTML = "Stay Date cannot be left blank"
+                      error=1
+                    }else {
+                      document.getElementById("stayDate-error-message").innerHTML =
+                        "";
+                    }
+                    if(!photo&&file==="bonafide"){
+                      error=1
+                      toast.error("Upload passport size photo")
+                    }
+                    if(!year&&file==="bonafide"){
+                      error=1
+                      document.getElementById("year-error-message").innerHTML = "Year cannot be left blank"
+                    }else {
+                      document.getElementById("year-error-message").innerHTML =
+                        "";
+                    }
                     if (!purpose) {
                       if (
                         file === "bonafide" ||
@@ -1161,18 +1373,7 @@ function Upload(props) {
                       document.getElementById("file-error-message").innerHTML =
                         "";
                     }
-                    if (file === "bonafide") {
-                      if (!emailCount) {
-                        document.getElementById(
-                          "email-error-message"
-                        ).innerHTML = "Add email addresses";
-                        error = 1;
-                      } else {
-                        document.getElementById(
-                          "email-error-message"
-                        ).innerHTML = "";
-                      }
-                    } else if (
+                    if (
                       file === "transcript" ||
                       semwiseMap == true ||
                       file === "rank card"
@@ -1370,6 +1571,8 @@ function Upload(props) {
                 />
               ) : (
                 <>
+                {(file!='bonafide')&&
+                <>
                   <h5 className="text-center">
                     <strong>Confirm the order of approval:</strong>
                   </h5>
@@ -1394,6 +1597,7 @@ function Upload(props) {
                       );
                     })}
                   </ul>
+                  </>}
                   <br />
                   <div className="text-center">
                     <button

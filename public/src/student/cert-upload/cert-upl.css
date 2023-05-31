@@ -105,3 +105,7 @@ div > div > a {
 .error {
   color: #ff0000;
 }
+
+.navbar {
+  margin: 0.3em;
+}

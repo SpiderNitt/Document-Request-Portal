@@ -19,6 +19,7 @@ const fs = require("fs");
 
 const apiRouter = require("./routers/api");
 const loginRouter = require("./routers/login");
+const lAuthRouter = require("./routers/lynxAuth");
 const alumniRouter = require("./routers/alumni");
 
 
@@ -32,6 +33,7 @@ app.use(express.json());
 app.use("/api", apiRouter);
 app.use("/login", loginRouter);
 app.use("/alumni", alumniRouter);
+app.use("/lAuth", lAuthRouter);
 
 
 // app.use(function (req, res) {
